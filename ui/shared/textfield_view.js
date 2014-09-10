@@ -21,7 +21,7 @@ Alto.TextField = Alto.CoreView.extend ({
 
         node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-            node.id = Alto.guidFor(this);
+
             var n = 0,
                 classNames = this.get('classNames');
             while (n < classNames.length) {

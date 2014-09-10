@@ -26,7 +26,7 @@ Alto.ButtonView = Alto.View.extend ({
         var that = this
         node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-            node.id = Alto.guidFor(this);
+
             var n = 0,
                 classNames = this.get('classNames');
 
@@ -62,7 +62,7 @@ Alto.ButtonView = Alto.View.extend ({
         viewDidLoad: function(node) {
             node ? node : node = document.createElement(this.get("tag"));
             if (node) {
-                node.id = Alto.guidFor(this);
+
                 var n = 0,
                     classNames = this.get('classNames');
                 while (n < classNames.length) {
