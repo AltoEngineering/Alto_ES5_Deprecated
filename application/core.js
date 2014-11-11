@@ -5,16 +5,13 @@
 // ==========================================================================
 
 /**
- Alto.main starts the initialization of your application.  You should not call this directly nor should you modify this
- method.
 
+ Alto Application framework.
+
+ @module Application
+ @main Application
+ @extends Alto.Object
  @since Alto 0.0.1
  @author Chad Eubanks
+
  */
-
-Alto.main = function() {
-    var APP = window.Alto.applicationName;
-
-    window[APP].applicationDidLoad();
-}
-Alto.main();
