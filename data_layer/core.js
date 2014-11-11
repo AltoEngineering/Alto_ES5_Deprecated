@@ -5,16 +5,13 @@
 // ==========================================================================
 
 /**
- A datasource interacts with the network layer.  Here is where we will find basic CRUD calls, messaging of data, converting
- JSON to an Alto.Record aka a model, and converting an Alto.Record to JSON.
+
+ Alto Application framework.
 
  @module Data
- @class Alto.DataSource
+ @main Data
  @extends Alto.Object
  @since Alto 0.0.1
  @author Chad Eubanks
+
  */
-
-Alto.DataSource = Alto.Object.extend ({
-
-});

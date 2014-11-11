@@ -1,3 +1,19 @@
+// ==========================================================================
+// Project: Alto - JavaScript Application Framework
+// Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
+// ==========================================================================
+
+/**
+ Alto.Request talks to the HTTP(s) protocol.
+
+ @module Data
+ @class Alto.Request
+ @extends Alto.Object
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
 Alto.Request = Alto.Object.extend ({
 
     url: "",
@@ -8,24 +24,27 @@ Alto.Request = Alto.Object.extend ({
 
     data: "",
 
+    xhr: new XMLHttpRequest(),
+
+    /**
+        @method send
+    */
     send: function() {
-        this._xhr.send(this.get('data'));
+        this.xhr.send(this.get('data'));
     },
 
     /*
         Do not override this method.
     */
     init: function() {
-        this._super();
         this._open();
+        this._super();
     },
 
     /**  Internal Use Only  **/
 
-    _xhr: new XMLHttpRequest(),
-
     _open: function () {
-        this._xhr.open(this.get('httpMethod'), this.get('url'));
+        this.xhr.open(this.get('httpMethod'), this.get('url'));
 
         this._setRequestHeaders()
     },
@@ -33,7 +52,7 @@ Alto.Request = Alto.Object.extend ({
     _setRequestHeaders: function () {
         var obj = this.get('requestHeaders');
         for (var key in obj) {
-            this._xhr.setRequestHeader(key, obj[key]);
+            this.xhr.setRequestHeader(key, obj[key]);
         }
 
         this.send();

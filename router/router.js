@@ -1,141 +1,168 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Author: Chad Eubanks
 // Copyright: @2014 The Code Boutique, LLC
-// License:   Licensed under MIT license (see license.js)
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Alto.Router defines what URLs or 'routes' are used in your application.  As with traditional document based websites,
+ an Alto application changes its route based upon a corresponding event.  Take the following scenarios into account:
+
+ - A user navigates to a login screen.  The most likely URL that correlates to this screen is: **www.example.com/index.html/#/login**.
+ - A user wants to share a blog post.  A user can post a link online with the following URL:  **www.example.com/index.html/#/blog/18**.
+
+ Architectually, Alto couples a route with a specific state.  See the {{#crossLinkModule "Statechart"}}{{/crossLinkModule}}
+ module for detailed information about statecharts.
+
+ All routes associated to the application are delcared as a hash with key value pairs and omit the domain name.  A route hash contains the
+ following properties:
+
+ - url: how the url is displayed
+ - state: the name of the state instance your application will be in for the paired url
+
+        App.router = Alto.Router.create ({
+            routes:[{
+                url: "index.html",
+                state: "indexState"
+            },{
+                url: "#/login",
+                state: "unauthenticatedState"
+            },{
+                url: "#/blog",
+                state: "blogsState"
+            }, {
+                url: "#/blog/:id", // a nested url with a model attribute
+                state: "blogState",
+                isProtected: true // will check for an session token before making network call
+            }]
+        });
+
+ @module Router
+ @class Alto.Router
+ @extends Alto.Object
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.Router = Alto.Object.extend ({
 
+
     /**
-     ---- About this class ----
-     All routes associated to the application are delcared as a hash with key value pairs.
-     A route hash contains the following:
-     - url           (how the url is displayed) **NOTE**  nested urls are given a model attribute ex:  url: "#blog/:title"
-     - state         (the state in which your application will be in for a given url)
+        @method goToState
+        @param {String} state An instance of the state you are going to enter.
 
-     ---- How to use it ----
-     routes: [{
-        name: "index",
-        url: "index.html",
-        state: "applicationState"
-     },{
-         name: "blogs",
-         url: "#blog",
-         state: "blogState"
-     },{
-        name: "blog",
-        url:  "#blog/:id",
-        state: "userBlogState",
-        dataSource: "TCB.BlogDataSource",
-        dataSourceMethod: "fetchBlogById",
-        isProtected: true // will check for an auth token before making network call
-     }];
+        **How to use**
+        <pre class="code prettyprint prettyprinted">
+            <code>App.indexState = Alto.State.create ({
 
-     */
+                doEnterBlogState: function () {
+                    App.router.goToState('blogState');
+                }
 
-    /*
+            });</code>
+        </pre>
+    */
+    goToState: function(state) {
+        var routes = this.routes,
+            message = "Could not find state " + state;
+
+        for (var i = 0, len = routes.length; i < len; i++) {
+
+            if (routes[i].state == state) {
+                location.hash = routes[i].url
+                return;
+            }
+        }
+
+        Alto.Console.log(message, Alto.Console.errorColor);
+    },
+
+    /**
+        @method goToStateWithDynamicRoute
+        @param {String} state An instance of the state you are going to enter
+        @param {String} dynamicRoute The desired path of your dynamic route
+
+        **How to use**
+        <pre class="code prettyprint prettyprinted">
+            <code>App.indexState = Alto.State.create ({
+
+                // pass in who is sending a message to this method
+                doEnterBlogDetailState: function (sender) {
+                     var baseRoute = 'blog/',
+                         data = sender.data;
+                    App.router.goToStateWithDynamicRoute('blogDetailState', baseRoute + data.objectId);
+                }
+
+            });</code>
+        </pre>
+    */
+    goToStateWithDynamicRoute: function(state, dynamicRoute) {
+        var routes = this.routes;
+        for (var i = 0, len = routes.length; i < len; i++) {
+
+            if (routes[i].state == state) {
+                history.pushState({}, null,'#' + dynamicRoute)
+                this._goToState(state);
+            }
+        }
+    },
+
+    /** =====   Internal Use Only  ===== **/
+
+    /**
         Do not override this method.
+        Do not call directly
     */
     init: function() {
         this.set('_didWake', true);
         this._super();
     },
 
+    /**
+        @property routes
+        @type Array
+    */
     routes: [],
-
-    /**  Internal Use Only  **/
 
     /**
         An observed property that gets set to true when an applications router is initalized.
-    */
+     */
     _didWake: false,
 
-    /*
+    /**
         All urls associated to an applications routes.
     */
     _urls: [],
 
-    /*
-     All names associated to an applications routes.
-     */
-    _names: [],
 
-    /*
+    /**
         All states associated to an applications routes.
     */
     _states: [],
 
-    /*
-     All dataSources associated to an applications routes.
-     */
-    _dataSources: [],
 
-    /*
-     All dataSourceMethods associated to an applications routes.
-     */
-    _dataSourceMethods: [],
-
-    /*
-     All privacy settings associated to an applications routes.
-     */
+    /**
+        All privacy settings associated to an applications routes.
+    */
     _isProtecteds: [],
 
-    /*
-     Pushes all Names into our _names array.
-     */
-    _acknowledgeNames: function() {
-        var routes = this.get('routes');
-
-        this.set('_names', routes.getEach('name'));
-    }.observes('this._didWake'),
-
-    /*
-        Pushes all URLs into our _urls array.
+    /**
+        Internally used to determine if we found a staticRoute (a route that is not bound by a model attribute).
     */
-    _acknowledgeUrls: function() {
+    _staticRouteFound: false,
+
+    /**
+        When our applications router wakes, we map each property of a route into its respective array.
+   */
+    _mapRoutes: function () {
         var routes = this.get('routes');
 
         this.set('_urls', routes.getEach('url'));
-    }.observes('this._didWake'),
-
-    /*
-     Pushes all datasources into our _datasources array.
-     */
-    _acknowledgeDataSources: function() {
-        var routes = this.get('routes');
-
-        this.set('_dataSources', routes.getEach('dataSource'));
-    }.observes('this._didWake'),
-
-    /*
-     Pushes all privacy settings into our _isProtecteds array.
-     */
-     _acknowledgeDataSources: function() {
-        var routes = this.get('routes');
-
+        this.set('_states', routes.getEach('state'));
         this.set('_isProtecteds', routes.getEach('isProtected'));
     }.observes('this._didWake'),
 
-    /*
-     Pushes all dataSourceMethods into our _queryTypes array.
-     */
-    _acknowledgeDataSourceMethods: function() {
-        var routes = this.get('routes');
-
-        this.set('_dataSourceMethods', routes.getEach('dataSourceMethod'));
-    }.observes('this._didWake'),
-
-    /*
-        Pushes all States into our _states array.
-    */
-    _acknowledgeStates: function() {
-        var routes = this.get('routes');
-
-        this.set('_states', routes.getEach('state'));
-    }.observes('this._didWake'),
-
-    /*
+    /**
         Pairs a URL to the corresponding State.
     */
     _findMatchingingResources: function(e) {
@@ -160,24 +187,40 @@ Alto.Router = Alto.Object.extend ({
         for (var i = 0, len = knownUrls.length; i < len; i++) {
 
             if (knownUrls[i] == url) {
+                this.set('_staticRouteFound', true);
                 this._goToState(this.get('_states')[i]);
             }
         }
+
+        if (!this.get('_staticRouteFound')) {
+            var baseUrl = url.split('/')[0];
+
+            if (!location.pathname.contains('index.html') && baseUrl == '') {this._goToRootRoute(); return}
+
+            for (var i = 0, len = knownUrls.length; i < len; i++) {
+                if (knownUrls[i].contains(baseUrl) && knownUrls[i].contains(':')) {
+                    this._goToState(this.get('_states')[i])
+                }
+
+            }
+        }
+
     }.observes('this._didWake'),
 
-    /*
+    /**
         When a hash change occurs, invoke _findMatchingingResources();
     */
-    hashDidChange: window.onhashchange = function(e) {
+    _hashDidChange: window.onhashchange = function(e) {
         var APP = this.Alto.applicationName;
-
+        window[APP].router.set('_staticRouteFound', false);
         window[APP].router._findMatchingingResources(e);
     },
 
-    /*
+    /**
         Go to state that matches the current url
     */
     _goToState: function (state) {
+
         var APP = Alto.applicationName;
 
         // If we don't already have one.  Create an instance of our applications statehcart
@@ -194,7 +237,7 @@ Alto.Router = Alto.Object.extend ({
 
             if (window[APP].LogStateTransitions) {
                 var message = "Exiting " + window[APP].Statechart.get("currentState");
-                Alto.console.log(message, Alto.console.warnColor);
+                Alto.Console.log(message, Alto.Console.warnColor);
             }
 
             window[APP][window[APP].Statechart.get("currentState")].exitState();
@@ -203,13 +246,13 @@ Alto.Router = Alto.Object.extend ({
         // Handle an attempt to enter a non existent state
         if (!window[APP][state]) {
             var message = "Can not find state " + state + ". Check your applications router and declared states.";
-            Alto.console.log(message, Alto.console.errorColor);
+            Alto.Console.log(message, Alto.Console.errorColor);
         } else {
             window[APP].Statechart.set("currentState", state);
 
             if (window[APP].LogStateTransitions) {
                 var message = "Entering " + window[APP].Statechart.get("currentState");
-                Alto.console.log(message, Alto.console.messageColor);
+                Alto.Console.log(message, Alto.Console.messageColor);
             }
 
             window[APP][state].enterState();
@@ -217,31 +260,16 @@ Alto.Router = Alto.Object.extend ({
 
     },
 
-    goToState: function(state) {
-        var routes = this.routes;
+    _goToRootRoute: function () {
+        var knownUrls = this.get('_urls');
 
-        for (var i = 0, len = routes.length; i < len; i++) {
+        for (var i = 0, len = knownUrls.length; i < len; i++) {
 
-            if (routes[i].state == state) {
-                location.hash = routes[i].url
+            if (knownUrls[i].contains('index.html')) {
+                this.set('_staticRouteFound', true);
+                this._goToState(this.get('_states')[i]);
             }
         }
-    },
-
-    goToStateWithDynamicRoute: function(state, dynamicRoute) {
-        var routes = this.routes;
-
-        for (var i = 0, len = routes.length; i < len; i++) {
-
-            if (routes[i].state == state) {
-                history.pushState({}, null,'#' + dynamicRoute)
-                this._goToState(state);
-            }
-        }
-    },
-
-    popRoute: function () {
-        window.history.go(-1);
     }
 
 });

@@ -8,10 +8,10 @@
 /*globals ENV Alto_assert */
 
 if ('undefined' === typeof Alto) {
+
 /**
-  @namespace
-  @name Alto
-  @version 0.0.1
+  @class Alto
+  @since Alto 0.0.1
 
   All Alto methods and functions are defined inside of this namespace.
   You generally should not add new properties to this namespace as it may be
@@ -48,15 +48,12 @@ if ('undefined' === typeof Alto) {
 /**
   @static
   @type String
-  @default '0.0.1'
-  @constant
 */
 Alto.VERSION = '0.0.1';
 
 /**
   @static
   @type Hash
-  @constant
   
   Standard environmental variables.  You can define these in a global `ENV`
   variable before loading Alto to control various configuration 
@@ -67,7 +64,6 @@ Alto.ENV = 'undefined' === typeof ENV ? {} : ENV;
 /**
   Empty function.  Useful for some operations.
 
-  @returns {Object}
   @private
 */
 Alto.K = function() { return this; };
@@ -93,7 +89,6 @@ Alto.K = function() { return this; };
       });
       
   @static
-  @function
   @param {String} desc
     A description of the assertion.  This will become the text of the Error
     thrown if the assertion fails.
@@ -242,7 +237,6 @@ if (defineProperty) {
   @param {Object} obj The object to modify
   @param {String} keyName property name to modify
   @param {Object} desc descriptor hash
-  @returns {void}
 */
 platform.defineProperty = defineProperty;
 
@@ -296,7 +290,6 @@ var o_create = Alto.platform.create;
   @private
   @static
   @type String
-  @constant
 
   A unique key used to assign guids and other private metadata to objects.
   If you inspect an object in your browser debugger you will often see these.
@@ -325,7 +318,6 @@ Alto.GUID_KEY = GUID_KEY;
     Optional prefix to place in front of the guid.  Useful when you want to
     separate the guid into separate namespaces.
 
-  @returns {String} the guid
 */
 Alto.generateGuid = function(obj, prefix) {
   if (!prefix) prefix = 'Alto';
@@ -340,7 +332,6 @@ Alto.generateGuid = function(obj, prefix) {
 };
 
 /**
-  @private
 
   Returns a unique id for the object.  If the object does not yet have
   a guid, one will be assigned to it.  You can call this on any object,

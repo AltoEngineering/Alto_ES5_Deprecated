@@ -1,9 +1,18 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Author: Chad Eubanks
 // Copyright: @2014 The Code Boutique, LLC
-// License:   Licensed under MIT license (see license.js)
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @submodule DomUitl
+ @class Alto.DomUtil
+ @extends Alto.Object
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.DomUtil = Alto.Object.create({
 
@@ -23,6 +32,9 @@ Alto.DomUtil = Alto.Object.create({
         if (node === 'body') {
             var dom = document.getElementsByTagName('body')[0];
                 dom.appendChild(element);
+        } else if (!node.id) {
+            var dom = document.getElementById(node);
+            dom.appendChild(element);
         } else {
             var dom = document.getElementById(node.id);
             dom.appendChild(element);

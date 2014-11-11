@@ -5,16 +5,21 @@
 // ==========================================================================
 
 /**
- A datasource interacts with the network layer.  Here is where we will find basic CRUD calls, messaging of data, converting
- JSON to an Alto.Record aka a model, and converting an Alto.Record to JSON.
+ Extends the native javascript string object.
 
- @module Data
- @class Alto.DataSource
- @extends Alto.Object
+ @module JavaScript prototype
+ @class String.prototype
+ @extends String
  @since Alto 0.0.1
  @author Chad Eubanks
  */
 
-Alto.DataSource = Alto.Object.extend ({
 
-});
+/**
+    @method contains
+*/
+if ( !String.prototype.contains ) {
+    String.prototype.contains = function() {
+        return String.prototype.indexOf.apply( this, arguments ) !== -1;
+    };
+}

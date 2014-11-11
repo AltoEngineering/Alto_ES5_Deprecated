@@ -1,20 +1,30 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Author: Chad Eubanks
 // Copyright: @2014 The Code Boutique, LLC
-// License:   Licensed under MIT license (see license.js)
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ An application will have one StateChart.  When your application initalizes, a StateChart singleton scoped to your
+ application name is created for you.
+
+ @module Statechart
+ @class Alto.Statechart
+ @extends Alto.Object
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
 
 Alto.Statechart = Alto.Object.extend ({
 
+    /**
+        @property currentState
+    */
     currentState: "",
 
-    init: function () {
-        this._super();
-    },
-
-    /*
-        Examaple: TCB.Statechart.sendEvent('method_name');
+    /**
+        @method dispatchEvent
     */
     dispatchEvent: function(eventName) {
         var APP = Alto.applicationName,
@@ -29,11 +39,14 @@ Alto.Statechart = Alto.Object.extend ({
         if (window[APP][state][eventName]) {
             window[APP][state][eventName].apply(this, args);
         } else {
-            Alto.console.log(message, Alto.console.errorColor);
+            Alto.Console.log(message, Alto.Console.errorColor);
         }
 
     },
 
+    /**
+        @method goToState
+    */
     goToState: function (state) {
         var APP = Alto.applicationName;
 
@@ -42,7 +55,7 @@ Alto.Statechart = Alto.Object.extend ({
 
             if (window[APP].LogStateTransitions) {
                 var message = "Exiting " + window[APP].Statechart.get("currentState");
-                Alto.console.log(message, Alto.console.warnColor);
+                Alto.Console.log(message, Alto.Console.warnColor);
             }
 
             window[APP][window[APP].Statechart.get("currentState")].exitState();
@@ -51,21 +64,17 @@ Alto.Statechart = Alto.Object.extend ({
         // Handle an attempt to enter a non existent state
         if (!window[APP][state]) {
             var message = "Can not find state " + state + ". Check your applications router and declared states.";
-            Alto.console.log(message, Alto.console.errorColor);
+            Alto.Console.log(message, Alto.Console.errorColor);
         } else {
             window[APP].Statechart.set("currentState", state);
 
             if (window[APP].LogStateTransitions) {
                 var message = "Entering " + window[APP].Statechart.get("currentState");
-                Alto.console.log(message, Alto.console.messageColor);
+                Alto.Console.log(message, Alto.Console.messageColor);
             }
 
             window[APP][state].enterState();
         }
-    },
-
-    stateDidChange: function() {
-
-    }.observes('currentState')
+    }
 
 });
