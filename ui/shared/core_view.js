@@ -1,9 +1,18 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Author: Chad Eubanks
 // Copyright: @2014 The Code Boutique, LLC
-// License:   Licensed under MIT license (see license.js)
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.CoreView
+ @extends Alto.Object
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.CoreView = Alto.Object.extend( {
 
@@ -16,6 +25,10 @@ Alto.CoreView = Alto.Object.extend( {
     tag: "",
 
     node: "",
+
+    layerId: '',
+
+    isVisible: true,
 
     attachToNode: "",
 
@@ -30,6 +43,11 @@ Alto.CoreView = Alto.Object.extend( {
      we make that assumption.
      */
     viewWillLoad: function() {
+        if (this.get("tag") == '') {
+            Alto.Console.log('View class: ' + this + ' can not have an empty tag.', Alto.Console.errorColor);
+            return;
+        }
+
         var node = this.get("tag");
         node = document.createElement(node);
         this.viewDidLoad(node);
@@ -50,6 +68,14 @@ Alto.CoreView = Alto.Object.extend( {
             while (n < classNames.length) {
                 node.className += node.className ? ' ' + classNames[n] : classNames[n];
                 n++;
+            }
+
+            if (this.get('layerId') != '') {
+                node.id = this.get('layerId');
+            }
+
+            if (!this.get('isVisible')) {
+                node.style.visibility = 'hidden';
             }
 
             this.viewWillAppear(node);
@@ -121,6 +147,16 @@ Alto.CoreView = Alto.Object.extend( {
     */
     remove: function() {
         this.viewWillDisappear();
-    }
+    },
+
+
+    //todo move this into view class
+    isVisibleDidChange: function () {
+        if (this.get('isVisible')) {
+            this.node.style.visibility = 'visible';
+        } else {
+            this.node.style.visibility = 'hidden';
+        }
+    }.observes('this.isVisible')
 
 });

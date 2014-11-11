@@ -1,8 +1,18 @@
 // ==========================================================================
-// Project: Alto
-// Author: Chad Eubanks
+// Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.TextField
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.TextField = Alto.CoreView.extend ({
     tag: 'input',
@@ -18,26 +28,16 @@ Alto.TextField = Alto.CoreView.extend ({
      */
     viewDidLoad: function(node) {
         var that = this;
-
-        node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-
-            var n = 0,
-                classNames = this.get('classNames');
-            while (n < classNames.length) {
-                node.className += node.className ? ' ' + classNames[n] : classNames[n];
-                n++;
-            }
-
             node.addEventListener("input", function(){that.inputDidChange(that) }, false);
 
             if (this.get('isPassword')) {
                node.type="password";
             }
             node.placeholder=this.get('hint');
-
-            this.viewWillAppear(node);
         }
+
+        this._super(node);
     },
 
     inputDidChange: function(textField) {

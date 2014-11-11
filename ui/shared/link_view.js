@@ -1,8 +1,18 @@
 // ==========================================================================
-// Project: Alto
-// Author: Chad Eubanks
+// Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.LinkView
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.LinkView = Alto.CoreView.extend ({
 
@@ -19,16 +29,7 @@ Alto.LinkView = Alto.CoreView.extend ({
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
     viewDidLoad: function(node) {
-        node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-
-            var n = 0,
-                classNames = this.get('classNames');
-            while (n < classNames.length) {
-                node.className += node.className ? ' ' + classNames[n] : classNames[n];
-                n++;
-            }
-
             if (this.getPath("title")) {
                 node.innerHTML = this.getPath("title");
             }
@@ -42,9 +43,9 @@ Alto.LinkView = Alto.CoreView.extend ({
             if (this.getPath('openInNewWindow')) {
                 node.target="_blank"
             }
-
-            this.viewWillAppear(node);
         }
+
+        this._super(node);
     },
 
     titleDidChange: function() {

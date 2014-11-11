@@ -1,10 +1,18 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Author: Chad Eubanks
 // Copyright: @2014 The Code Boutique, LLC
-// License:   Licensed under MIT license (see license.js)
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
 
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.ContainerView
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 Alto.ContainerView = Alto.CoreView.extend ({
 
     classNames: ["alto-container-view"],

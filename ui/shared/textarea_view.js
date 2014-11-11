@@ -1,8 +1,18 @@
 // ==========================================================================
-// Project: Alto
-// Author: Chad Eubanks
+// Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
 // ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.TextArea
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
 
 Alto.TextArea = Alto.CoreView.extend ({
     tag: 'textarea',
@@ -16,21 +26,11 @@ Alto.TextArea = Alto.CoreView.extend ({
      */
     viewDidLoad: function(node) {
         var that = this;
-
-        node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-
-            var n = 0,
-                classNames = this.get('classNames');
-            while (n < classNames.length) {
-                node.className += node.className ? ' ' + classNames[n] : classNames[n];
-                n++;
-            }
-
             node.addEventListener("input", function(){that.inputDidChange(that) }, false);
-
-            this.viewWillAppear(node);
         }
+
+        this._super(node);
     },
 
     inputDidChange: function(textField) {

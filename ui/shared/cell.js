@@ -1,4 +1,20 @@
-Alto.Cell = Alto.View.extend ({
+// ==========================================================================
+// Project: Alto - JavaScript Application Framework
+// Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
+// ==========================================================================
+
+/**
+ Gives logging to your console some color.
+
+ @module UI
+ @class Alto.Cell
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
+Alto.Cell = Alto.CoreView.extend ({
 
     tag: 'li',
 
@@ -11,20 +27,12 @@ Alto.Cell = Alto.View.extend ({
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
     viewDidLoad: function(node) {
-        node ? node : node = document.createElement(this.get("tag"));
         if (node) {
-
-            var n = 0,
-                classNames = this.get('classNames');
-            while (n < classNames.length) {
-                node.className += node.className ? ' ' + classNames[n] : classNames[n];
-                n++;
-            }
-
             var recordAtIndex =  this.parentView.data[this.indexRow];
             this.set('data', recordAtIndex);
-            this.viewWillAppear(node);
         }
+
+        this._super(node);
     }
 
 });
