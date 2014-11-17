@@ -14,7 +14,7 @@
  @author Chad Eubanks
  */
 
-Alto.CoreView = Alto.Object.extend( {
+Alto.CoreView = Alto.Object.extend({
 
     classNames: [],
 
@@ -32,7 +32,7 @@ Alto.CoreView = Alto.Object.extend( {
 
     attachToNode: "",
 
-    init: function() {
+    init: function () {
         this.viewWillLoad();
     },
 
@@ -42,7 +42,7 @@ Alto.CoreView = Alto.Object.extend( {
      We dont know anything about the html elements nor should
      we make that assumption.
      */
-    viewWillLoad: function() {
+    viewWillLoad: function () {
         if (this.get("tag") == '') {
             Alto.Console.log('View class: ' + this + ' can not have an empty tag.', Alto.Console.errorColor);
             return;
@@ -59,7 +59,7 @@ Alto.CoreView = Alto.Object.extend( {
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
-    viewDidLoad: function(node) {
+    viewDidLoad: function (node) {
         node ? node : node = document.createElement(this.get("tag"));
         if (node) {
 
@@ -86,16 +86,16 @@ Alto.CoreView = Alto.Object.extend( {
      With our html elements all setup and ready to go.
      We add them to the dom and invokes viewDidAppear().
      */
-    viewWillAppear: function(node) {
+    viewWillAppear: function (node) {
         if (this.get('attachToNode') != "")
-        Alto.DomUtil.addElementToNode(node, this.get('attachToNode'));
+            Alto.DomUtil.addElementToNode(node, this.get('attachToNode'));
         this.viewDidAppear(node);
     },
 
     /*
      Our html is now on the dom and can be queried.
      */
-    viewDidAppear: function(html) {
+    viewDidAppear: function (html) {
         this.set("node", html);
         this.viewCreateSubViews();
     },
@@ -103,7 +103,7 @@ Alto.CoreView = Alto.Object.extend( {
     /*
      Removes elements from the dom.
      */
-    viewWillDisappear: function() {
+    viewWillDisappear: function () {
         var n = 0,
             children = this.get('childViews');
 
@@ -122,19 +122,20 @@ Alto.CoreView = Alto.Object.extend( {
     /*
      Nothing is left on the dom.
      */
-    viewDidDisappear: function() {},
+    viewDidDisappear: function () {
+    },
 
     /*
      Create the views subviews
 
      */
-    viewCreateSubViews: function() {
+    viewCreateSubViews: function () {
         var n = 0,
             children = this.get('childViews');
         while (n < children.length) {
 
             if (!Alto.Object.detectInstance(this[children[n]])) {
-                this.set([children[n]], this[children[n]].create({parentView:  this}));
+                this.set([children[n]], this[children[n]].create({parentView: this}));
             }
 
             this.node.appendChild(this[children[n]].node)
@@ -143,9 +144,9 @@ Alto.CoreView = Alto.Object.extend( {
     },
 
     /*
-        Removes self from dom
-    */
-    remove: function() {
+     Removes self from dom
+     */
+    remove: function () {
         this.viewWillDisappear();
     },
 
