@@ -22,6 +22,8 @@ Alto.ButtonView = Alto.CoreView.extend ({
 
     action: "",
 
+    leftIcon: null,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -33,7 +35,21 @@ Alto.ButtonView = Alto.CoreView.extend ({
 
         if (node) {
             node.addEventListener("click", function(){that.click(that) }, false);
-            node.innerHTML = this.getPath("this.title");
+
+            if (this.get('leftIcon')) {
+                var span = document.createElement('span'),
+                    img = document.createElement('img');
+
+                node.className += 'alto-text-button-left-icon '
+                img.src = this.getPath('leftIcon');
+                span.innerHTML = this.getPath("this.title");
+
+                node.appendChild(img);
+                node.appendChild(span);
+            } else {
+                node.innerHTML = this.getPath("this.title");
+            }
+
         }
 
         this._super(node);
