@@ -14,9 +14,9 @@
  @author Chad Eubanks
  */
 
-Alto.LabelView = Alto.CoreView.extend ({
+Alto.LabelView = Alto.CoreView.extend({
 
-    tag: "label",
+    tag: "p",
 
     title: "",
 
@@ -26,7 +26,7 @@ Alto.LabelView = Alto.CoreView.extend ({
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
-    viewDidLoad: function(node) {
+    viewDidLoad: function (node) {
         if (node) {
             if (this.getPath('title')) {
                 node.innerHTML = this.getPath("title");
@@ -36,7 +36,11 @@ Alto.LabelView = Alto.CoreView.extend ({
         this._super(node);
     },
 
-    titleDidChange: function() {
+    titleDidChange: function () {
+        if (!this.getPath("title")) {
+            return
+        }
+
         this.node.innerHTML = this.getPath("title");
     }.observes('this.title')
 

@@ -14,9 +14,13 @@
  @author Chad Eubanks
  */
 
-Alto.TextArea = Alto.CoreView.extend ({
+Alto.TextArea = Alto.CoreView.extend({
+
     tag: 'textarea',
-    value: "",
+
+    value: '',
+
+    hint: '',
 
     /*
      Has the html elements and passes them to viewWillAppear().
@@ -24,16 +28,22 @@ Alto.TextArea = Alto.CoreView.extend ({
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
-    viewDidLoad: function(node) {
+    viewDidLoad: function (node) {
         var that = this;
         if (node) {
-            node.addEventListener("input", function(){that.inputDidChange(that) }, false);
+            node.addEventListener("input", function () {
+                that.inputDidChange(that)
+            }, false);
+        }
+
+        if (this.get('hint') != '') {
+            node.placeholder = this.get('hint');
         }
 
         this._super(node);
     },
 
-    inputDidChange: function(textField) {
+    inputDidChange: function (textField) {
         this.set('value', textField.node.value);
     },
 
