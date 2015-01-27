@@ -24,6 +24,10 @@ Alto.ButtonView = Alto.CoreView.extend ({
 
     leftIcon: null,
 
+    rightIcon: null,
+
+    tabbedIcon: null,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -31,7 +35,7 @@ Alto.ButtonView = Alto.CoreView.extend ({
      Example: add disabled, hidden, etc className / adds alto object ids / setup dynamic data and more...
      */
     viewDidLoad: function(node) {
-        var that = this
+        var that = this;
 
         if (node) {
             node.addEventListener("click", function(){that.click(that) }, false);
@@ -41,13 +45,33 @@ Alto.ButtonView = Alto.CoreView.extend ({
                     img = document.createElement('img');
 
                 node.className += 'alto-text-button-left-icon '
-                img.src = this.getPath('leftIcon');
-                span.innerHTML = this.getPath("this.title");
+                img.src = this.get('leftIcon');
+                span.innerHTML = this.get("this.title");
+
+                node.appendChild(img);
+                node.appendChild(span);
+            } else if (this.get('rightIcon')) {
+                var span = document.createElement('span'),
+                    img = document.createElement('img');
+
+                node.className += 'alto-text-button-right-icon '
+                img.src = this.get('rightIcon');
+                span.innerHTML = this.get("this.title");
+
+                node.appendChild(span);
+                node.appendChild(img);
+            } else if (this.get('tabbedIcon')) {
+                var span = document.createElement('span'),
+                    img = document.createElement('img');
+
+                node.className += 'alto-tabbed-button '
+                img.src = this.get('tabbedIcon');
+                span.innerHTML = this.get("this.title");
 
                 node.appendChild(img);
                 node.appendChild(span);
             } else {
-                node.innerHTML = this.getPath("this.title");
+                node.innerHTML = this.get("this.title");
             }
 
         }
@@ -58,11 +82,11 @@ Alto.ButtonView = Alto.CoreView.extend ({
     click: function(buttonView) {
         var APP = Alto.applicationName
 
-        window[APP].Statechart.dispatchEvent(buttonView.action, this);
+        window[APP].statechart.dispatchEvent(buttonView.action, this);
     },
 
     titleDidChange: function() {
-        this.node.innerHTML = this.getPath("this.title");
+        this.node.innerHTML = this.get("this.title");
     }.observes('this.title')
 
 });
