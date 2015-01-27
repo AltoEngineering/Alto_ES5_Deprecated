@@ -30,7 +30,7 @@ Alto.Cookie = Alto.Object.extend({
 
     secure: '',
 
-    isCookie: YES,
+    isCookie: true,
 
     destroy: function () {
         this.set('expires', -1);
