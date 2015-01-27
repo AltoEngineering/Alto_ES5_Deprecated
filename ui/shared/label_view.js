@@ -18,7 +18,9 @@ Alto.LabelView = Alto.CoreView.extend({
 
     tag: "p",
 
-    title: "",
+    title: null,
+
+    titleValueKey: null,
 
     /*
      Has the html elements and passes them to viewWillAppear().
@@ -28,8 +30,11 @@ Alto.LabelView = Alto.CoreView.extend({
      */
     viewDidLoad: function (node) {
         if (node) {
-            if (this.getPath('title')) {
-                node.innerHTML = this.getPath("title");
+
+            if (this.get('title')) {
+                node.innerHTML = this.get("title");
+            } else if (this.get('titleValueKey') != null) {
+                node.innerHTML = this.parentView.data.get([this.get('titleValueKey')]);
             }
         }
 
@@ -37,11 +42,12 @@ Alto.LabelView = Alto.CoreView.extend({
     },
 
     titleDidChange: function () {
-        if (!this.getPath("title")) {
+        if (Alto.isEmpty(this.get("title"))) {
+            this.node.innerHTML = '';
             return
         }
 
-        this.node.innerHTML = this.getPath("title");
+        this.node.innerHTML = this.get("title");
     }.observes('this.title')
 
 })
