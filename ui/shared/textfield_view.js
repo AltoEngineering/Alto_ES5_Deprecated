@@ -22,7 +22,7 @@ Alto.TextField = Alto.CoreView.extend({
 
     isPassword: false,
 
-    value: "",
+    value: null,
 
     /*
      Has the html elements and passes them to viewWillAppear().
@@ -40,6 +40,15 @@ Alto.TextField = Alto.CoreView.extend({
             if (this.get('isPassword')) {
                 node.type = "password";
             }
+
+            if (this.get('type')) {
+                node.type = this.get('type');
+            }
+
+            if (!Alto.isEmpty(this.get("value"))) {
+                node.value = this.get('value');
+            }
+
             node.placeholder = this.get('hint');
         }
 
@@ -51,6 +60,11 @@ Alto.TextField = Alto.CoreView.extend({
     },
 
     valueDidChange: function () {
+        if (Alto.isEmpty(this.get("value"))) {
+            this.node.value = '';
+            return
+        }
+
         this.node.value = this.get('value');
     }.observes('this.value')
 
