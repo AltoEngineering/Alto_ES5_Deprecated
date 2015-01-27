@@ -28,8 +28,8 @@ Alto.ImageView = Alto.CoreView.extend ({
      */
     viewDidLoad: function(node) {
         if (node) {
-            if (this.getPath("src")) {
-                node.src = this.getPath("src");
+            if (this.get("src")) {
+                node.src = this.get("src");
             }
         }
 
@@ -37,7 +37,7 @@ Alto.ImageView = Alto.CoreView.extend ({
     },
 
     srcDidChange: function() {
-        this.node.src = this.getPath("this.src");
+        this.node.src = this.get("this.src");
     }.observes('this.src')
 
 });
