@@ -20,12 +20,22 @@ Alto.Mapper = Alto.Object.create ({
         @method createRecordFromJson
         @param {String} recordInstance An instantiated version of a model class
         @param {String} json The json you will map to your record
+        @param {Alto.String} the type of formatting your record expects: ex (json key) foo_bar | (record key) fooBar
     */
-    createRecordFromJson: function (recordInstance, json) {
+    createRecordFromJson: function (recordInstance, json, stringFormat) {
+        if (stringFormat && !Alto.String[stringFormat]) {
+            Alto.Logger.error('unknown string format given.  Alto.String does not have a method called', stringFormat);
+            return;
+        }
 
         for(var key in json) {
             var value = json[key];
-            if (!Alto.none(recordInstance.getPath(key))) {
+
+            if (stringFormat && Alto.String[stringFormat]) {
+                key = Alto.String[stringFormat](key);
+            }
+
+            if (!Alto.isNone(recordInstance.get(key))) {
                 recordInstance.set(key, value);
             } else {
                 Alto.Console.log("Can not set missing property \"%@\" on model".fmt(key), Alto.Console.warnColor);
