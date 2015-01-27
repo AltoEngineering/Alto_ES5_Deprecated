@@ -9,13 +9,14 @@
  logic should be limitied to dealing with data.
 
  @module Data
- @class Alto.Controller
+ @class Alto.ObjectController
  @extends Alto.Object
  @since Alto 0.0.1
  @author Chad Eubanks
  */
 
-Alto.Controller = Alto.Object.extend ({
+Alto.ObjectController = Alto.Object.extend({
 
+    content: null
 
 });
