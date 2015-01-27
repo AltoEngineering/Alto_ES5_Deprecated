@@ -39,6 +39,17 @@ Alto.DomUtil = Alto.Object.create({
             var dom = document.getElementById(node.id);
             dom.appendChild(element);
         }
+    },
+
+    addElementToNodeBeforeNode: function (element, node, beforeNode) {
+
+        if (element == "") {return}
+
+        if (node === 'body') {
+            var dom = document.getElementsByTagName('body')[0];
+            dom.insertBefore(element, beforeNode);
+        }
+
     }
 
 });
