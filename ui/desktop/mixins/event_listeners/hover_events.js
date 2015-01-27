@@ -40,7 +40,7 @@ Alto.HoverEvents = Alto.Mixin.create ({
         if (view.target == 'this') {
             this[this.mouseDidEnterAction]()
         } else {
-            window[APP].Statechart.dispatchEvent(view.mouseDidEnterAction, this);
+            window[APP].statechart.dispatchEvent(view.mouseDidEnterAction, this);
         }
 
     },
@@ -51,13 +51,23 @@ Alto.HoverEvents = Alto.Mixin.create ({
         if (view.target == 'this') {
             this[this.mouseDidExitAction]()
         } else {
-            window[APP].Statechart.dispatchEvent(view.mouseDidExitAction, this);
+            window[APP].statechart.dispatchEvent(view.mouseDidExitAction, this);
         }
 
     },
 
-    _nodeListeningToMouseOverDidChange: function () {
-        this.addHoverHandler(this.node);
-    }.observes('this.node')
+    /*
+     Has the html elements and passes them to viewWillAppear().
+
+     We know about the html elements and can do some setup in here.
+     Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
+     */
+    viewDidLoad: function(node) {
+        if (node) {
+            this.addHoverHandler(node);
+        }
+
+        this._super(node);
+    }
 
 });
