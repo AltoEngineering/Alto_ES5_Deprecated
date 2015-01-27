@@ -32,6 +32,8 @@ Alto.CoreView = Alto.Object.extend({
 
     attachToNode: "",
 
+    attachBeforeNode: "",
+
     init: function () {
         this.viewWillLoad();
     },
@@ -87,8 +89,12 @@ Alto.CoreView = Alto.Object.extend({
      We add them to the dom and invokes viewDidAppear().
      */
     viewWillAppear: function (node) {
-        if (this.get('attachToNode') != "")
+        if (this.get('attachToNode') != "" && this.get('attachBeforeNode') === "") {
             Alto.DomUtil.addElementToNode(node, this.get('attachToNode'));
+        } else if (this.get('attachToNode') != "" && this.get('attachBeforeNode') != "") {
+            Alto.DomUtil.addElementToNodeBeforeNode(node, this.get('attachToNode'), this.get('attachBeforeNode'))
+        }
+
         this.viewDidAppear(node);
     },
 
