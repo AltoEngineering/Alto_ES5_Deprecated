@@ -14,7 +14,7 @@
  @author Chad Eubanks
  */
 
-Alto.Request = Alto.Object.extend ({
+Alto.Request = Alto.Object.extend({
 
     url: "",
 
@@ -26,17 +26,21 @@ Alto.Request = Alto.Object.extend ({
 
     xhr: new XMLHttpRequest(),
 
+    success: null,
+
+    error: null,
+
     /**
-        @method send
-    */
-    send: function() {
+     @method send
+     */
+    send: function () {
         this.xhr.send(this.get('data'));
     },
 
     /*
-        Do not override this method.
-    */
-    init: function() {
+     Do not override this method.
+     */
+    init: function () {
         this._open();
         this._super();
     },
@@ -46,7 +50,8 @@ Alto.Request = Alto.Object.extend ({
     _open: function () {
         this.xhr.open(this.get('httpMethod'), this.get('url'));
 
-        this._setRequestHeaders()
+        this._setRequestHeaders();
+        this._setHandler();
     },
 
     _setRequestHeaders: function () {
@@ -56,6 +61,21 @@ Alto.Request = Alto.Object.extend ({
         }
 
         this.send();
+    },
+
+    _setHandler: function () {
+        var self = this;
+        this.xhr.onreadystatechange = function(){self._handler(self);}
+    },
+
+    _handler: function () {
+        if (this.xhr.readyState == 4) {
+            if (this.xhr.status === 200) {
+                this.success();
+            } else {
+                this.error();
+            }
+        }
     }
 
 });
