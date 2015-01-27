@@ -14,13 +14,15 @@
  @author Chad Eubanks
  */
 
-Alto.ListView = Alto.CoreView.extend ({
+Alto.ListView = Alto.CoreView.extend (Alto.Array, {
+
+    childViews: [],
 
     tag: "ul",
 
-    cell: Alto.View.extend ({
-        tag: "li"
-    }),
+    cell: null,
+
+    data: null,
 
     /*
      Gets the template and passes html elements to viewDidLoad().
@@ -60,21 +62,25 @@ Alto.ListView = Alto.CoreView.extend ({
 
      */
     viewCreateSubViews: function() {
+        if (Alto.isEmpty(this.get('data'))){return}
 
         var n = 0,
-            children = this.get('childViews'),
-            Class = this.cell;
-        while (n < children.length) {
+            data = this.get('data'),
+            Cell = this.get('cell');
 
-            this.set(children[n], Class.create({parentView:  this, indexRow: n}));
+        while (n < data.length) {
 
-            this.node.appendChild(this[children[n]].node)
+            var cell = Cell.create({parentView: this, indexRow: n});
+
+            this.childViews.pushObject(cell);
+
+            this.node.appendChild(cell.node)
             n++;
         }
     },
 
     dataDidChange: function () {
-        if (this.data == "") {return}
+        if (!this.get('data')) {return}
 
         Alto.DomUtil.removeAllChildren(this.node);
 
