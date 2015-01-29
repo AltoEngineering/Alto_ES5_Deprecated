@@ -30,7 +30,6 @@ Alto.Checkbox = Alto.CoreView.extend ({
         var label = document.createElement('label'),
             input = document.createElement('input');
 
-
         this.viewDidLoad(label, input);
     },
 
@@ -50,7 +49,19 @@ Alto.Checkbox = Alto.CoreView.extend ({
             label.appendChild(input);
         }
 
+        this.addClickHandler(label);
+
         this._super(label);
+    },
+
+    addClickHandler: function(node) {
+        var that = this
+
+        node.addEventListener("change", function(){that.onChange(that) }, false);
+    },
+
+    onChange: function(view) {
+        this.set('isChecked', view.node.children[0].checked)
     }
 
 });
