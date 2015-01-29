@@ -91,6 +91,20 @@ Alto.ListView = Alto.CoreView.extend (Alto.Array, {
 
         this.set('childViews', childViews);
         this.viewCreateSubViews();
-    }.observes('this.data')
+    }.observes('this.data'),
+
+    dataObjectDidChange: function () {
+        if (!this.get('data')) {return}
+
+        Alto.DomUtil.removeAllChildren(this.node);
+
+        var childViews = [];
+        for (var i = 0, len = this.data.length; i < len; i++) {
+            childViews.push(i);
+        }
+
+        this.set('childViews', childViews);
+        this.viewCreateSubViews();
+    }.observes('this.data.length')
 
 })
