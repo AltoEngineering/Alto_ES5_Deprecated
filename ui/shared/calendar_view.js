@@ -121,7 +121,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             currentCalendarCell = this._calanderMatrix[count];
 
             currentCalendarCell.cell.innerHTML = '';
-            currentCalendarCell.cell.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+            currentCalendarCell.cell.style.backgroundColor = 'rgba(255, 255, 255, 1.0)';
 
             if (this.today.days[currentCalendarCell.column] === this.today.days[startDayOfTheMonth]) {
                 startDateFound = true;
