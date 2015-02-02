@@ -38,6 +38,9 @@ Alto.Date = Alto.Object.extend ({
 
     previousMonth: function (){
         return new Date (this.get('now').getFullYear(), this.get('now').getMonth() -1 );
-    }
+    },
 
+    formattedDateForDay: function(day) {
+        return new Date (this.get('now').getFullYear(), this.get('now').getMonth(),day);
+    }
 });
