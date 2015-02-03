@@ -7,28 +7,35 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
     selectedDate: null,
 
-    selection:null,
-
     _currentSelectedCell: null,
+
+    cellBackgroundColor: 'white',
+
+    cellBackgroundColorSelected: '#eaf4ff',
 
     viewWillLoad: function () {
         var calenderBaseView = document.createElement('div'),
             calenderHeaderView = document.createElement('div'),
+            calendarPreviousMonthButton = document.createElement('button'),
+            calendarNextMonthButton = document.createElement('button'),
             calenderHeaderTitleView = document.createElement('div'),
             monthYearLabel = document.createElement('div'),
             calendarTable = document.createElement('table');
 
-        this.set('selectedDate',this.today);// set current selection date with todays date on load.
-        this.viewDidLoad(calenderBaseView, calenderHeaderView, calenderHeaderTitleView, monthYearLabel, calendarTable);
+        this.set('selectedDate', this.today); // set current selection date with todays date on load.
+        this.viewDidLoad(calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable);
     },
 
-    viewDidLoad: function (calenderBaseView, calenderHeaderView, calenderHeaderTitleView, monthYearLabel, calendarTable) {
+    viewDidLoad: function (calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable) {
+        var that = this
 
         if (this.isFullScreen) {
             calenderBaseView.className += " alto-view-full-screen"
         }
 
         calenderHeaderView.className = "calendarHeaderView";
+        calendarPreviousMonthButton.className = "calendarPreviousMonthButton";
+        calendarNextMonthButton.className = "calendarNextMonthButton";
         calenderHeaderTitleView.className = "calenderHeaderTitleView";
         monthYearLabel.className = "monthYearLabel";
         calendarTable.className = "calendarTable";
@@ -37,7 +44,12 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
         this.set('monthYearLabel', monthYearLabel);
 
+        calendarPreviousMonthButton.addEventListener("click", function(){that._previousMonth(that) }, false);
+        calendarNextMonthButton.addEventListener("click", function(){that._nextMonth(that) }, false);
+
         calenderHeaderTitleView.appendChild(monthYearLabel);
+        calenderHeaderView.appendChild(calendarPreviousMonthButton);
+        calenderHeaderView.appendChild(calendarNextMonthButton);
         calenderHeaderView.appendChild(calenderHeaderTitleView);
 
         calendarTable = this._createCalendarDayHeader(calendarTable);
@@ -86,7 +98,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             this._calanderMatrix[count] = {};
 
             if (count === 0 || count % 7 === 0) {
-                count <= 6 ? row = 0 : row ++;
+                count <= 6 ? row = 0 : row++;
                 calendarWeekRow = document.createElement('tr');
             }
 
@@ -95,7 +107,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             }
 
             if (column <= 6) {
-                column ++
+                column++
             }
 
             calendarDayCell = document.createElement('td');
@@ -106,7 +118,9 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             this._calanderMatrix[count].column = column;
             this._calanderMatrix[count].cell = calendarDayCell;
 
-            if (column === 6) {column = -1;}
+            if (column === 6) {
+                column = -1;
+            }
             count++
         }
 
@@ -122,6 +136,8 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             currentCalendarCell,
             startDateFound = false;
 
+            this._calanderHTMLMatrix = {};
+
         var count = 0,
             dayCellCount = 7 * 6;
 
@@ -129,15 +145,16 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
             //hold reference to current scope
             var that = this;
-            var clickFunction = function(){
+            var _eventHandler = function (evt) {
+                if (evt.target.innerHTML === "") {return}
                 var date = that.selectedDate;
-                that.didSelectDate(this,date);
+                that.didSelectDate(evt, date);
             };
 
             currentCalendarCell = this._calanderMatrix[count];
 
             currentCalendarCell.cell.innerHTML = '';
-            currentCalendarCell.cell.style.backgroundColor = 'rgba(255, 255, 255, 1.0)';
+            currentCalendarCell.cell.style.backgroundColor = this.get('cellBackgroundColor');
 
             if (this.selectedDate.days[currentCalendarCell.column] === this.selectedDate.days[startDayOfTheMonth]) {
                 startDateFound = true;
@@ -145,14 +162,16 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
             if (startDateFound && startDateOfTheMonth <= endDateOfTheMonth) {
                 currentCalendarCell.cell.innerHTML = startDateOfTheMonth;
-                currentCalendarCell.cell.addEventListener('click',clickFunction,true);
+                currentCalendarCell.cell.addEventListener('click', _eventHandler, true);
+                this._calanderHTMLMatrix[startDateOfTheMonth] = {};
+                this._calanderHTMLMatrix[startDateOfTheMonth].cell = currentCalendarCell.cell;
 
                 if (todaysDate.date() === startDateOfTheMonth) {
-                    currentCalendarCell.cell.style.backgroundColor = 'transparent';
-                    this.set('_currentSelectedCell',currentCalendarCell.cell);
+                    currentCalendarCell.cell.style.backgroundColor = this.get('cellBackgroundColorSelected');
+                    this.set('_currentSelectedCell', currentCalendarCell.cell);
                 }
 
-                startDateOfTheMonth ++
+                startDateOfTheMonth++
             }
 
             count++
@@ -165,13 +184,12 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
     },
 
-    _nextMonth: function() {
-        var nextMonth = this.selectedDate.nextMonth();
-        this.set('_displayMonth', nextMonth);
+    _nextMonth: function (that) {
+        that.set('_displayMonth', that.selectedDate.nextMonth());
     },
 
-    _previousMonth: function () {
-        this.set('_displayMonth', this.selectedDate.previousMonth());
+    _previousMonth: function (that) {
+        that.set('_displayMonth', that.selectedDate.previousMonth());
     },
 
     _displayMonthDidChange: function () {
@@ -180,23 +198,24 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         this._updateMonthYearLabel();
     }.observes('this._displayMonth'),
 
-    didSelectDate: function (element, date) {
-        var selectedDate = element.innerHTML;
-        var jsDate       = date.formattedDateForDay(selectedDate);
-        var dateObject   = Alto.Date.create().set('now',jsDate); //we always want to use alto date object
+    didSelectDate: function (evt, date) {
+        var element = evt.target,
+            selectedDate = element.innerHTML,
+            jsDate = date.formattedDateForDay(selectedDate),
+            altoDateObject = Alto.Date.create().set('now', jsDate);
+
         this._updateSelectionForCell(element);
-        this.set('selectedDate',dateObject);
-        this.set('selection',jsDate);
+        this.set('selectedDate', altoDateObject);
     },
 
-    selectionDidChange: function () {
-    }.observes('this.selectedDate'),
-
-    _updateSelectionForCell: function(element) {
-        this.get('_currentSelectedCell').style.backgroundColor = 'rgba(255, 255, 255, 1.0)';
-        element.style.backgroundColor = 'transparent';
-        this.set('_currentSelectedCell',element);
+    _updateSelectionForCell: function (element) {
+        this.get('_currentSelectedCell').style.backgroundColor = this.get('cellBackgroundColor');
+        element.style.backgroundColor = this.get('cellBackgroundColorSelected');
+        this.set('_currentSelectedCell', element);
     },
 
-    _calanderMatrix: {}
+    _calanderMatrix: {},
+
+    _calanderHTMLMatrix: {}
+
 });
