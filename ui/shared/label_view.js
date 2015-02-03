@@ -34,7 +34,11 @@ Alto.LabelView = Alto.CoreView.extend({
             if (this.get('title')) {
                 node.innerHTML = this.get("title");
             } else if (this.get('titleValueKey') != null) {
-                node.innerHTML = this.parentView.data.get([this.get('titleValueKey')]);
+                if (this.parentView.data.get([this.get('titleValueKey')])) {
+                    node.innerHTML = this.parentView.data.get([this.get('titleValueKey')]);
+                } else {
+                    node.innerHTML = '';
+                }
             }
         }
 
