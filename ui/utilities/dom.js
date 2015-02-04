@@ -27,7 +27,7 @@ Alto.DomUtil = Alto.Object.create({
 
     removeView: function (instanceName) {
         var view = window[instanceName.split('.')[0]][instanceName.split('.')[1]];
-        view.node.parentNode.removeChild(node);
+        view.node.parentNode.removeChild(view.node);
         Alto.Object.destroyInstance(instanceName);
     },
 
