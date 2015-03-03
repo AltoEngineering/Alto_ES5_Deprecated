@@ -89,6 +89,7 @@ Alto.CoreView = Alto.Object.extend({
      We add them to the dom and invokes viewDidAppear().
      */
     viewWillAppear: function (node) {
+
         if (this.get('attachToNode') != "" && this.get('attachBeforeNode') === "") {
             Alto.DomUtil.addElementToNode(node, this.get('attachToNode'));
         } else if (this.get('attachToNode') != "" && this.get('attachBeforeNode') != "") {
@@ -141,7 +142,12 @@ Alto.CoreView = Alto.Object.extend({
         while (n < children.length) {
 
             if (!Alto.Object.detectInstance(this[children[n]])) {
-                this.set([children[n]], this[children[n]].create({parentView: this}));
+                if (!this[children[n]]) {
+                    Alto.Logger.error('Can not find child view: ',children[n])
+                    return;
+                } else {
+                    this.set([children[n]], this[children[n]].create({parentView: this}));
+                }
             }
 
             this.node.appendChild(this[children[n]].node)
