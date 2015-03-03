@@ -32,12 +32,12 @@ Alto.LabelView = Alto.CoreView.extend({
         if (node) {
 
             if (this.get('title')) {
-                node.innerHTML = this.get("title");
+                node.textContent = this.get("title");
             } else if (this.get('titleValueKey') != null) {
                 if (this.parentView.data.get([this.get('titleValueKey')])) {
-                    node.innerHTML = this.parentView.data.get([this.get('titleValueKey')]);
+                    node.textContent = this.parentView.data.get([this.get('titleValueKey')]);
                 } else {
-                    node.innerHTML = '';
+                    node.textContent = '';
                 }
             }
         }
@@ -47,11 +47,11 @@ Alto.LabelView = Alto.CoreView.extend({
 
     titleDidChange: function () {
         if (Alto.isEmpty(this.get("title"))) {
-            this.node.innerHTML = '';
+            this.node.textContent = '';
             return
         }
 
-        this.node.innerHTML = this.get("title");
+        this.node.textContent = this.get("title");
     }.observes('this.title')
 
 })
