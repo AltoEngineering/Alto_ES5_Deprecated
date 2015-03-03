@@ -95,7 +95,8 @@ Alto.Statechart = Alto.Object.extend({
         // enter the substate
         // set the statecharts current substate
         var APP = Alto.applicationName,
-            currentState  = window[APP].statechart.get("currentState");
+            currentState  = window[APP].statechart.get("currentState"),
+            currentSubstate = window[APP].statechart.get("currentSubState");
 
         if (window[APP][currentState][substate]) {
             window[APP][substate] =  window[APP][currentState][substate].create();
@@ -109,6 +110,19 @@ Alto.Statechart = Alto.Object.extend({
 
             window[APP][substate].enterState();
 
+        } else if (window[APP][currentSubstate][substate]) {
+            window[APP][substate] =  window[APP][currentSubstate][substate].create();
+
+            window[APP].statechart.leaveCurrentSubState();
+
+            window[APP].statechart.set("currentSubState", substate);
+
+            if (window[APP].LogStateTransitions) {
+                var message = "Entering substate " + window[APP].statechart.get("currentSubState");
+                Alto.Console.log(message, Alto.Console.messageColor);
+            }
+
+            window[APP][substate].enterState();
         } else {
             Alto.Logger.error('Substate', substate, 'not found in parent state');
         }
