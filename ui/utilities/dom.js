@@ -27,6 +27,9 @@ Alto.DomUtil = Alto.Object.create({
 
     removeView: function (instanceName) {
         var view = window[instanceName.split('.')[0]][instanceName.split('.')[1]];
+
+        if (!view) {Alto.Logger.error('A view instance by the name:', '`' + instanceName + '`', 'does not exist.'); return}
+
         view.node.parentNode.removeChild(view.node);
         Alto.Object.destroyInstance(instanceName);
     },
@@ -49,7 +52,6 @@ Alto.DomUtil = Alto.Object.create({
     },
 
     addElementToNodeBeforeNode: function (element, node, beforeNode) {
-
         if (element == "") {
             return
         }
