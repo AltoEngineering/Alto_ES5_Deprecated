@@ -14,11 +14,13 @@
  @author Chad Eubanks
  */
 
-Alto.Checkbox = Alto.CoreView.extend ({
+Alto.Checkbox = Alto.CoreView.extend({
 
     title: '',
 
     isChecked: false,
+
+    isEnabled: true,
 
     /*
      Gets the template and passes html elements to viewDidLoad().
@@ -39,7 +41,7 @@ Alto.Checkbox = Alto.CoreView.extend ({
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
-    viewDidLoad: function(label, input) {
+    viewDidLoad: function (label, input) {
         if (label && input) {
             input.type = 'checkbox';
             input.checked = this.get('isChecked');
@@ -54,14 +56,25 @@ Alto.Checkbox = Alto.CoreView.extend ({
         this._super(label);
     },
 
-    addClickHandler: function(node) {
+    addClickHandler: function (node) {
         var that = this
 
-        node.addEventListener("change", function(){that.onChange(that) }, false);
+        node.addEventListener("change", function () {
+            that.onChange(that)
+        }, false);
     },
 
-    onChange: function(view) {
-        this.set('isChecked', view.node.children[0].checked)
-    }
+    onChange: function (view) {
+
+        if (this.get('isEnabled')) {
+            this.set('isChecked', view.node.children[0].checked)
+        } else {
+            this.node.children[0].checked = this.get('isChecked');
+        }
+    },
+
+    _isCheckDidChange: function () {
+        this.node.children[0].checked = this.get('isChecked');
+    }.observes('this.isChecked')
 
 });
