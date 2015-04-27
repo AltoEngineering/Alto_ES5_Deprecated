@@ -36,7 +36,11 @@ Alto.Mapper = Alto.Object.create ({
             }
 
             if (!Alto.isNone(recordInstance.get(key))) {
-                recordInstance.set(key, value);
+                if (Alto.isNone(value)) { value = '' };
+
+                if (!recordInstance.__alto_meta__.descs[key]) {
+                    recordInstance.set(key, value);
+                }
             } else {
                 Alto.Console.log("Can not set missing property \"%@\" on model".fmt(key), Alto.Console.warnColor);
             }
