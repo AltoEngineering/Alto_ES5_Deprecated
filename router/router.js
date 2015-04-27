@@ -54,6 +54,24 @@ Alto.Router = Alto.Object.extend({
 
         path = this._cleansePath(path);
 
+        if (path.contains('?')) {
+            if (path.contains('/')) {
+                var cleansedPath = '#';
+
+                path = path.split('/');
+                path.pop();
+
+                path.forEach(function(pathString) {
+                    cleansedPath += '/' + pathString;
+                })
+
+                path = this._cleansePath(cleansedPath);
+            } else {
+                this._createIndexRouteObjectInstances();
+                return;
+            }
+        }
+
         while (count < path.split('/').length) {
             // the first iteration
             if (!propertyPath) {
