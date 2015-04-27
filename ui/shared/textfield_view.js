@@ -24,6 +24,8 @@ Alto.TextField = Alto.CoreView.extend({
 
     value: null,
 
+    isDefaultFocus: false,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -43,6 +45,10 @@ Alto.TextField = Alto.CoreView.extend({
 
             if (this.get('type')) {
                 node.type = this.get('type');
+            }
+
+            if (this.get('isDefaultFocus')) {
+                node.autofocus = true;
             }
 
             if (!Alto.isEmpty(this.get("value"))) {

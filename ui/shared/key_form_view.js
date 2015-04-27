@@ -77,7 +77,7 @@ Alto.KeyFormView = Alto.CoreView.extend({
         if (this.get('isPassword')) {
             formView.type = 'password'
         }
-
+        
         if (this.get('formType') === 'date') {
             formView.id = 'alto-date',
             formView.addEventListener("focus", function(){that.focus(that)}, false);
