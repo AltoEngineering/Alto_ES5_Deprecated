@@ -6,6 +6,8 @@ Alto.KeyFormView = Alto.CoreView.extend({
 
     formValue: null,
 
+    formType: null,
+
     keyLabelTitle: null,
 
     isDefaultFocus: false,
@@ -13,6 +15,8 @@ Alto.KeyFormView = Alto.CoreView.extend({
     _keyLabel: null,
 
     _formView: null,
+
+    isPassword: false,
 
     /*
      Gets the template and passes html elements to viewDidLoad().
@@ -70,6 +74,15 @@ Alto.KeyFormView = Alto.CoreView.extend({
             formView.autofocus = true;
         }
 
+        if (this.get('isPassword')) {
+            formView.type = 'password'
+        }
+
+        if (this.get('formType') === 'date') {
+            formView.id = 'alto-date',
+            formView.addEventListener("focus", function(){that.focus(that)}, false);
+        }
+
         keyLabelView.textContent = this.get('keyLabelTitle');
 
         node.appendChild(keyLabelView);
@@ -82,11 +95,18 @@ Alto.KeyFormView = Alto.CoreView.extend({
         this.set('formValue', _formView.value);
     },
 
+    focus: function (_formView) {
+        var APP = Alto.applicationName
+
+        window[APP].statechart.dispatchEvent(this._hackedDateAction);
+    },
     formValueDidChange: function () {
         if (Alto.isEmpty(this.get("formValue"))) {
             this.get('_formView').value = '';
             return
         }
+
+        if (this.get('_formView').value === this.get('formValue')) {return}
 
         this.get('_formView').value = this.get('formValue');
     }.observes('this.formValue')
