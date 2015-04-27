@@ -13,6 +13,8 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
     cellBackgroundColorSelected: '#eaf4ff',
 
+    saveAction: null,
+
     viewWillLoad: function () {
         var calenderBaseView = document.createElement('div'),
             calenderHeaderView = document.createElement('div'),
@@ -20,13 +22,14 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             calendarNextMonthButton = document.createElement('button'),
             calenderHeaderTitleView = document.createElement('div'),
             monthYearLabel = document.createElement('div'),
-            calendarTable = document.createElement('table');
+            calendarTable = document.createElement('table'),
+            saveButton = document.createElement('button');
 
         this.set('selectedDate', this.today); // set current selection date with todays date on load.
-        this.viewDidLoad(calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable);
+        this.viewDidLoad(calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable, saveButton);
     },
 
-    viewDidLoad: function (calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable) {
+    viewDidLoad: function (calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable, saveButton) {
         var that = this
 
         if (this.isFullScreen) {
@@ -39,6 +42,9 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         calenderHeaderTitleView.className = "calenderHeaderTitleView";
         monthYearLabel.className = "monthYearLabel";
         calendarTable.className = "calendarTable";
+        saveButton.classList.add("saveButton", "alto-text-button-main");
+
+        saveButton.textContent = "Save";
 
         monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
 
@@ -46,11 +52,13 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
         calendarPreviousMonthButton.addEventListener("click", function(){that._previousMonth(that) }, false);
         calendarNextMonthButton.addEventListener("click", function(){that._nextMonth(that) }, false);
+        saveButton.addEventListener("click", function(){that._saveCalendarDates(that) }, false);
 
         calenderHeaderTitleView.appendChild(monthYearLabel);
         calenderHeaderView.appendChild(calendarPreviousMonthButton);
         calenderHeaderView.appendChild(calendarNextMonthButton);
         calenderHeaderView.appendChild(calenderHeaderTitleView);
+        calenderHeaderView.appendChild(saveButton);
 
         calendarTable = this._createCalendarDayHeader(calendarTable);
         calendarTable = this._createCalendarDays(calendarTable);
@@ -190,6 +198,12 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
     _previousMonth: function (that) {
         that.set('_displayMonth', that.selectedDate.previousMonth());
+    },
+
+    _saveCalendarDates: function(that) {
+        var APP = Alto.applicationName
+
+        window[APP].statechart.dispatchEvent(this.get('saveAction', this));
     },
 
     _displayMonthDidChange: function () {
