@@ -32,13 +32,6 @@ Alto.Cookie = Alto.Object.extend({
 
     isCookie: true,
 
-    destroy: function () {
-        this.set('expires', -1);
-        this.write();
-
-        this._super();
-    },
-
     write: function () {
         var name = this.get('name'),
             value = this.get('value'),
@@ -50,9 +43,11 @@ Alto.Cookie = Alto.Object.extend({
             date;
 
         if (expires) {
-            if (typeof expires === 'number') {
+            if (typeof expires === 'number' && expires > 0) {
                 date = new Date();
                 date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
+            } else if (expires === 'expire') {
+                date = new Date("Januray 01, 1900 01:15:00");
             } else if (expires.toUTCString && expires.toUTCString.apply) {
                 date = expires;
             }
@@ -60,9 +55,9 @@ Alto.Cookie = Alto.Object.extend({
             if (date) output = "; expires=" + date.toUTCString();
         }
 
-        if (!Alto.none(path)) output += '; path=' + path;
-        if (!Alto.none(domain)) output += '; domain=' + domain;
-        if (secure === YES) output += '; secure';
+        if (!Alto.isNone(path)) output += '; path=' + path;
+        if (!Alto.isNone(domain)) output += '; domain=' + domain;
+        if (secure === true) output += '; secure';
 
         document.cookie = name + "=" + encodeURIComponent(value) + output;
 
@@ -71,7 +66,7 @@ Alto.Cookie = Alto.Object.extend({
 
 });
 
-Alto.Cookie.reopenClass ({
+Alto.Cookie.reopenClass({
 
     /**
      Finds a cookie that has been stored
@@ -83,7 +78,7 @@ Alto.Cookie.reopenClass ({
         if (document.cookie && document.cookie !== '') {
             var cookies = document.cookie.split(';');
             for (var i = 0; i < cookies.length; i++) {
-                var cookie =String(cookies[i]).trim();
+                var cookie = String(cookies[i]).trim();
                 if (cookie.substring(0, name.length + 1) === (name + "=")) {
                     return Alto.Cookie.create({
                         name: name,
