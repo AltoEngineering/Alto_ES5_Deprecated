@@ -36,14 +36,14 @@ Alto.KeyLabelView = Alto.CoreView.extend({
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
     viewDidLoad: function (node, keyTitleNode, labelTitleNode) {
-        var that = this;
+        var that = this,
+            n = 0,
+            classNames = this.get('keyTitleClassNames');
 
         node.className = "alto-key-label-view ";
         keyTitleNode.className = "key-title ";
         labelTitleNode.className = "label-title ";
 
-        var n = 0,
-            classNames = this.get('keyTitleClassNames');
         while (n < classNames.length) {
             keyTitleNode.className += keyTitleNode.className ? ' ' + classNames[n] : classNames[n];
             n++;
@@ -56,8 +56,15 @@ Alto.KeyLabelView = Alto.CoreView.extend({
             n++;
         }
 
+        n = 0;
+        classNames = this.get('classNames');
+        while (n < classNames.length) {
+            node.className += node.className ? ' ' + classNames[n] : classNames[n];
+            n++;
+        }
+
         if (!this.get('keyTitle')) {
-            keyTitleNode.textContent =  '';
+            keyTitleNode.textContent = '';
         } else {
             keyTitleNode.textContent = this.get('keyTitle');
         }
