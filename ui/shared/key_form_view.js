@@ -14,6 +14,10 @@ Alto.KeyFormView = Alto.CoreView.extend({
 
     _formView: null,
 
+    isPassword: false,
+
+    isRequired: false,
+
     /*
      Gets the template and passes html elements to viewDidLoad().
 
@@ -68,6 +72,14 @@ Alto.KeyFormView = Alto.CoreView.extend({
 
         if (this.get('isDefaultFocus')) {
             formView.autofocus = true;
+        }
+
+        if (this.get('isPassword')) {
+            formView.type = 'password'
+        }
+
+        if (this.get('isRequired')) {
+            formView.type = 'required'
         }
 
         keyLabelView.textContent = this.get('keyLabelTitle');
