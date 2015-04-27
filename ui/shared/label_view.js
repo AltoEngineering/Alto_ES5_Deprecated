@@ -31,7 +31,7 @@ Alto.LabelView = Alto.CoreView.extend({
     viewDidLoad: function (node) {
         if (node) {
 
-            if (this.get('title')) {
+            if (!Alto.isEmpty(this.get('title'))) {
                 node.textContent = this.get("title");
             } else if (this.get('titleValueKey') != null) {
                 if (this.parentView.data.get([this.get('titleValueKey')])) {
