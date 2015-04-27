@@ -13,6 +13,14 @@ Alto.Router = Alto.Object.extend({
     init: function () {
         this._super();
 
+        var that = this;
+
+        if (window.addEventListener) {
+            window.addEventListener("hashchange", this._hashDidChange, false);
+        } else if (window.attachEvent) {
+            window.attachEvent("hashchange", this._hashDidChange, false);
+        }
+
         if (location.hash === '') {
             this._createIndexRouteObjectInstances();
         } else {
@@ -43,12 +51,12 @@ Alto.Router = Alto.Object.extend({
             propertyPath,
             routeObject;
 
-        if (!e.newURL && e === '') {
+        if (e === '') {
             path = location.hash.substr(location.hash.indexOf('#'), location.hash.length);
-        } else if (e.newURL && location.hash == '') {
+        } else if (location.hash == '') {
             this._createIndexRouteObjectInstances();
             return;
-        } else {
+        } else if (e.newURL) {
             path = e.newURL.substr(e.newURL.indexOf('#'), e.newURL.length);
         }
 
@@ -99,7 +107,7 @@ Alto.Router = Alto.Object.extend({
     /**
      When a hash change occurs, invoke _findMatchingingResources();
      */
-    _hashDidChange: window.onhashchange = function (e) {
+    _hashDidChange: function (e) {
         window[Alto.applicationName].router._createCorrespondingObjectInstancesForRouteWithHash(e, true);
     },
 
@@ -148,7 +156,9 @@ Alto.Router = Alto.Object.extend({
     },
 
     _cleansePath: function (path) {
-
+        if (!path) {
+            return
+        }
         path = path.charAt(0) === '#' ? path.slice(1, path.length) : path;
         path = path.charAt(0) === '/' ? path.slice(1, path.length) : path;
 
@@ -163,9 +173,8 @@ Alto.Router = Alto.Object.extend({
         var router = window[Alto.applicationName].router,
             count = 0,
             propertyPath,
-            routeObject;
-
-        cleansedRoute = this._cleansePath(route);
+            routeObject,
+            cleansedRoute = this._cleansePath(route);
 
         while (count < cleansedRoute.split('/').length) {
 
@@ -194,11 +203,11 @@ Alto.Router = Alto.Object.extend({
         this._goToState(routeObject.state);
     },
 
-    pushRoute: function(route) {
+    pushRoute: function (route) {
         history.pushState('', '', route);
     },
 
-    replaceRoute: function(route) {
+    replaceRoute: function (route) {
         history.replaceState('', '', route);
     },
 
