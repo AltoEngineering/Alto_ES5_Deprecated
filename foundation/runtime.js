@@ -3124,7 +3124,7 @@
             function removeChainWatcher(obj, keyName, node) {
                 if (!obj || 'object' !== typeof obj) { return; } // nothing to do
 
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 if (m && !m.hasOwnProperty('chainWatchers')) { return; } // nothing to do
 
                 var nodes = m && m.chainWatchers;
@@ -3180,7 +3180,7 @@
             function lazyGet(obj, key) {
                 if (!obj) return undefined;
 
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 // check if object meant only to be a prototype
                 if (meta && meta.proto === obj) {
                     return undefined;
@@ -3433,7 +3433,7 @@
 
             function finishChains(obj) {
                 // We only create meta if we really have to
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 var chains, chainWatchers, chainNodes;
 
                 if (m) {
@@ -3578,7 +3578,7 @@
              @constructor
              */
             function ComputedProperty(func, opts) {
-                func.__ember_arity__ = func.length;
+                func.__alto_arity__ = func.length;
                 this.func = func;
 
                 this._dependentKeys = undefined;
@@ -3898,7 +3898,7 @@
                 // Check if the CP has been wrapped. If it has, use the
                 // length from the wrapped function.
 
-                funcArgLength = func.wrappedFunction ? func.wrappedFunction.__ember_arity__ : func.__ember_arity__;
+                funcArgLength = func.wrappedFunction ? func.wrappedFunction.__alto_arity__ : func.__alto_arity__;
 
                 // For backwards-compatibility with computed properties
                 // that check for arguments.length === 2 to determine if
@@ -4044,7 +4044,7 @@
              @return {Object} the cached value
              */
             function cacheFor(obj, key) {
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var cache = meta && meta.cache;
                 var ret = cache && cache[key];
 
@@ -5521,7 +5521,7 @@
             }
 
             function listenersUnion(obj, eventName, otherActions) {
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var actions = meta && meta.listeners && meta.listeners[eventName];
 
                 if (!actions) { return; }
@@ -5538,7 +5538,7 @@
             }
 
             __exports__.listenersUnion = listenersUnion;function listenersDiff(obj, eventName, otherActions) {
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var actions = meta && meta.listeners && meta.listeners[eventName];
                 var diffActions = [];
 
@@ -5629,7 +5629,7 @@
                 if (method) {
                     _removeListener(target, method);
                 } else {
-                    var meta = obj['__ember_meta__'];
+                    var meta = obj['__alto_meta__'];
                     var actions = meta && meta.listeners && meta.listeners[eventName];
 
                     if (!actions) { return; }
@@ -5732,7 +5732,7 @@
              @param obj
              */
             function watchedEvents(obj) {
-                var listeners = obj['__ember_meta__'].listeners, ret = [];
+                var listeners = obj['__alto_meta__'].listeners, ret = [];
 
                 if (listeners) {
                     for (var eventName in listeners) {
@@ -5766,7 +5766,7 @@
                 }
 
                 if (!actions) {
-                    var meta = obj['__ember_meta__'];
+                    var meta = obj['__alto_meta__'];
                     actions = meta && meta.listeners && meta.listeners[eventName];
                 }
 
@@ -5803,7 +5803,7 @@
              @param {String} eventName
              */
             function hasListeners(obj, eventName) {
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var actions = meta && meta.listeners && meta.listeners[eventName];
 
                 return !!(actions && actions.length);
@@ -5818,7 +5818,7 @@
              */
             function listenersFor(obj, eventName) {
                 var ret = [];
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var actions = meta && meta.listeners && meta.listeners[eventName];
 
                 if (!actions) { return ret; }
@@ -5858,7 +5858,7 @@
             function on(){
                 var func = a_slice.call(arguments, -1)[0];
                 var events = a_slice.call(arguments, 0, -1);
-                func.__ember_listens__ = events;
+                func.__alto_listens__ = events;
                 return func;
             }
 
@@ -7653,15 +7653,15 @@
                 var prev = obj[key];
 
                 if ('function' === typeof prev) {
-                    updateObserversAndListeners(obj, key, prev, '__ember_observesBefore__', removeBeforeObserver);
-                    updateObserversAndListeners(obj, key, prev, '__ember_observes__', removeObserver);
-                    updateObserversAndListeners(obj, key, prev, '__ember_listens__', removeListener);
+                    updateObserversAndListeners(obj, key, prev, '__alto_observesBefore__', removeBeforeObserver);
+                    updateObserversAndListeners(obj, key, prev, '__alto_observes__', removeObserver);
+                    updateObserversAndListeners(obj, key, prev, '__alto_listens__', removeListener);
                 }
 
                 if ('function' === typeof observerOrListener) {
-                    updateObserversAndListeners(obj, key, observerOrListener, '__ember_observesBefore__', addBeforeObserver);
-                    updateObserversAndListeners(obj, key, observerOrListener, '__ember_observes__', addObserver);
-                    updateObserversAndListeners(obj, key, observerOrListener, '__ember_listens__', addListener);
+                    updateObserversAndListeners(obj, key, observerOrListener, '__alto_observesBefore__', addBeforeObserver);
+                    updateObserversAndListeners(obj, key, observerOrListener, '__alto_observes__', addObserver);
+                    updateObserversAndListeners(obj, key, observerOrListener, '__alto_listens__', addListener);
                 }
             }
 
@@ -7906,7 +7906,7 @@
             MixinPrototype.detect = function(obj) {
                 if (!obj) { return false; }
                 if (obj instanceof Mixin) { return _detect(obj, this, {}); }
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 var mixins = m && m.mixins;
                 if (mixins) {
                     return !!mixins[guidFor(this)];
@@ -7950,7 +7950,7 @@
             // returns the mixins currently applied to the specified object
             // TODO: Make Alto.mixin
             Mixin.mixins = function(obj) {
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 var mixins = m && m.mixins;
                 var ret = [];
 
@@ -8062,7 +8062,7 @@
                     throw new Alto.Error("Alto.observer called without a function");
                 }
 
-                func.__ember_observes__ = paths;
+                func.__alto_observes__ = paths;
                 return func;
             }
 
@@ -8166,7 +8166,7 @@
                     throw new Alto.Error("Alto.beforeObserver called without a function");
                 }
 
-                func.__ember_observesBefore__ = paths;
+                func.__alto_observesBefore__ = paths;
                 return func;
             }
 
@@ -8742,7 +8742,7 @@
 
             __exports__.MANDATORY_SETTER_FUNCTION = MANDATORY_SETTER_FUNCTION;function DEFAULT_GETTER_FUNCTION(name) {
                 return function GETTER_FUNCTION() {
-                    var meta = this['__ember_meta__'];
+                    var meta = this['__alto_meta__'];
                     return meta && meta.values[name];
                 };
             }
@@ -8895,7 +8895,7 @@
              @return {void}
              */
             function propertyWillChange(obj, keyName) {
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 var watching = (m && m.watching[keyName] > 0) || keyName === 'length';
                 var proto = m && m.proto;
                 var desc = m && m.descs[keyName];
@@ -8933,7 +8933,7 @@
              @return {void}
              */
             function propertyDidChange(obj, keyName) {
-                var m = obj['__ember_meta__'];
+                var m = obj['__alto_meta__'];
                 var watching = (m && m.watching[keyName] > 0) || keyName === 'length';
                 var proto = m && m.proto;
                 var desc = m && m.descs[keyName];
@@ -9235,7 +9235,7 @@
                     return value;
                 }
 
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var desc = meta && meta.descs[keyName];
                 var ret;
 
@@ -9390,7 +9390,7 @@
                     return setPath(obj, keyName, value, tolerant);
                 }
 
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 var desc = meta && meta.descs[keyName];
                 var isUnknown, currentValue;
 
@@ -10607,7 +10607,7 @@
              @type String
              @final
              */
-            var GUID_KEY = intern('__ember' + (+ new Date()));
+            var GUID_KEY = intern('__alto' + (+ new Date()));
 
             var GUID_DESC = {
                 writable:    false,
@@ -10771,11 +10771,11 @@
              @return {Object} the meta hash for an object
              */
             function meta(obj, writable) {
-                var ret = obj['__ember_meta__'];
+                var ret = obj['__alto_meta__'];
                 if (writable===false) return ret || EMPTY_META;
 
                 if (!ret) {
-                    if (canDefineNonEnumerableProperties) o_defineProperty(obj, '__ember_meta__', META_DESC);
+                    if (canDefineNonEnumerableProperties) o_defineProperty(obj, '__alto_meta__', META_DESC);
 
                     ret = new Meta(obj);
 
@@ -10785,13 +10785,13 @@
                     }
 
 
-                    obj['__ember_meta__'] = ret;
+                    obj['__alto_meta__'] = ret;
 
                     // make sure we don't accidentally try to create constructor like desc
                     ret.descs.constructor = null;
 
                 } else if (ret.source !== obj) {
-                    if (canDefineNonEnumerableProperties) o_defineProperty(obj, '__ember_meta__', META_DESC);
+                    if (canDefineNonEnumerableProperties) o_defineProperty(obj, '__alto_meta__', META_DESC);
 
                     ret = o_create(ret);
                     ret.descs     = o_create(ret.descs);
@@ -10806,7 +10806,7 @@
                     }
 
 
-                    obj['__ember_meta__'] = ret;
+                    obj['__alto_meta__'] = ret;
                 }
                 return ret;
             }
@@ -10866,11 +10866,11 @@
 
                     if (!value) {
                         if (!writable) { return undefined; }
-                        value = _meta[keyName] = { __ember_source__: obj };
-                    } else if (value.__ember_source__ !== obj) {
+                        value = _meta[keyName] = { __alto_source__: obj };
+                    } else if (value.__alto_source__ !== obj) {
                         if (!writable) { return undefined; }
                         value = _meta[keyName] = o_create(value);
-                        value.__ember_source__ = obj;
+                        value.__alto_source__ = obj;
                     }
 
                     _meta = value;
@@ -10906,10 +10906,10 @@
                 }
 
                 superWrapper.wrappedFunction = func;
-                superWrapper.wrappedFunction.__ember_arity__ = func.length;
-                superWrapper.__ember_observes__ = func.__ember_observes__;
-                superWrapper.__ember_observesBefore__ = func.__ember_observesBefore__;
-                superWrapper.__ember_listens__ = func.__ember_listens__;
+                superWrapper.wrappedFunction.__alto_arity__ = func.length;
+                superWrapper.__alto_observes__ = func.__alto_observes__;
+                superWrapper.__alto_observesBefore__ = func.__alto_observesBefore__;
+                superWrapper.__alto_listens__ = func.__alto_listens__;
 
                 return superWrapper;
             }
@@ -11554,7 +11554,7 @@
             __exports__.watch = watch;
 
             function isWatching(obj, key) {
-                var meta = obj['__ember_meta__'];
+                var meta = obj['__alto_meta__'];
                 return (meta && meta.watching[key]) > 0;
             }
 
@@ -11583,9 +11583,9 @@
              @return {void}
              */
             function destroy(obj) {
-                var meta = obj['__ember_meta__'], node, nodes, key, nodeObject;
+                var meta = obj['__alto_meta__'], node, nodes, key, nodeObject;
                 if (meta) {
-                    obj['__ember_meta__'] = null;
+                    obj['__alto_meta__'] = null;
                     // remove chainWatchers to remove circular references that would prevent GC
                     node = meta.chains;
                     if (node) {
@@ -14463,7 +14463,7 @@
                         expandProperties(arguments[i], addWatchedProperty);
                     }
 
-                    this.__ember_observesBefore__ = watched;
+                    this.__alto_observesBefore__ = watched;
 
                     return this;
                 };
@@ -14491,7 +14491,7 @@
                  */
                 FunctionPrototype.on = function () {
                     var events = a_slice.call(arguments);
-                    this.__ember_listens__ = events;
+                    this.__alto_listens__ = events;
 
                     return this;
                 };
@@ -20213,7 +20213,7 @@
                  @param key {String} property name
                  */
                 metaForProperty: function(key) {
-                    var meta = this.proto()['__ember_meta__'];
+                    var meta = this.proto()['__alto_meta__'];
                     var desc = meta && meta.descs[key];
 
                     Alto.assert("metaForProperty() could not find a computed property with key '"+key+"'.", !!desc && desc instanceof ComputedProperty);
