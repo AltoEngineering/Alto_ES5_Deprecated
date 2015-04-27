@@ -77,7 +77,7 @@ Alto.CoreView = Alto.Object.extend({
             }
 
             if (!this.get('isVisible')) {
-                node.style.visibility = 'hidden';
+                node.style.display = 'none';
             }
 
             this.viewWillAppear(node);
@@ -146,7 +146,7 @@ Alto.CoreView = Alto.Object.extend({
                     Alto.Logger.error('Can not find child view: ',children[n])
                     return;
                 } else {
-                    this.set([children[n]], this[children[n]].create({parentView: this}));
+                    this.set([children[n]], this[children[n]].createWithMixins({parentView: this}));
                 }
             }
 
@@ -166,9 +166,9 @@ Alto.CoreView = Alto.Object.extend({
     //todo move this into view class
     isVisibleDidChange: function () {
         if (this.get('isVisible')) {
-            this.node.style.visibility = 'visible';
+            this.node.removeAttribute("style");
         } else {
-            this.node.style.visibility = 'hidden';
+            this.node.style.display = 'none';
         }
     }.observes('this.isVisible')
 
