@@ -74,6 +74,8 @@ Alto.PanelPane = Alto.CoreView.extend({
     },
 
     click: function(buttonView) {
+        if (Alto.isNone(this.get('cancelAction'))) {return}
+
         var APP = Alto.applicationName
         window[APP].statechart.dispatchEvent(this.get('cancelAction'));
     }
