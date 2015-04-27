@@ -22,6 +22,8 @@ Alto.Checkbox = Alto.CoreView.extend({
 
     isEnabled: true,
 
+    isRadio: false,
+
     /*
      Gets the template and passes html elements to viewDidLoad().
 
@@ -43,7 +45,7 @@ Alto.Checkbox = Alto.CoreView.extend({
      */
     viewDidLoad: function (label, input) {
         if (label && input) {
-            input.type = 'checkbox';
+            input.type = (this.get('isRadio')) ? 'radio' : 'checkbox';
             input.checked = this.get('isChecked');
 
             label.innerHTML = this.get('title');
@@ -72,6 +74,14 @@ Alto.Checkbox = Alto.CoreView.extend({
             this.node.children[0].checked = this.get('isChecked');
         }
     },
+
+    _isEnableDidChange: function () {
+        if (this.get('isEnabled')) {
+            this.node.removeAttribute('style');
+        } else {
+            this.node.style.opacity = 0.5;
+        }
+    }.observes('this.isEnabled'),
 
     _isCheckDidChange: function () {
         this.node.children[0].checked = this.get('isChecked');

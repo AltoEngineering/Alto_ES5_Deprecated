@@ -32,8 +32,12 @@ Alto.PanelPane = Alto.CoreView.extend({
         var that = this;
 
         node = document.createElement('div');
-        node.addEventListener("click", function(){that.click(that) }, false);
-        document.addEventListener("keyup", function() {window[Alto.applicationName]._keyResponder(event)}, false);
+        node.addEventListener("click", function () {
+            that.click(that)
+        }, false);
+        document.addEventListener("keyup", function () {
+            window[Alto.applicationName]._keyResponder(event)
+        }, false);
 
         this.viewDidLoad(node);
     },
@@ -69,7 +73,9 @@ Alto.PanelPane = Alto.CoreView.extend({
         var children = this.get('childViews');
 
         this.set([children[0]], this[children[0]].create({parentView: this}));
-        this[this.childViews[0]].node.addEventListener("click", function(){event.stopPropagation();}, false);
+        this[this.childViews[0]].node.addEventListener("click", function () {
+            event.stopPropagation();
+        }, false);
         this.node.appendChild(this[this.childViews[0]].node)
     },
 
