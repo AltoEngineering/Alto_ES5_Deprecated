@@ -60,6 +60,9 @@ Alto.TextField = Alto.CoreView.extend({
     },
 
     valueDidChange: function () {
+
+        if (this.node.value === this.get('value')) {return}
+
         if (Alto.isEmpty(this.get("value"))) {
             this.node.value = '';
             return
