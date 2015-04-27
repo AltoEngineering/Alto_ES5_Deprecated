@@ -70,7 +70,7 @@ Alto.Request = Alto.Object.extend({
 
     _handler: function () {
         if (this.xhr.readyState == 4) {
-            if (this.xhr.status === 200) {
+            if (this.xhr.status === 200 || this.xhr.status === 204) {
                 this.success();
             } else {
                 this.error();
