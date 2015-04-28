@@ -1,15 +1,58 @@
+// ==========================================================================
+// Project: Alto - JavaScript Application Framework
+// Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
+// ==========================================================================
+
+/**
+ `Alto.KeyLabelView` is a component for creating a label with an associated key.
+
+ @module UI
+ @class Alto.KeyFormView
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
+
 Alto.KeyLabelView = Alto.CoreView.extend({
 
+    /**
+     Generic title name for the key.
+     @property keyTitleClassNames
+     @type array
+     */
     keyTitleClassNames: [],
 
+    /**
+     Generic title name for the label.
+     @property labelTitleClassNames
+     @type array
+     */
     labelTitleClassNames: [],
 
+    /**
+     Value for the key.
+     @property keyTitle
+     @type String
+     */
     keyTitle: null,
 
+    /**
+     Value for the label.
+     @property labelTitle
+     @type String
+     */
     labelTitle: null,
 
+    /**
+     @property _keyTitleNode
+     */
     _keyTitleNode: null,
 
+    /**
+     @property _labelTitleNode
+     */
     _labelTitleNode: null,
 
     /*

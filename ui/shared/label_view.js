@@ -5,7 +5,8 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.Label` is a view component for placing text in a container. A label displays a single line of read-only text.
+ The text can be changed by the application, but a user cannot edit it directly.
 
  @module UI
  @class Alto.LabelView
@@ -18,6 +19,11 @@ Alto.LabelView = Alto.CoreView.extend({
 
     tag: "p",
 
+    /**
+     * The value of the label.
+     * @property title
+     * @type String
+     */
     title: null,
 
     titleValueKey: null,

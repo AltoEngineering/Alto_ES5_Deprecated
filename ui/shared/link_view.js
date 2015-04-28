@@ -17,8 +17,18 @@
 Alto.LinkView = Alto.CoreView.extend ({
 
     tag: "a",
+    /**
+     The complete path name for the destination of the link.
+     @property href
+     @type String
+     */
+    href: "",
 
-    href: '',
+    /**
+     Set the title of the link.
+     @property title
+     @type String
+     */
 
     title: "",
 

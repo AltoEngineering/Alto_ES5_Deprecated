@@ -19,17 +19,27 @@
 Alto.Statechart = Alto.Object.extend({
 
     /**
+     Current state the application is in.
      @property currentState
      */
     currentState: "",
 
     /**
+     Current substate the application is in.
      @property currentSubState
      */
     currentSubState: "",
 
     /**
+     Takes function parameter and executes that event.
+
+     Example:
+     ```javascript
+     window[APP].statechart.dispathEvent('function')
+     ```
      @method dispatchEvent
+     @param function
+     @type String
      */
     dispatchEvent: function (eventName) {
         var APP = Alto.applicationName,
@@ -55,7 +65,15 @@ Alto.Statechart = Alto.Object.extend({
     },
 
     /**
+     Leaves current state and routes to a new state.
+
+     Example:
+     ```javascript
+     window[APP].statechart.goToState('newState')
+     ```
      @method goToState
+     @type String
+     @param stateName
      */
     goToState: function (state) {
         var APP = Alto.applicationName;
@@ -88,7 +106,15 @@ Alto.Statechart = Alto.Object.extend({
     },
 
     /**
+     Leaves current substate (if present) and routes to new substate. Still retains parent state.
+
+     Example:
+     ```javascript
+     window[APP].statechart.goToSubState('newSubState')
+     ```
      @method goToSubState
+     @param substate
+     @type String
      */
     goToSubState: function (substate) {
         // check if the current state has the substate
@@ -129,6 +155,16 @@ Alto.Statechart = Alto.Object.extend({
 
     },
 
+    /**
+     Explicitly leaves current substate and will display to console. However, `leaveCurrentSubState` is implicitly
+     performed during `goToState` and `goToSubState` methods.
+
+     Example:
+     ```javascript
+     window[APP].statechart.leaveCurrentSubState();
+     ```
+     @method leaveCurrentSubState
+     */
     leaveCurrentSubState: function() {
         var APP = Alto.applicationName,
             substate = window[APP].statechart.get("currentSubState");

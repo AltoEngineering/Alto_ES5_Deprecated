@@ -1,21 +1,74 @@
+// ==========================================================================
+// Project: Alto - JavaScript Application Framework
+// Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
+// ==========================================================================
+
+/**
+ `Alto.KeyFormView` is a component for creating a form with an associated key.
+
+ @module UI
+ @class Alto.KeyFormView
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
 Alto.KeyFormView = Alto.CoreView.extend({
 
+    /**
+     * Naming of the key label. Can use multiple class names.
+     @property keyLabelClassNames
+     @type array
+     */
     keyLabelClassNames: [],
 
+    /**
+     * Naming of the form. Can use multiple class names.
+     @property formViewClassNames
+     @type array
+     */
     formViewClassNames: [],
 
+    /**
+     * The value of the input.
+     @property formValue
+     */
     formValue: null,
 
+    /**
+     @property formType
+     */
     formType: null,
 
+    /**
+     * Value of the key.
+     @property keyLabelTitle
+     */
     keyLabelTitle: null,
 
+    /**
+     * Sets the form to receive input when the view is loaded.
+     @property isDefaultFocus
+     @type boolean
+     */
     isDefaultFocus: false,
 
+    /**
+     @property _keyLabel
+     */
     _keyLabel: null,
 
+    /**
+     @property _formView
+     */
     _formView: null,
 
+    /**
+     * Captures the input string and displays the sensored string.
+     @property isPassword
+     @type boolean
+     */
     isPassword: false,
 
     /*
@@ -100,6 +153,7 @@ Alto.KeyFormView = Alto.CoreView.extend({
 
         window[APP].statechart.dispatchEvent(this._hackedDateAction);
     },
+
     formValueDidChange: function () {
         if (Alto.isEmpty(this.get("formValue"))) {
             this.get('_formView').value = '';

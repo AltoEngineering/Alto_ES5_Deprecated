@@ -5,7 +5,17 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.TextArea` is a class used to create a text area where an event handler is created to update on any changes.
+ If nothing has been inputted, the default value is empty.
+
+ One example of usage:
+
+ ```javascript
+ sampleTextArea: Alto.TextArea.extend({
+        hint: ""           //shows text inside the text area
+        value: null        //set the value inside the text area
+ })
+ ```
 
  @module UI
  @class Alto.TextArea
@@ -18,8 +28,18 @@ Alto.TextArea = Alto.CoreView.extend({
 
     tag: 'textarea',
 
+    /**
+     The result of the input value.
+     @property value
+     @type String
+     */
     value: '',
 
+    /**
+     Provides a hint towards the content of the text area.
+     @property hint
+     @type String
+     */
     hint: '',
 
     /*

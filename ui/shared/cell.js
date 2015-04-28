@@ -18,6 +18,10 @@ Alto.Cell = Alto.CoreView.extend ({
 
     tag: 'li',
 
+    /**
+     Index of cell at a particular row in a list.
+     @property indexRow
+     */
     indexRow: "",
 
     /*

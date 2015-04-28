@@ -5,7 +5,17 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.HoverEvents` is a mixin that listens for any mouse action. Alto objects on hover will start the
+ `mouseDidEnterAction` and `mouseDidExitAction` when the mouse leaves the object region.
+
+ One example of usage:
+
+ ```javascript
+showDeleteOnHover: Alto.View.extend(Alto.HoverEvents, ({
+    mouseDidEnterAction: 'foo',                         //run foo function when mouse is hovered on object
+    mouseDidExitAction: 'bar',                          //run bar function when mouse is not hovered on object
+})
+ ```
 
  @module UI
  @class Alto.HoverEvents
@@ -17,8 +27,20 @@
 
 Alto.HoverEvents = Alto.Mixin.create ({
 
+    /**
+     Behavior function when mouse enters region.
+
+     @method mouseDidEnterAction
+     @param function
+     */
     mouseDidEnterAction: 'mouseDidEnter',
 
+    /**
+     Behavior function when mouse leaves the region.
+
+     @method mouseDidExitAction
+     @param function
+     */
     mouseDidExitAction: 'mouseDidExit',
 
     /*

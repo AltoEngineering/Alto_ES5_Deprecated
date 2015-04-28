@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- A textfield for searching.
+ `Alto.SearchField` is a component for building generic and custom search fields.
 
  @module UI
  @class Alto.SearchField
@@ -16,10 +16,25 @@
 
 Alto.SearchField = Alto.CoreView.extend({
 
+    /**
+     Provides a hint toward the intended use for search.
+     @property hint
+     @type String
+     */
     hint: '',
 
+    /**
+     Input value of the search
+     @property value
+     @type String
+     */
     value: '',
 
+    /**
+     Add icon next to search field for customization. Provide path name in project or valid URL.
+     @property searchIcon
+     @type String
+     */
     searchIcon: '',
 
     /*

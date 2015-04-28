@@ -5,7 +5,19 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.Checkbox` is an instance that defaults to a checkbox. Setting the boolean isRadio to true is used when there is a list of two
+ or more options that are mutually exclusive and the user must select exactly one choice. The property isEnabled will
+ set the checkbox value prior to usage in a Alto view.
+
+ A simple example of usage:
+
+ ```javascript
+ sampleCheckbox: Alto.Checkbox.extend({
+    title: 'Sample Checkbox',
+    isRadio: true,
+    isEnabled: true                     //checkbox set to display as checked
+ })
+ ```
 
  @module UI
  @class Alto.Checkbox
@@ -16,12 +28,36 @@
 
 Alto.Checkbox = Alto.CoreView.extend({
 
+    /**
+     Sets the title of the button.
+
+     @property title
+     @type String
+     */
     title: '',
 
+    /**
+     Sets the checkbox label to be checked.
+
+     @property isChecked
+     @type boolean
+     */
     isChecked: false,
 
+    /**
+     Checkbox label is enabled for the view.
+
+     @property isEnabled
+     @type boolean
+     */
     isEnabled: true,
 
+    /**
+     Sets the checkbox to a radio style checkbox.
+
+     @property isRadio
+     @type boolean
+     */
     isRadio: false,
 
     /*

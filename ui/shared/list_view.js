@@ -5,7 +5,17 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.ListView` is an instance that creates an unordered list. Each list view has a cell,
+ which can bind to the data property and be independet from any other cells in the list.
+
+ One example of usage:
+
+ ```javascript
+ sampleList: Alto.ListView.extend({
+        cell: Alto.Cell.extend({})
+        data: "ApplicationName.ApplicationController.content"
+ })
+ ```
 
  @module UI
  @class Alto.ListView
@@ -16,12 +26,27 @@
 
 Alto.ListView = Alto.CoreView.extend (Alto.Array, {
 
+    /**
+     Any child views associated to the list.
+     @property childViews
+     @type array
+     */
     childViews: [],
 
     tag: "ul",
 
+    /**
+     Individual cell for each item in the list
+     @property cell
+     @type object
+     */
     cell: null,
 
+    /**
+     The information that the list will bind to.
+     @property data
+     @type object
+     */
     data: null,
 
     /*

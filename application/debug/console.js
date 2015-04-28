@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
-    Gives logging to your console some color.
+    `Alto.Console` is the root class for displaying messages in the console log. Warnings/errors are defaulted to red, while messages are black.
 
  @module Application
  @class Alto.Console

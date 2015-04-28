@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.DialoguePane` creates a instance of a div pane that can be used as a root view.
 
  @module UI
  @class Alto.DialoguePane

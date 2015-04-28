@@ -1,18 +1,46 @@
 Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
     classNames: ['calendar-base-view'],
 
+    /**
+     Table that displays the entire calender.
+     @property calendarTable
+     */
     calendarTable: null,
 
+    /**
+     Shows the current month and year that is displayed.
+     @property monthYearLabel
+     @type String
+     */
     monthYearLabel: null,
 
+    /**
+     Date that was selected
+     @property selectedDate
+     */
     selectedDate: null,
 
+    /**
+     The current cell that is currently selected.
+     @property _currentSelectedCell
+     */
     _currentSelectedCell: null,
 
+    /**
+     The background color of the calender cells.
+     @property cellBackgroundColor
+     */
     cellBackgroundColor: 'white',
 
+    /**
+     The background colof of the selected calender cell.
+     @property cellBackgroundColorSelected
+     */
     cellBackgroundColorSelected: '#eaf4ff',
 
+    /**
+     @property saveAction
+     */
     saveAction: null,
 
     viewWillLoad: function () {
@@ -73,6 +101,12 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         this._super(calenderBaseView);
     },
 
+    /**
+     * @method _createCalendarDayHeader
+     * @param calendarTable
+     * @returns {*}
+     * @private
+     */
     _createCalendarDayHeader: function (calendarTable) {
         var calendarDayHeaderRow = document.createElement('tr'),
             calendarDayHeaderCell,
@@ -94,6 +128,12 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
     },
 
+    /**
+     * @method _createCalendarDays
+     * @param calendarTable
+     * @returns {*}
+     * @private
+     */
     _createCalendarDays: function (calendarTable) {
         var count = 0,
             dayCellCount = 7 * 6,
@@ -135,6 +175,13 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         return calendarTable;
     },
 
+    /**
+     *
+     * @param startRange
+     * @param today
+     * @param endRange
+     * @private
+     */
     _populateCalendarDaysWithDate: function (startRange, today, endRange) {
         var startDateOfTheMonth = startRange.getDate(),
             startDayOfTheMonth = startRange.getDay(),
@@ -187,19 +234,31 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
     },
 
+    /**
+     * @method _updateMonthYearLabel
+     */
     _updateMonthYearLabel: function () {
         var monthYearLabel = this.get('monthYearLabel');
         monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
     },
 
+    /**
+     * @method _nextMonth
+     */
     _nextMonth: function (that) {
         that.set('_displayMonth', that.selectedDate.nextMonth());
     },
 
+    /**
+     * @method _previousMonth
+     */
     _previousMonth: function (that) {
         that.set('_displayMonth', that.selectedDate.previousMonth());
     },
 
+    /**
+     * @method _saveCalendarDates
+     */
     _saveCalendarDates: function(that) {
         var APP = Alto.applicationName
 
@@ -212,6 +271,11 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         this._updateMonthYearLabel();
     }.observes('this._displayMonth'),
 
+    /**
+     * @method didSelectDate
+     * @param event
+     * @param date
+     */
     didSelectDate: function (evt, date) {
         var element = evt.target,
             selectedDate = element.innerHTML,
@@ -222,11 +286,16 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         this.set('selectedDate', altoDateObject);
     },
 
+    /**
+     * @method _updateSelectionForCell
+     * @param element
+     */
     _updateSelectionForCell: function (element) {
         this.get('_currentSelectedCell').style.backgroundColor = this.get('cellBackgroundColor');
         element.style.backgroundColor = this.get('cellBackgroundColorSelected');
         this.set('_currentSelectedCell', element);
     },
+
 
     _calanderMatrix: {},
 

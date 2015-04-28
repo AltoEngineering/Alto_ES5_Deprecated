@@ -5,7 +5,9 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+`Alto.CoreView` is the root view of all view instances. Every class you use or write inherits the instance methods of
+ `Alto.Object`. You may not need to use any of these methods, but, if you choose to do so, you may need to override
+ them with code that is specific to your class.
 
  @module UI
  @class Alto.CoreView
@@ -38,11 +40,13 @@ Alto.CoreView = Alto.Object.extend({
         this.viewWillLoad();
     },
 
-    /*
+    /**
      Gets the template and passes html elements to viewDidLoad().
 
      We dont know anything about the html elements nor should
      we make that assumption.
+
+     @method viewWillLoad
      */
     viewWillLoad: function () {
         if (this.get("tag") == '') {
@@ -55,11 +59,13 @@ Alto.CoreView = Alto.Object.extend({
         this.viewDidLoad(node);
     },
 
-    /*
+    /**
      Has the html elements and passes them to viewWillAppear().
 
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
+
+     @method viewDidLoad
      */
     viewDidLoad: function (node) {
         node ? node : node = document.createElement(this.get("tag"));
@@ -84,9 +90,10 @@ Alto.CoreView = Alto.Object.extend({
         }
     },
 
-    /*
+    /**
      With our html elements all setup and ready to go.
      We add them to the dom and invokes viewDidAppear().
+     @method viewWillAppear
      */
     viewWillAppear: function (node) {
 
@@ -99,16 +106,18 @@ Alto.CoreView = Alto.Object.extend({
         this.viewDidAppear(node);
     },
 
-    /*
+    /**
      Our html is now on the dom and can be queried.
+     @method viewDidAppear
      */
     viewDidAppear: function (html) {
         this.set("node", html);
         this.viewCreateSubViews();
     },
 
-    /*
+    /**
      Removes elements from the dom.
+     @method viewWillDisappear
      */
     viewWillDisappear: function () {
         var n = 0,
@@ -126,15 +135,16 @@ Alto.CoreView = Alto.Object.extend({
         this.viewDidDisappear();
     },
 
-    /*
+    /**
      Nothing is left on the dom.
+     @method viewDidDisappear
      */
     viewDidDisappear: function () {
     },
 
-    /*
-     Create the views subviews
-
+    /**
+     Create the views subviews.
+    @method viewCreateSubViews
      */
     viewCreateSubViews: function () {
         var n = 0,

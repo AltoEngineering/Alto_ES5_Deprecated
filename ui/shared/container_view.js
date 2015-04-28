@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+`Alto.ContainerView` is an instance that creates a container on the DOM with a specific container id.
 
  @module UI
  @class Alto.ContainerView
@@ -19,6 +19,10 @@ Alto.ContainerView = Alto.CoreView.extend ({
 
     tag: "div",
 
+    /**
+     * Main view that will be used to create the container.
+     * @property rootView
+     */
     rootView: "",
 
     rootViewDidChange: function() {

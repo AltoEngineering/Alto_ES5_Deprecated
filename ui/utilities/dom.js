@@ -5,7 +5,8 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.DomUtil` provides utility functions to work with the DOM tree. This works directly with a parent class to
+ remove/add any elements, views, or nodes.
 
  @submodule DomUitl
  @class Alto.DomUtil
@@ -16,15 +17,30 @@
 
 Alto.DomUtil = Alto.Object.create({
 
+    /**
+     Removes all children nodes from parent class.
+     @method removeAllChildren
+     @param element
+     */
     removeAllChildren: function (element) {
         if (!element.firstChild) return;
         while (element.firstChild) element.removeChild(element.firstChild);
     },
 
+    /**
+     Removes a child node from parent class.
+     @method removeNodeFromParent
+     @param element
+     */
     removeNodeFromParent: function (node, parent) {
         node.parentNode.removeChild(node);
     },
 
+    /**
+     Destroys an instance of a parent view.
+     @method removeView
+     @param element
+     */
     removeView: function (instanceName) {
         var view = window[instanceName.split('.')[0]][instanceName.split('.')[1]];
 
@@ -34,6 +50,11 @@ Alto.DomUtil = Alto.Object.create({
         Alto.Object.destroyInstance(instanceName);
     },
 
+    /**
+     Add child element to another node
+     @method addElementToNode
+     @param element
+     */
     addElementToNode: function (element, node) {
 
         if (element == "") {
@@ -51,6 +72,11 @@ Alto.DomUtil = Alto.Object.create({
         }
     },
 
+    /**
+     Add element to parent node.
+     @method addElementToNodeBeforeNode
+     @param element
+     */
     addElementToNodeBeforeNode: function (element, node, beforeNode) {
         if (element == "") {
             return

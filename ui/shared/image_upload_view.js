@@ -1,19 +1,54 @@
+
+
+
 Alto.ImageUploadView = Alto.CoreView.extend({
 
+    /**
+     * Label of the image.
+     @property label
+     */
     label: null,
 
+    /**
+     * Title of the image upload.
+     @property title
+     */
     title: null,
 
+    /**
+     * Contents of the label being uploaded.
+     @property form
+     */
     form: null,
 
-    formName: null,
+    /**
+     * Name of form being sent.
+     @property formName
+     */
+    formName: 'image-upload',
 
+    /**
+     * Contents of the image being uploaded.
+     @property input
+     */
     input: null,
 
+    /**
+     * Full source path of the image.
+     @property image
+     */
     image: null,
 
+    /**
+     * Full source path of the image in base 64 encoding.
+     @property uploadedImage
+     */
     uploadedImage: null,
 
+    /**
+     * Entire form of image data.
+     @property formData
+     */
     formData: null,
 
     viewWillLoad: function () {

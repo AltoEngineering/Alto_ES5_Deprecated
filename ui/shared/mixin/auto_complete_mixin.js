@@ -5,7 +5,9 @@
 // ==========================================================================
 
 /**
- Adds autocompletion to textfields.
+ `Alto.AutoCompleteMixin` is a mixin that will help in textfield completion. The mixin take the value of the form
+ while not empty to convert all characters to uppercase. With built in regex, it compares it to the `autoCompleteData`
+ property and adds it to the `matches` array object.
 
  @module UI
  @class Alto.AutoCompleteMixin

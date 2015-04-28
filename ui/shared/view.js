@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.View` creates a node that has a fullscreen property to set as the root view.
 
  @module UI
  @class Alto.View
@@ -18,6 +18,11 @@ Alto.View = Alto.CoreView.extend ({
 
     tag: "div",
 
+    /**
+     * Sets the view to be fullscreen.
+     * @property isFullScreen
+     * @type boolean
+     */
     isFullScreen: false,
 
     data: '',

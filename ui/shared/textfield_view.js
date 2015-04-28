@@ -5,7 +5,19 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.TextField` is a class used to create text inputs where an event handler is created to update on any changes.
+ If nothing has been inputted, the default value is empty.
+
+ One example of usage:
+
+ ```javascript
+ sampleTextField: Alto.TextField.extend({
+        hint: ""                   //shows text inside the text field
+        isPassword: false          //sensors any input inside the text field
+        value: null                //set the value inside the text field
+        isDefaultFocus: false      //will focus on the text field when first loaded
+ })
+ ```
 
  @module UI
  @class Alto.TextField
@@ -18,12 +30,33 @@ Alto.TextField = Alto.CoreView.extend({
 
     tag: 'input',
 
+    /**
+     Provides a hint towards the content of the text field.
+     @property hint
+     @type String
+     */
     hint: "",
 
+    /**
+     Stores the <input> string from `value` while displaying sensored characters.
+     @property isPassword
+     @type boolean
+     @default single dot per character
+     */
     isPassword: false,
 
+    /**
+     The result of the input value.
+     @property value
+     @type String
+     */
     value: null,
 
+    /**
+     Specifies that an <input> element should automatically get focus when the view loads.
+     @property isDefaultFocus
+     @type boolean
+     */
     isDefaultFocus: false,
 
     /*

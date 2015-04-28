@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.ClickEvents` gives the functionality that an object executes an action upon click selection.
 
  @module UI
  @class Alto.ClickEvents
@@ -16,13 +16,25 @@
 
 Alto.ClickEvents = Alto.Mixin.create({
 
-    /*
-     Action is the method to be called when a click event is fired.
+    /**
+     Dispatch the function to be called when a click event is fired.
+     @property clickAction
+     @type String
      */
     clickAction: '',
 
+    /**
+     Dispatch  function once the object has been selected.
+     @property selection
+     @type String
+     */
     selection: '',
 
+    /**
+     Set if click events are enabled.
+     @property isEnabled
+     @type boolean
+     */
     isEnabled: true,
 
     /*

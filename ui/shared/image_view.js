@@ -5,7 +5,7 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ `Alto.ImageView` is a component for uploading an image into your project. You can either use a local file or valid URL.
 
  @module UI
  @class Alto.ImageView
@@ -18,6 +18,11 @@ Alto.ImageView = Alto.CoreView.extend ({
 
     tag: "img",
 
+    /**
+     * Full path source image used to display image.
+     * @property src
+     * @type String
+     */
     src: "",
 
     /*

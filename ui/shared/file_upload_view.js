@@ -1,29 +1,99 @@
+// ==========================================================================
+// Project: Alto - JavaScript Application Framework
+// Copyright: @2014 The Code Boutique, LLC
+// License:   Intellectual property of The Code Boutique. LLC
+// ==========================================================================
+
+/**
+ `Alto.FileUploadView` is a component for uploading an image with server support. This instance take the provided image
+ and encodes it into a base 64 format for previewing images while also creating a file form that can be sent
+ via network call.
+
+ Tip: use "`formEnctype: multipart/form-data`" for network calls requiring a file upload format.
+
+ @module UI
+ @class Alto.FileUploadView
+ @extends Alto.CoreView
+ @since Alto 0.0.1
+ @author Chad Eubanks
+ */
+
+
 Alto.FileUploadView = Alto.CoreView.extend({
 
     // form api
+
+    /**
+     * Request command to server for sending the image.
+     @property formMethod
+     @default POST
+     */
     formMethod: 'post',
 
+    /**
+     * Value of the form.
+     @property form
+     */
     form: null,
 
+    /**
+     * Encrpytion type of the form.
+     @property formEnctype
+     */
     formEnctype: null,
 
+    /**
+     *
+     @property formName
+     */
     formName: null,
 
     // label api
+
+    /**
+     *
+     @property title
+     */
     title: null,
 
+    /**
+     *
+     @property label
+     */
     label: null,
 
     // input file type api
+
+    /**
+     *
+     @property input
+     */
     input: null,
 
+    /**
+     *
+     @property inputName
+     */
     inputName: null,
 
     // upload button
+
+    /**
+     * Button used to activate the drop down for file selection.
+     @property uploadButton
+     */
     uploadButton: null,
 
+    /**
+     * Upon selecting a file, executes a subsequent action function.
+     @property action
+     */
     action: null,
 
+    /**
+     * Private variable that stores all the form data.
+     @property _formData
+     */
     _formData: null,
 
 
