@@ -24,39 +24,39 @@
  @author Chad Eubanks
  */
 
-Alto.Application = Alto.Object.extend ({
+Alto.Application = Alto.Object.extend({
 
     /**
-        @property NAMESPACE
-        @type String
-        @description The value for namespace needs to match the name assigned to the instance of Alto.Application.
-        Internally, Alto uses the value for namespace to setup your application during initialization and during event
-        handling.
+     @property NAMESPACE
+     @type String
+     @description The value for namespace needs to match the name assigned to the instance of Alto.Application.
+     Internally, Alto uses the value for namespace to setup your application during initialization and during event
+     handling.
 
-        **Example:**
-        <pre class="code prettyprint prettyprinted">
-            <code>App = Alto.Application.create ({
+     **Example:**
+     <pre class="code prettyprint prettyprinted">
+     <code>App = Alto.Application.create ({
                 NAMESPACE: 'App'
             });
-            </code>
-        </pre>
-    */
+     </code>
+     </pre>
+     */
     NAMESPACE: '',
 
     /**
-        @property VERSION
-        @type String
-        @description Keeps track of your application version.
+     @property VERSION
+     @type String
+     @description Keeps track of your application version.
      */
     VERSION: '',
 
     /**
-        @property LogStateTransitions
-        @type Bool
-        @description When set to true, as an Alto application enters and exists a state. A message will print to your
-        web console.
-        @default true
-    */
+     @property LogStateTransitions
+     @type Bool
+     @description When set to true, as an Alto application enters and exists a state. A message will print to your
+     web console.
+     @default true
+     */
     LogStateTransitions: true,
 
     /**
@@ -68,19 +68,23 @@ Alto.Application = Alto.Object.extend ({
     LogMessages: true,
 
     init: function () {
+        this._super();
+
         Alto.applicationName = this.NAMESPACE;
         this.applicationWillLoad();
-        this._super();
     },
 
     /**
      @method applicationWillLoad
      */
-    applicationWillLoad: function () {},
+    applicationWillLoad: function () {
+
+    },
 
     /**
      @method applicationDidLoad
      */
-    applicationDidLoad: function () {}
+    applicationDidLoad: function () {
+    }
 
 });

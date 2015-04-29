@@ -26,7 +26,7 @@
  @author Chad Eubanks
  */
 
-Alto.TextField = Alto.CoreView.extend({
+Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
 
     tag: 'input',
 
@@ -72,12 +72,11 @@ Alto.TextField = Alto.CoreView.extend({
                 that.inputDidChange(that)
             }, false);
 
-            if (this.get('isPassword')) {
-                node.type = "password";
-            }
-
             if (this.get('type')) {
+                var activeFormsLookup = Alto.formValidationContainer.get('activeFormsLookup');
+
                 node.type = this.get('type');
+                activeFormsLookup[Alto.guidFor(this)] = this;
             }
 
             if (this.get('isDefaultFocus')) {
@@ -96,10 +95,17 @@ Alto.TextField = Alto.CoreView.extend({
 
     inputDidChange: function (textField) {
         this.set('value', textField.node.value);
+
+        if (!Alto.isEmpty(this.get('type'))) {
+            var formType = this.get('type'),
+                validateMethod = '_validate' + Alto.String.capitalize(formType);
+
+            this[validateMethod](this.get('value'));
+        }
+
     },
 
     valueDidChange: function () {
-
         if (this.node.value === this.get('value')) {return}
 
         if (Alto.isEmpty(this.get("value"))) {
@@ -107,7 +113,14 @@ Alto.TextField = Alto.CoreView.extend({
             return
         }
 
+        if (!Alto.isEmpty(this.get('type'))) {
+            var formType = this.get('type'),
+                validateMethod = '_validate' + Alto.String.capitalize(formType);
+
+            this[validateMethod](this.get('value'));
+        }
+
         this.node.value = this.get('value');
     }.observes('this.value')
 
-})
+});

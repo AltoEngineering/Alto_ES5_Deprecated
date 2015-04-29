@@ -73,6 +73,16 @@ Alto.ButtonView = Alto.CoreView.extend({
      */
     tabbedIcon: null,
 
+    /**
+     When set to true, overrides default behavior of internal click method to check the  `Alto.formValidationContainer`
+     for any invalid forms.
+
+     @property doValidateForms
+     @type Bool
+     @default false
+     */
+    doValidateForms: false,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -127,9 +137,20 @@ Alto.ButtonView = Alto.CoreView.extend({
     },
 
     click: function (buttonView) {
-        var APP = Alto.applicationName
+        var APP = Alto.applicationName;
 
-        window[APP].statechart.dispatchEvent(buttonView.action, this);
+        if (this.get('doValidateForms')) {
+
+            Alto.formValidationContainer.validate().then(function(value) {
+                window[APP].statechart.dispatchEvent(buttonView.action, this);
+            }, function(value) {
+               // do nothing
+            });
+
+        } else {
+            window[APP].statechart.dispatchEvent(buttonView.action, this);
+        }
+
     },
 
     titleDidChange: function () {
