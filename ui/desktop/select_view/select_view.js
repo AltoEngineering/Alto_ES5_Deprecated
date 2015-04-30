@@ -49,7 +49,6 @@ Alto.SelectView = Alto.CoreView.extend({
         }
 
         if (!Alto.isEmpty(this.get('selectedOption'))) {
-            debugger;
             this.node.value = this.get('selectedOption');
         }
     },
