@@ -14,7 +14,14 @@
  @author Chad Eubanks
  */
 
-Alto.KeyFormView = Alto.CoreView.extend({
+Alto.KeyFormView = Alto.CoreView.extend(Alto.formValidationMixin, {
+
+    /**
+     * Walk like a duck.
+     @property isKeyFormView
+     @type bool
+     */
+    isKeyFormView: true,
 
     /**
      * Naming of the key label. Can use multiple class names.
@@ -37,7 +44,10 @@ Alto.KeyFormView = Alto.CoreView.extend({
     formValue: null,
 
     /**
+     Specifies the type an <input> element should be.  Example: `type: 'email'`.  The type not only sets the type
+     dom element attirbute but it also drives the forms validation.
      @property formType
+     @type string
      */
     formType: null,
 
@@ -63,13 +73,6 @@ Alto.KeyFormView = Alto.CoreView.extend({
      @property _formView
      */
     _formView: null,
-
-    /**
-     * Captures the input string and displays the sensored string.
-     @property isPassword
-     @type boolean
-     */
-    isPassword: false,
 
     /*
      Gets the template and passes html elements to viewDidLoad().
@@ -119,6 +122,16 @@ Alto.KeyFormView = Alto.CoreView.extend({
             that.inputDidChange(that.get('_formView'))
         }, false);
 
+        if (this.get('formType')) {
+            var activeFormsLookup = Alto.formValidationContainer.get('activeFormsLookup');
+
+            formView.type = this.get('formType');
+
+            if (this.get('isRequired')) {
+                activeFormsLookup[Alto.guidFor(this)] = this;
+            }
+        }
+
         if (this.get('formValue')) {
             formView.value = this.get('formValue')
         }
@@ -127,10 +140,6 @@ Alto.KeyFormView = Alto.CoreView.extend({
             formView.autofocus = true;
         }
 
-        if (this.get('isPassword')) {
-            formView.type = 'password'
-        }
-        
         if (this.get('formType') === 'date') {
             formView.id = 'alto-date',
             formView.addEventListener("focus", function(){that.focus(that)}, false);
@@ -146,6 +155,15 @@ Alto.KeyFormView = Alto.CoreView.extend({
 
     inputDidChange: function (_formView) {
         this.set('formValue', _formView.value);
+
+        if (!Alto.isEmpty(this.get('formType'))) {
+            var formType = this.get('formType'),
+                validateMethod = '_validate' + Alto.String.capitalize(formType);
+
+            if (this[validateMethod]) {
+                this[validateMethod](this.get('formValue'));
+            }
+        }
     },
 
     focus: function (_formView) {
@@ -160,9 +178,18 @@ Alto.KeyFormView = Alto.CoreView.extend({
             return
         }
 
+        if (!Alto.isEmpty(this.get('formType'))) {
+            var formType = this.get('formType'),
+                validateMethod = '_validate' + Alto.String.capitalize(formType);
+
+            if (this[validateMethod]) {
+                this[validateMethod](this.get('formValue'));
+            }
+        }
+
         if (this.get('_formView').value === this.get('formValue')) {return}
 
         this.get('_formView').value = this.get('formValue');
-    }.observes('this.formValue')
+    }.observes('this.formValue').on('init')
 
 });

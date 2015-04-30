@@ -2,6 +2,10 @@ Alto.formValidationContainer = Alto.Object.create({
 
     activeFormsLookup: {},
 
+    resetActiveFormsLookup: function () {
+        this.set('activeFormsLookup', {});
+    },
+
     validate: function() {
         var self = this,
             invalidForms =  Alto.keys(Alto.formValidationContainer.get('activeFormsLookup'));

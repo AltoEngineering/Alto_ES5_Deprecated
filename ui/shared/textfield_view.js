@@ -31,19 +31,18 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
     tag: 'input',
 
     /**
+     * Walk like a duck.
+     @property isTextField
+     @type bool
+     */
+    isTextField: true,
+
+    /**
      Provides a hint towards the content of the text field.
      @property hint
      @type String
      */
     hint: "",
-
-    /**
-     Stores the <input> string from `value` while displaying sensored characters.
-     @property isPassword
-     @type boolean
-     @default single dot per character
-     */
-    isPassword: false,
 
     /**
      The result of the input value.
@@ -58,6 +57,14 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
      @type boolean
      */
     isDefaultFocus: false,
+
+    /**
+     Specifies the type an <input> element should be.  Example: `type: 'email'`.  The type not only sets the type
+     dom element attirbute but it also drives the forms validation.
+     @property type
+     @type string
+     */
+    type: null,
 
     /*
      Has the html elements and passes them to viewWillAppear().
@@ -76,7 +83,10 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
                 var activeFormsLookup = Alto.formValidationContainer.get('activeFormsLookup');
 
                 node.type = this.get('type');
-                activeFormsLookup[Alto.guidFor(this)] = this;
+
+                if (this.get('isRequired')) {
+                    activeFormsLookup[Alto.guidFor(this)] = this;
+                }
             }
 
             if (this.get('isDefaultFocus')) {
@@ -100,14 +110,14 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
             var formType = this.get('type'),
                 validateMethod = '_validate' + Alto.String.capitalize(formType);
 
-            this[validateMethod](this.get('value'));
+            if (this[validateMethod]) {
+                this[validateMethod](this.get('value'));
+            }
         }
 
     },
 
     valueDidChange: function () {
-        if (this.node.value === this.get('value')) {return}
-
         if (Alto.isEmpty(this.get("value"))) {
             this.node.value = '';
             return
@@ -117,10 +127,14 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
             var formType = this.get('type'),
                 validateMethod = '_validate' + Alto.String.capitalize(formType);
 
-            this[validateMethod](this.get('value'));
+            if (this[validateMethod]) {
+                this[validateMethod](this.get('value'));
+            }
         }
 
+        if (this.node.value === this.get('value')) {return}
+
         this.node.value = this.get('value');
-    }.observes('this.value')
+    }.observes('this.value').on('init')
 
 });

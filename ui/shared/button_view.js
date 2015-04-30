@@ -83,6 +83,16 @@ Alto.ButtonView = Alto.CoreView.extend({
      */
     doValidateForms: false,
 
+    /**
+     When set to true, overrides default behavior of internal click method to reset the  `Alto.formValidationContainer`
+     to an empty `{}`.
+
+     @property doResetFormValidationContainer
+     @type Bool
+     @default false
+     */
+    doResetFormValidationContainer: false,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -138,6 +148,10 @@ Alto.ButtonView = Alto.CoreView.extend({
 
     click: function (buttonView) {
         var APP = Alto.applicationName;
+
+        if (this.get('doResetFormValidationContainer')) {
+            Alto.formValidationContainer.resetActiveFormsLookup();
+        }
 
         if (this.get('doValidateForms')) {
 
