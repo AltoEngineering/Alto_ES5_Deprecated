@@ -14,7 +14,7 @@
  @author Chad Eubanks
  */
 
-Alto.LinkView = Alto.CoreView.extend ({
+Alto.LinkView = Alto.CoreView.extend({
 
     tag: "a",
     /**
@@ -38,28 +38,40 @@ Alto.LinkView = Alto.CoreView.extend ({
      We know about the html elements and can do some setup in here.
      Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
      */
-    viewDidLoad: function(node) {
+    viewDidLoad: function (node) {
         if (node) {
-            if (this.getPath("title")) {
-                node.innerHTML = this.getPath("title");
+            if (!Alto.isEmpty(this.get("title"))) {
+                node.innerHTML = this.get("title");
             }
 
-            if (this.getPath('href')) {
-                node.href = this.getPath('href');
-            } else if (this.parentView.data.link) {
-                node.href = this.parentView.data.link
+            if (!Alto.isEmpty(this.get('href'))) {
+                node.href = this.get('href');
+            } else if (!Alto.isEmpty(this.get('parentView.data.link'))) {
+                node.href = this.get('parentView.data.link');
             }
 
-            if (this.getPath('openInNewWindow')) {
-                node.target="_blank"
+            if (this.get('openInNewWindow')) {
+                node.target = "_blank"
             }
         }
 
         this._super(node);
     },
 
-    titleDidChange: function() {
-        this.node.innerHTML = this.getPath("title");
-    }.observes('this.title')
+    titleDidChange: function () {
+        if (Alto.isEmpty(this.get("title"))) {
+            this.node.innerHTML = "";
+            return;
+        }
+        this.node.innerHTML = this.get("title");
+    }.observes('this.title'),
+
+    hrefDidChange: function () {
+        if (Alto.isEmpty(this.get("href"))) {
+            node.href = "";
+            return;
+        }
+        node.href = this.get('href');
+    }.observes('this.href')
 
 });
