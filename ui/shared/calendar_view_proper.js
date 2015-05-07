@@ -1,4 +1,4 @@
-Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
+Alto.CalendarViewProper = Alto.CoreView.extend({
     classNames: ['calendar-base-view'],
 
     /**
@@ -13,12 +13,6 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
      @type String
      */
     monthYearLabel: null,
-
-    /**
-     Date that was selected
-     @property selectedDate
-     */
-    selectedDate: null,
 
     /**
      The current cell that is currently selected.
@@ -43,6 +37,16 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
      */
     saveAction: null,
 
+    today: Alto.Date.create(),
+
+    selectedDate: '', //iso format
+
+    selectedDateAltoObject: function () {
+        return Alto.Date.create({now: new Date(Date.parse(this.get('selectedDate')))});
+    }.property('selectedDate'),
+
+    _displayMonth: null,
+
     viewWillLoad: function () {
         var calenderBaseView = document.createElement('div'),
             calenderHeaderView = document.createElement('div'),
@@ -53,7 +57,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             calendarTable = document.createElement('table'),
             saveButton = document.createElement('button');
 
-        this.set('selectedDate', this.today); // set current selection date with todays date on load.
+       if (Alto.isEmpty(this.get('selectedDateAltoObject'))) { this.set('selectedDateAltoObject', this.today.get('now').toISOString())}
         this.viewDidLoad(calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable, saveButton);
     },
 
@@ -74,7 +78,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
         saveButton.textContent = "Save";
 
-        monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
+        monthYearLabel.innerHTML = this.get('selectedDateAltoObject').month() + ' ' + this.get('selectedDateAltoObject').year();
 
         this.set('monthYearLabel', monthYearLabel);
 
@@ -102,7 +106,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         calenderBaseView.appendChild(calenderHeaderView);
         calenderBaseView.appendChild(this.get('calendarTable'));
 
-        this._populateCalendarDaysWithDate(this.get('selectedDate').startOfMonth(), this.get('selectedDate'), this.get('selectedDate').endOfMonth());
+        this._populateCalendarDaysWithDate(this.get('selectedDateAltoObject').startOfMonth(), this.get('selectedDateAltoObject'), this.get('selectedDateAltoObject').endOfMonth());
 
         this._super(calenderBaseView);
     },
@@ -123,7 +127,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
         while (count <= 6) {
             calendarDayHeaderCell = document.createElement('th');
 
-            calendarDayHeaderCell.innerHTML = this.get('selectedDate').days[count]
+            calendarDayHeaderCell.innerHTML = this.get('selectedDateAltoObject').days[count]
             calendarDayHeaderRow.appendChild(calendarDayHeaderCell);
             count++;
         }
@@ -191,7 +195,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
     _populateCalendarDaysWithDate: function (startRange, today, endRange) {
         var startDateOfTheMonth = startRange.getDate(),
             startDayOfTheMonth = startRange.getDay(),
-            todaysDate = this.get('selectedDate'), //today.date(),
+            todaysDate = this.get('selectedDateAltoObject'), //today.date(),
             endDateOfTheMonth = endRange.getDate(),
             calendarTable = this.get('calendarTable'),
             currentCalendarCell,
@@ -210,7 +214,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
                 if (evt.target.innerHTML === "") {
                     return
                 }
-                var date = that.selectedDate;
+                var date = that.get('selectedDateAltoObject');
                 that.didSelectDate(evt, date);
             };
 
@@ -219,7 +223,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
             currentCalendarCell.cell.innerHTML = '';
             currentCalendarCell.cell.style.backgroundColor = this.get('cellBackgroundColor');
 
-            if (this.selectedDate.days[currentCalendarCell.column] === this.selectedDate.days[startDayOfTheMonth]) {
+            if (this.get('selectedDateAltoObject').days[currentCalendarCell.column] === this.get('selectedDateAltoObject').days[startDayOfTheMonth]) {
                 startDateFound = true;
             }
 
@@ -247,21 +251,21 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
      */
     _updateMonthYearLabel: function () {
         var monthYearLabel = this.get('monthYearLabel');
-        monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
+        monthYearLabel.innerHTML = this.get('selectedDateAltoObject').month() + ' ' + this.get('selectedDateAltoObject').year();
     },
 
     /**
      * @method _nextMonth
      */
     _nextMonth: function (that) {
-        that.set('_displayMonth', that.selectedDate.nextMonth());
+        that.set('_displayMonth', that.get('selectedDateAltoObject').nextMonth());
     },
 
     /**
      * @method _previousMonth
      */
     _previousMonth: function (that) {
-        that.set('_displayMonth', that.selectedDate.previousMonth());
+        that.set('_displayMonth', that.get('selectedDateAltoObject').previousMonth());
 
     },
 
@@ -275,8 +279,8 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
     },
 
     _displayMonthDidChange: function () {
-        this.selectedDate.set('now', this.get('_displayMonth'));
-        this._populateCalendarDaysWithDate(this.get('selectedDate').startOfMonth(), this.get('selectedDate'), this.get('selectedDate').endOfMonth());
+        this.get('selectedDateAltoObject').set('now', this.get('_displayMonth'));
+        this._populateCalendarDaysWithDate(this.get('selectedDateAltoObject').startOfMonth(), this.get('selectedDateAltoObject'), this.get('selectedDateAltoObject').endOfMonth());
         this._updateMonthYearLabel();
     }.observes('this._displayMonth'),
 
@@ -286,11 +290,6 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
      * @param date
      */
     didSelectDate: function (evt, date) {
-
-        if (!date.formattedDateForDay) {
-            date = Alto.Date.create({now: new Date(Date.parse(date))});
-        }
-
         var element = evt.target,
             selectedDate = element.innerHTML,
             jsDate = date.formattedDateForDay(selectedDate),
