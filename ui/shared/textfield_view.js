@@ -66,6 +66,12 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
      */
     type: null,
 
+    /**
+     @property type
+     @type number
+     */
+    maxLength: 5096,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -87,6 +93,11 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
                 if (this.get('isRequired')) {
                     activeFormsLookup[Alto.guidFor(this)] = this;
                 }
+            }
+
+            if (this.get('maxLength')) {
+                node.maxlength = this.get('maxLength');
+                node.maxLength = this.get('maxLength');
             }
 
             if (this.get('isDefaultFocus')) {
@@ -117,6 +128,11 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
 
     },
 
+    onKeyUp: function () {
+
+
+    },
+
     valueDidChange: function () {
         if (Alto.isEmpty(this.get("value"))) {
             this.node.value = '';
@@ -132,7 +148,9 @@ Alto.TextField = Alto.CoreView.extend(Alto.formValidationMixin, {
             }
         }
 
-        if (this.node.value === this.get('value')) {return}
+        if (this.node.value === this.get('value')) {
+            return
+        }
 
         this.node.value = this.get('value');
     }.observes('this.value').on('init')
