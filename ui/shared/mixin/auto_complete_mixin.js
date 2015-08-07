@@ -19,6 +19,8 @@
 
 Alto.AutoCompleteMixin = Alto.Mixin.create({
 
+    lookupKey: null,
+
     autoCompleteData: '',
 
     matches: [],
@@ -40,7 +42,7 @@ Alto.AutoCompleteMixin = Alto.Mixin.create({
             data = this.get('autoCompleteData');
 
         while (i < data.length) {
-            if (substrRegex.test(data[i])) {
+            if (substrRegex.test(data[i].get(this.get('lookupKey')))) {
                 __matches.push(data[i]);
             }
             i++

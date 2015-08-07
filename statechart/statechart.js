@@ -124,6 +124,8 @@ Alto.Statechart = Alto.Object.extend({
             currentState  = window[APP].statechart.get("currentState"),
             currentSubstate = window[APP].statechart.get("currentSubState");
 
+        if (Alto.isPresent(currentSubstate)) {window[APP].statechart.leaveCurrentSubState();}
+
         if (window[APP][currentState][substate]) {
             window[APP][substate] =  window[APP][currentState][substate].create();
 
@@ -174,9 +176,9 @@ Alto.Statechart = Alto.Object.extend({
             Alto.Console.log(message, Alto.Console.warnColor);
         }
 
-        window[APP].statechart.set("currentSubState", null);
-
         window[APP][substate].exitState();
+
+        window[APP].statechart.set("currentSubState", null);
     }
 
 });

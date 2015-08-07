@@ -47,7 +47,7 @@ Alto.Cookie = Alto.Object.extend({
                 date = new Date();
                 date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
             } else if (expires === 'expire') {
-                date = new Date("Januray 01, 1900 01:15:00");
+                date = new Date("January 01, 1900 01:15:00");
             } else if (expires.toUTCString && expires.toUTCString.apply) {
                 date = expires;
             }

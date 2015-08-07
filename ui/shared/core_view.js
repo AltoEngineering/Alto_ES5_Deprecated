@@ -172,8 +172,6 @@ Alto.CoreView = Alto.Object.extend({
         this.viewWillDisappear();
     },
 
-
-    //todo move this into view class
     isVisibleDidChange: function () {
         if (this.get('isVisible')) {
             this.node.removeAttribute("style");

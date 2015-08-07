@@ -27,6 +27,8 @@ showDeleteOnHover: Alto.View.extend(Alto.HoverEvents, ({
 
 Alto.HoverEvents = Alto.Mixin.create ({
 
+    target: 'this',
+
     /**
      Behavior function when mouse enters region.
 

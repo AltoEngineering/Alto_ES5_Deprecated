@@ -17,7 +17,7 @@
 
 Alto.LabelView = Alto.CoreView.extend({
 
-    tag: "p",
+    tag: "div",
 
     /**
      * The value of the label.

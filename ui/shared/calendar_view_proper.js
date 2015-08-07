@@ -39,7 +39,7 @@ Alto.CalendarViewProper = Alto.CoreView.extend({
 
     today: Alto.Date.create(),
 
-    selectedDate: '', //iso format
+    selectedDate: new Date().toISOString(), //iso format
 
     selectedDateAltoObject: function () {
         return Alto.Date.create({now: new Date(Date.parse(this.get('selectedDate')))});
@@ -57,7 +57,7 @@ Alto.CalendarViewProper = Alto.CoreView.extend({
             calendarTable = document.createElement('table'),
             saveButton = document.createElement('button');
 
-       if (Alto.isEmpty(this.get('selectedDateAltoObject'))) { this.set('selectedDateAltoObject', this.today.get('now').toISOString())}
+        if (this.get('selectedDateAltoObject').now == 'Invalid Date') {this.set('selectedDateAltoObject', Alto.Date.create())}
         this.viewDidLoad(calenderBaseView, calenderHeaderView, calendarPreviousMonthButton, calendarNextMonthButton, calenderHeaderTitleView, monthYearLabel, calendarTable, saveButton);
     },
 

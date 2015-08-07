@@ -16,6 +16,8 @@
 
 Alto.KeyFormView = Alto.CoreView.extend(Alto.formValidationMixin, {
 
+    isRequired: true,
+
     /**
      * Walk like a duck.
      @property isKeyFormView
@@ -100,9 +102,9 @@ Alto.KeyFormView = Alto.CoreView.extend(Alto.formValidationMixin, {
     viewDidLoad: function (node, keyLabelView, formView) {
         var that = this;
 
-        node.className = "alto-key-form-view ";
-        keyLabelView.className = "key-label ";
-        formView.className = "form-view ";
+        node.className = "alto-key-form-view";
+        keyLabelView.className = "key-label";
+        formView.className = "form-view";
 
         var n = 0,
             classNames = this.get('keyLabelClassNames');
@@ -122,7 +124,7 @@ Alto.KeyFormView = Alto.CoreView.extend(Alto.formValidationMixin, {
             that.inputDidChange(that.get('_formView'))
         }, false);
 
-        if (this.get('formType')) {
+        if (this.get('formType') && this.get('isRequired')) {
             var activeFormsLookup = Alto.formValidationContainer.get('activeFormsLookup');
 
             formView.type = this.get('formType');

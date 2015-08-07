@@ -28,6 +28,8 @@
 
 Alto.ButtonView = Alto.CoreView.extend({
 
+    stopPropagation: false,
+
     tag: "button",
 
     /**
@@ -103,7 +105,23 @@ Alto.ButtonView = Alto.CoreView.extend({
         var that = this;
 
         if (node) {
-            node.addEventListener("click", function () {
+            node.addEventListener("click", function (e) {
+
+
+                if (that.get('stopPropagation')) {
+                    if (!e)
+                        e = window.event;
+
+                    //IE9 & Other Browsers
+                    if (e.stopPropagation) {
+                        e.stopPropagation();
+                    }
+                    //IE8 and Lower
+                    else {
+                        e.cancelBubble = true;
+                    }
+                }
+
                 that.click(that)
             }, false);
 
@@ -113,7 +131,7 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-text-button-left-icon '
                 img.src = this.get('leftIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(img);
                 node.appendChild(span);
@@ -123,7 +141,7 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-text-button-right-icon '
                 img.src = this.get('rightIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(span);
                 node.appendChild(img);
@@ -133,12 +151,12 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-tabbed-button '
                 img.src = this.get('tabbedIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(img);
                 node.appendChild(span);
             } else {
-                node.innerHTML = this.get("this.title");
+                node.innerHTML = this.get('title');
             }
 
         }
@@ -156,7 +174,7 @@ Alto.ButtonView = Alto.CoreView.extend({
         if (this.get('doValidateForms')) {
 
             Alto.formValidationContainer.validate().then(function(value) {
-                window[APP].statechart.dispatchEvent(buttonView.action, this);
+                window[APP].statechart.dispatchEvent(buttonView.get('action'), this);
             }, function(value) {
                // do nothing
             });
@@ -168,7 +186,15 @@ Alto.ButtonView = Alto.CoreView.extend({
     },
 
     titleDidChange: function () {
-        this.node.innerHTML = this.get("this.title");
-    }.observes('this.title')
+        if (this.get('leftIcon')) {
+            this.node.children[1].innerHTML = this.get('title');
+        } else if (this.get('rightIcon')) {
+            this.node.children[0].innerHTML = this.get('title');
+        } else if (this.get('tabbedIcon')) {
+            this.node.children[1].innerHTML = this.get('title');
+        } else {
+            this.node.innerHTML = this.get('title');
+        }
+    }.observes('title')
 
 });

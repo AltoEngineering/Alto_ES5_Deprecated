@@ -28,6 +28,8 @@
 
 Alto.Checkbox = Alto.CoreView.extend({
 
+    name: null,
+
     /**
      Sets the title of the button.
 
@@ -87,6 +89,10 @@ Alto.Checkbox = Alto.CoreView.extend({
             label.innerHTML = this.get('title');
             label.className = 'alto-checkbox-label'
             label.appendChild(input);
+        }
+
+        if (this.get('isRadio') && Alto.isPresent(this.get('name'))) {
+            input.name = this.get('name');
         }
 
         this.addClickHandler(label);
