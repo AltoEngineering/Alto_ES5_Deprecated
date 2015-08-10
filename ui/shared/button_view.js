@@ -131,7 +131,7 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-text-button-left-icon '
                 img.src = this.get('leftIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(img);
                 node.appendChild(span);
@@ -141,7 +141,7 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-text-button-right-icon '
                 img.src = this.get('rightIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(span);
                 node.appendChild(img);
@@ -151,12 +151,12 @@ Alto.ButtonView = Alto.CoreView.extend({
 
                 node.className += 'alto-tabbed-button '
                 img.src = this.get('tabbedIcon');
-                span.innerHTML = this.get("this.title");
+                span.innerHTML = this.get('title');
 
                 node.appendChild(img);
                 node.appendChild(span);
             } else {
-                node.innerHTML = this.get("this.title");
+                node.innerHTML = this.get('title');
             }
 
         }
@@ -187,14 +187,14 @@ Alto.ButtonView = Alto.CoreView.extend({
 
     titleDidChange: function () {
         if (this.get('leftIcon')) {
-            this.node.children[1].innerHTML = this.get("this.title");
+            this.node.children[1].innerHTML = this.get('title');
         } else if (this.get('rightIcon')) {
-            this.node.children[0].innerHTML = this.get("this.title");
+            this.node.children[0].innerHTML = this.get('title');
         } else if (this.get('tabbedIcon')) {
-            this.node.children[1].innerHTML = this.get("this.title");
+            this.node.children[1].innerHTML = this.get('title');
         } else {
-            node.innerHTML = this.get("this.title");
+            this.node.innerHTML = this.get('title');
         }
-    }.observes('this.title')
+    }.observes('title')
 
 });

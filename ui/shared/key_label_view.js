@@ -19,10 +19,10 @@ Alto.KeyLabelView = Alto.CoreView.extend({
 
     /**
      Generic title name for the key.
-     @property keyTitleClassNames
+     @property keyLabelClassNames
      @type array
      */
-    keyTitleClassNames: [],
+    keyLabelClassNames: [],
 
     /**
      Generic title name for the label.
@@ -81,10 +81,10 @@ Alto.KeyLabelView = Alto.CoreView.extend({
     viewDidLoad: function (node, keyTitleNode, labelTitleNode) {
         var that = this,
             n = 0,
-            classNames = this.get('keyTitleClassNames');
+            classNames = this.get('keyLabelClassNames');
 
-        node.className = "alto-key-label-view ";
-        keyTitleNode.className = "key-title ";
+        node.className = "alto-key-label-view";
+        keyTitleNode.className = "key-title";
         labelTitleNode.className = "label-title ";
 
         while (n < classNames.length) {
@@ -106,13 +106,13 @@ Alto.KeyLabelView = Alto.CoreView.extend({
             n++;
         }
 
-        if (!this.get('keyTitle')) {
+        if (Alto.isNone(this.get('keyTitle'))) {
             keyTitleNode.textContent = '';
         } else {
             keyTitleNode.textContent = this.get('keyTitle');
         }
 
-        if (!this.get('labelTitle')) {
+        if (Alto.isNone(this.get('labelTitle'))) {
             labelTitleNode.textContent = '';
         } else {
             labelTitleNode.textContent = this.get('labelTitle');
