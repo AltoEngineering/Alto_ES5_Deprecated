@@ -158,7 +158,7 @@ Alto.FileUploadView = Alto.CoreView.extend({
             fileName = path.split('\\')[path.split('\\').length - 1],
             label = this.get('label');
 
-        label.innerHTML = fileName;
+       //  label.innerHTML = fileName;
         label.style.color = '#2f4554';
 
         this.set('_formData', new FormData(document.forms.namedItem(this.get('formName'))));

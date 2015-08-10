@@ -30,6 +30,29 @@ Alto.Statechart = Alto.Object.extend({
      */
     currentSubState: "",
 
+    dispatchViewEvent: function (eventName) {
+        var APP = Alto.applicationName,
+            state = window[APP].statechart.currentState,
+            substate = window[APP].statechart.currentSubState,
+            args = Array.prototype.slice.call(arguments),
+            message = "Unknown method name: Your state is missing the method \"" + eventName + "\".";
+
+        args.shift();
+
+        if (!window[APP][state]) {
+            return
+        }
+
+        if (window[APP][substate] && window[APP][substate][eventName]) {
+            window[APP][substate][eventName].apply(this, args);
+        } else if (window[APP][state].viewState[eventName]) {
+            window[APP][state].viewState[eventName].apply(this, args);
+        } else {
+            Alto.Console.log(message, Alto.Console.errorColor);
+        }
+
+    },
+
     /**
      Takes function parameter and executes that event.
 
@@ -58,7 +81,9 @@ Alto.Statechart = Alto.Object.extend({
             window[APP][substate][eventName].apply(this, args);
         } else if (window[APP][state][eventName]) {
             window[APP][state][eventName].apply(this, args);
-        } else {
+        } else if (window[APP][state].viewState[eventName]) {
+            window[APP][state].viewState[eventName].apply(this, args);
+        }  else {
             Alto.Console.log(message, Alto.Console.errorColor);
         }
 
@@ -124,6 +149,8 @@ Alto.Statechart = Alto.Object.extend({
             currentState  = window[APP].statechart.get("currentState"),
             currentSubstate = window[APP].statechart.get("currentSubState");
 
+        if (Alto.isPresent(currentSubstate)) {window[APP].statechart.leaveCurrentSubState();}
+
         if (window[APP][currentState][substate]) {
             window[APP][substate] =  window[APP][currentState][substate].create();
 
@@ -174,9 +201,9 @@ Alto.Statechart = Alto.Object.extend({
             Alto.Console.log(message, Alto.Console.warnColor);
         }
 
-        window[APP].statechart.set("currentSubState", null);
-
         window[APP][substate].exitState();
+
+        window[APP].statechart.set("currentSubState", null);
     }
 
 });

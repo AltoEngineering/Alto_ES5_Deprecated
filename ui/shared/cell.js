@@ -24,6 +24,8 @@ Alto.Cell = Alto.CoreView.extend ({
      */
     indexRow: "",
 
+    isSelected: false,
+
     /*
      Has the html elements and passes them to viewWillAppear().
 
@@ -36,7 +38,21 @@ Alto.Cell = Alto.CoreView.extend ({
             this.set('data', recordAtIndex);
         }
 
+        if (this.get('isSelected') || (this.data && this.data.get('isSelected'))) {
+            node.style.backgroundColor = '#eaf4ff'
+        } else {
+            node.removeAttribute('style');
+        }
+
         this._super(node);
-    }
+    },
+
+    isSelectedDidChange: function () {
+        if (this.get('isSelected') || (this.data && this.data.get('isSelected'))) {
+            this.node.style.backgroundColor = '#eaf4ff'
+        } else {
+            this.node.removeAttribute('style');
+        }
+    }.observes('isSelected').on('init')
 
 });

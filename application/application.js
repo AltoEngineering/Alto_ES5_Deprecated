@@ -26,6 +26,10 @@
 
 Alto.Application = Alto.Object.extend({
 
+    isApplication: true,
+
+    CookieDomain: null,
+
     /**
      @property NAMESPACE
      @type String
@@ -42,6 +46,24 @@ Alto.Application = Alto.Object.extend({
      </pre>
      */
     NAMESPACE: '',
+
+    /**
+     @property COOKIENAME
+     @type String
+     @description The value for cookiename is used internally as the lookup name of your applications session cookie.
+     @default this.get('NAMESPACE')
+
+     **Example:**
+     <pre class="code prettyprint prettyprinted">
+     <code>App = Alto.Application.create ({
+                COOKIENAME: 'AuthCookie'
+            });
+     </code>
+     </pre>
+     */
+    COOKIENAME: function () {
+        return '%@%@'.fmt(this.get('NAMESPACE').toLowerCase(), 'auth');
+    }.property('NAMESPACE'),
 
     /**
      @property VERSION
@@ -68,7 +90,6 @@ Alto.Application = Alto.Object.extend({
     LogMessages: true,
 
     init: function () {
-        this._super();
 
         Alto.applicationName = this.NAMESPACE;
         this.applicationWillLoad();
@@ -85,6 +106,25 @@ Alto.Application = Alto.Object.extend({
      @method applicationDidLoad
      */
     applicationDidLoad: function () {
+        window[Alto.applicationName].router = window[Alto.applicationName].Router.createWithMixins();
+        window[Alto.applicationName].router.routerDidBecomeActive();
+    },
+
+    createSession: function (token, daysValid) {
+        var expirationDate = new Date(),
+            cookie;
+
+        expirationDate.setDate(expirationDate.getDate() + daysValid);
+
+        cookie = Alto.Cookie.create({
+            name: this.get('COOKIENAME'),
+            value: token,
+            domain: this.get('CookieDomain'),
+            path: '/',
+            expires: expirationDate,
+            secure: false
+        });
+        cookie.write();
     }
 
 });

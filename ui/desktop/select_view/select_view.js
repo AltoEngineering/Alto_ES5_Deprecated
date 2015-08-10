@@ -40,7 +40,7 @@ Alto.SelectView = Alto.CoreView.extend({
                 optionNode.textContent = option[keyValue];
                 selectNode.appendChild(optionNode);
             })
-        } else if (options[0] instanceof String) {
+        } else if (typeof options[0] === "string") {
             options.forEach(function (option) {
                 var optionNode = document.createElement('option');
                 optionNode.textContent = option;
@@ -50,7 +50,10 @@ Alto.SelectView = Alto.CoreView.extend({
 
         if (!Alto.isEmpty(this.get('selectedOption'))) {
             this.node.value = this.get('selectedOption');
+        } else {
+            this.node.value = this.get('options')[0]
         }
+
     },
 
     inputDidChange: function (view) {
@@ -61,6 +64,10 @@ Alto.SelectView = Alto.CoreView.extend({
         if (this.node.value != this.get('selectedOption')) {
             this.node.value = this.get('selectedOption');
         }
-    }.observes('this.selectedOption')
+    }.observes('this.selectedOption'),
+
+    optionsDidChange: function () {
+        this.viewCreateSubViews();
+    }.observes('options')
 
 });

@@ -21644,7 +21644,6 @@
             var STRING_DASHERIZE_CACHE = new Cache(1000, function(key) {
                 return decamelize(key).replace(STRING_DASHERIZE_REGEXP, '-');
             });
-
             var CAMELIZE_CACHE = new Cache(1000, function(key) {
                 return key.replace(STRING_CAMELIZE_REGEXP, function(match, separator, chr) {
                     return chr ? chr.toUpperCase() : '';

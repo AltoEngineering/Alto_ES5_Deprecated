@@ -1,224 +1,240 @@
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Copyright: @2014 The Code Boutique, LLC
+// Copyright: @2015 The Code Boutique, LLC
 // License:   Intellectual property of The Code Boutique. LLC
+// Version:   1.2(pre)
 // ==========================================================================
 
-Alto.Router = Alto.Object.extend({
+Alto.RouterProperties = Alto.Mixin.create({
 
-    /**
-     Do not override this method.
-     Do not call directly
-     */
-    init: function () {
-        this._super();
+    applicationRoute: null,
 
-        var that = this;
+    // computed properties
+    location: function () {
+        var _location = location.hash;
 
-        if (window.addEventListener) {
-            window.addEventListener("hashchange", this._hashDidChange, false);
-        } else if (window.attachEvent) {
-            window.attachEvent("hashchange", this._hashDidChange, false);
+        return _location === ('#/' || '#' || '') ? '' : _location;
+    }.property().volatile(),
+
+    applicationRoutePropertyPath: function () {
+        var path = this.get('location');
+
+        if (path.charAt(0) === '#') {
+            path = path.slice(1, path.length)
         }
 
-        if (location.hash === '') {
-            this._createIndexRouteObjectInstances();
-        } else {
-            this._createCorrespondingObjectInstancesForRouteWithHash('');
+        if (path.charAt(0) === '/') {
+            path = path.slice(1, path.length)
         }
-
-    },
-
-    _createIndexRouteObjectInstances: function () {
-        var state = this.index.state ? this.index.state : false,
-            dataSource = this.index.dataSource ? this.index.dataSource : false;
-
-        window[Alto.applicationName][state] = window[Alto.applicationName][Alto.String.capitalize(state)].create();
-
-        if (dataSource) {
-            window[Alto.applicationName][dataSource] = window[Alto.applicationName][Alto.String.capitalize(dataSource)].create();
-        }
-
-        this._goToState(state);
-    },
-
-    /**
-     Pairs a URL to the corresponding State.
-     */
-    _createCorrespondingObjectInstancesForRouteWithHash: function (e, fromHashChange) {
-        var path,
-            count = 0,
-            propertyPath,
-            routeObject;
-
-        if (e === '') {
-            path = location.hash.substr(location.hash.indexOf('#'), location.hash.length);
-        } else if (location.hash == '') {
-            this._createIndexRouteObjectInstances();
-            return;
-        } else if (e.newURL) {
-            path = e.newURL.substr(e.newURL.indexOf('#'), e.newURL.length);
-        }
-
-        path = this._cleansePath(path);
 
         if (path.contains('?')) {
-            if (path.contains('/')) {
-                var cleansedPath = '#';
-
-                path = path.split('/');
-                path.pop();
-
-                path.forEach(function(pathString) {
-                    cleansedPath += '/' + pathString;
-                })
-
-                path = this._cleansePath(cleansedPath);
-            } else {
-                this._createIndexRouteObjectInstances();
-                return;
-            }
+            path = path.substr(0, path.indexOf('?'));
         }
 
-        while (count < path.split('/').length) {
+        return path;
+    }.property('location').volatile()
+});
+
+Alto.Router = Alto.Object.extend(Alto.RouterProperties, {
+
+    init: function () {
+        if (window.addEventListener) {
+            window.addEventListener("hashchange", this.hashDidChange, false);
+        } else if (window.attachEvent) {
+            window.attachEvent("hashchange", this.hashDidChange, false);
+        }
+    },
+
+    routerDidBecomeActive: function () {
+        this.checkForIndexRoute();
+    },
+
+    checkForIndexRoute: function () {
+        if (Alto.isEqual(this.get('applicationRoutePropertyPath'), '')) {
+            this.pairWithApplicationIndexRoute();
+        } else {
+            this.pairWithApplicationHashRoute();
+        }
+    },
+
+    pairWithApplicationIndexRoute: function () {
+        this.set('applicationRoute', this.index);
+        this.checkForSecureRoute(this.index);
+    },
+
+    pairWithApplicationHashRoute: function () {
+        var path = this.get('applicationRoutePropertyPath').split('/'),
+            propertyPath,
+            routeObject,
+            count = 0;
+
+        while (count < path.length) {
+            //todo refactor: logic block start
             // the first iteration
             if (!propertyPath) {
-                propertyPath = [path.split('/')[count]]
+                propertyPath = [path[count]]
                 routeObject = this[propertyPath];
             }
             // route not found... lets assume it is a unique_id being passed in
-            else if (!this[path.split('/')[count]] && !routeObject[path.split('/')[count]]) {
+            else if (!this[path[count]] && !routeObject[path[count]]) {
                 routeObject = routeObject['unique_id'];
             } else {
-                routeObject = routeObject[path.split('/')[count]];
+                routeObject = routeObject[path[count]];
             }
+            //todo refactor: logic block end
 
+            //todo refactor: logic block start
+            if (!routeObject && this.unauthorizedRoute.route === this.get('location')) {
+                this.set('applicationRoute', this.unauthorizedRoute);
+                this.checkForSecureRoute(this.unauthorizedRoute);
+            } else if (!routeObject) {
+                this.unknownRoute(this.get('location'));
+            } else {
+                this.set('applicationRoute', routeObject);
+                this.checkForSecureRoute(routeObject);
+            }
+            //todo refactor: logic block end
             count++
         }
 
-        if (!routeObject) {
-            this._unknownRoute(path);
-            return;
+    },
+
+    checkForSecureRoute: function (routeObject) {
+        if (routeObject.hasOwnProperty('isSecure') && routeObject.isSecure) {
+            var cookieName = window[Alto.applicationName].get('COOKIENAME');
+            this.verifyApplicationHasValidSession(Alto.Cookie.find(cookieName), routeObject);
+        } else {
+            this.checkRouteForDataSource(routeObject);
         }
+    },
 
-        var state = routeObject.state ? routeObject.state : false,
-            dataSource = routeObject.dataSource ? routeObject.dataSource : false;
-
-        if (!window[Alto.applicationName][Alto.String.capitalize(state)]) {
-            Alto.Logger.error('State:', '`' + Alto.String.capitalize(state) + '`', 'not found.  Check route definition.');
-            return
+    checkRouteForDataSource: function (routeObject) {
+        if (routeObject.hasOwnProperty('datasource')) {
+            this.checkControllerContentAssociatedToRoute(routeObject);
+        } else {
+            this.checkRouteForState(routeObject);
         }
+    },
 
-        if (!window[Alto.applicationName][state]) {
-
-            window[Alto.applicationName][state] = window[Alto.applicationName][Alto.String.capitalize(state)].create();
+    checkRouteForState: function (routeObject) {
+        if (Alto.isPresent(routeObject.state)) {
+            this.verifyStateClassExists(routeObject);
+        } else {
+            this.malformedStateGiven(routeObject);
         }
-
-        if (dataSource) {
-            window[Alto.applicationName][dataSource] = window[Alto.applicationName][Alto.String.capitalize(dataSource)].create();
-        }
-
-        this._goToState(state, fromHashChange);
 
     },
 
-    /**
-     When a hash change occurs, invoke _findMatchingingResources();
-     */
-    _hashDidChange: function (e) {
-        window[Alto.applicationName].router._createCorrespondingObjectInstancesForRouteWithHash(e, true);
+    verifyStateClassExists: function (routeObject) {
+        if (window[Alto.applicationName][routeObject.state.classify()]) {
+            this.checkForCurrentState();
+        } else {
+            this.malformedStateGiven(routeObject);
+        }
     },
 
-    _goToState: function (state, fromHashChange) {
-        // If we don't already have one.  Create an instance of our applications statehcart
-        if (!window[Alto.applicationName].statechart) {
-            window[Alto.applicationName].statechart = Alto.Statechart.create();
+    checkForCurrentState: function () {
+        if (!Alto.isPresent(window[Alto.applicationName].statechart)) {
+            window[Alto.applicationName].statechart = Alto.Statechart.createWithMixins();
         }
 
-        // Do nothing if the passed in state is the same as the current state
-        // Occurs if two route objects are associated to the same state object
-        if (window[Alto.applicationName].statechart.get("currentState") == state && !fromHashChange) {
-            return;
-        } else if (window[Alto.applicationName].statechart.get("currentState") == state && fromHashChange) {
-            if (window[Alto.applicationName].LogStateTransitions) {
-                var message = "ReEntering " + window[Alto.applicationName].statechart.get("currentState");
-                Alto.Console.log(message, Alto.Console.warnColor);
-            }
-            window[Alto.applicationName][state].enterState();
-            return;
+        if (Alto.isPresent(window[Alto.applicationName].statechart.get('currentState'))) {
+            this.exitCurrentState();
+        } else {
+            this.enterStateAssociatedToRoute(this.get('applicationRoute'));
         }
+    },
 
-        // If we are already in a state, call is exitState before transitioning
-        if (window[Alto.applicationName].statechart.get("currentState") != "") {
-
-            if (window[Alto.applicationName].LogStateTransitions) {
-                var message = "Exiting " + window[Alto.applicationName].statechart.get("currentState");
-                Alto.Console.log(message, Alto.Console.warnColor);
-            }
-
-            window[Alto.applicationName][window[Alto.applicationName].statechart.get("currentState")].exitState();
+    exitCurrentState: function () {
+        if (window[Alto.applicationName].LogStateTransitions) {
+            var message = "Exiting " + window[Alto.applicationName].statechart.get("currentState");
+            Alto.Console.log(message, Alto.Console.warnColor);
         }
+        window[Alto.applicationName][window[Alto.applicationName].statechart.get('currentState')].exitState();
+        Alto.Object.destroyInstance(Alto.applicationName + '.' + [window[Alto.applicationName].statechart.get('currentState')]);
+        this.enterStateAssociatedToRoute(this.get('applicationRoute'));
+    },
 
-        if (!window[Alto.applicationName][state]) {
-            window[Alto.applicationName][state] = window[Alto.applicationName][Alto.String.capitalize(state)].create();
-        }
-
-        window[Alto.applicationName].statechart.set("currentState", state);
-
+    enterStateAssociatedToRoute: function (routeObject) {
+        window[Alto.applicationName][routeObject.state] = window[Alto.applicationName][routeObject.state.classify()].create();
+        window[Alto.applicationName].statechart.set('currentState', routeObject.state);
         if (window[Alto.applicationName].LogStateTransitions) {
             var message = "Entering " + window[Alto.applicationName].statechart.get("currentState");
             Alto.Console.log(message, Alto.Console.messageColor);
         }
-        window[Alto.applicationName][state].enterState();
-
+        window[Alto.applicationName][routeObject.state].enterState();
     },
 
-    _cleansePath: function (path) {
-        if (!path) {
-            return
-        }
-        path = path.charAt(0) === '#' ? path.slice(1, path.length) : path;
-        path = path.charAt(0) === '/' ? path.slice(1, path.length) : path;
-
-        return path;
+    malformedStateGiven: function (routeObject) {
+        //todo missing logic
     },
 
-    _unknownRoute: function (routePath) {
-        Alto.Logger.error('Route', routePath, 'not found.');
-    },
+    checkControllerContentAssociatedToRoute: function (routeObject) {
+        if (Alto.isPresent(routeObject.datasource.controller)) {
 
-    goToRoute: function (route) {
-        var router = window[Alto.applicationName].router,
-            count = 0,
-            propertyPath,
-            routeObject,
-            cleansedRoute = this._cleansePath(route);
-
-        while (count < cleansedRoute.split('/').length) {
-
-            // the first iteration
-            if (!propertyPath) {
-                propertyPath = [cleansedRoute.split('/')[count]]
-                routeObject = this[propertyPath];
+            if (!window[Alto.applicationName][routeObject.datasource.controller]) {
+                Alto.Logger.error('Controller', routeObject.datasource.controller, 'not found.');
+                return;
             }
-            // route not found... lets assume it is a unique_id being passed in
-            else if (!this[cleansedRoute.split('/')[count]] && !routeObject[cleansedRoute.split('/')[count]]) {
-                routeObject = routeObject['unique_id'];
+
+            // check if the controller has content else fetch content
+            if (Alto.isPresent(window[Alto.applicationName][routeObject.datasource.controller].get('content'))) {
+                this.checkRouteForState(routeObject);
             } else {
-                routeObject = routeObject[cleansedRoute.split('/')[count]];
+                this.fetchResourceAssocitedToRoute(routeObject);
             }
 
-            count++
+        } else {
+            //todo missing logic
         }
+    },
 
-        if (!routeObject) {
-            this._unknownRoute(cleansedRoute);
-            return;
+    fetchResourceAssocitedToRoute: function (routeObject) {
+        var datasource,
+            that = this;
+
+        if (routeObject.datasource.name) {
+
+            if (!window[Alto.applicationName][routeObject.datasource.name.classify()]) {
+                Alto.Logger.error('DataSource', routeObject.datasource.name, 'not found.');
+                return;
+            }
+
+            datasource = window[Alto.applicationName][routeObject.datasource.name.classify()].create();
+
+            datasource[routeObject.datasource.method]().then(function (success) {
+                that.checkRouteForState(routeObject);
+            }, function (error) {
+                this.netWorkCallDidFail(error);
+            })
+
+        } else {
+            //todo missing logic
         }
+    },
 
+    netWorkCallDidFail: function (error) {
+        //todo missing logic
+    },
+
+    verifyApplicationHasValidSession: function (applicationSessionCookie, routeObject) {
+        if (applicationSessionCookie) {
+            this.checkRouteForDataSource(routeObject);
+        } else {
+            this.replaceRouteWithUnauthorizedRoute();
+        }
+    },
+
+    replaceRouteWithUnauthorizedRoute: function () {
+        this.replaceRoute(this.unauthorizedRoute.route);
+        Alto.run.next(this, function () {
+            location.reload();
+        });
+    },
+
+    goToRoute: function(route) {
         this.pushRoute(route);
-
-        this._goToState(routeObject.state);
+        this.checkForIndexRoute();
     },
 
     pushRoute: function (route) {
@@ -229,17 +245,13 @@ Alto.Router = Alto.Object.extend({
         history.replaceState('', '', route);
     },
 
-    getCurrentRoute: function () {
-        return window.location.hash;
+    unknownRoute: function (path) {
+        Alto.Logger.error('Route', path, 'not found.');
+        //todo handle unknown route
     },
 
-    getCurrentRouteLastId: function () {
-        var route = this.getCurrentRoute(),
-            routeSplit = route.split('/'),
-            routeLength = routeSplit.length,
-            lastRoutePath = routeSplit[routeLength - 1];
-
-        return lastRoutePath
+    hashDidChange: function () {
+        window[Alto.applicationName].router.checkForIndexRoute();
     }
 
 });

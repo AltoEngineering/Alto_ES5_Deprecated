@@ -8,7 +8,7 @@
  `Alto.KeyLabelView` is a component for creating a label with an associated key.
 
  @module UI
- @class Alto.KeyFormView
+ @class Alto.KeyLabelView
  @extends Alto.CoreView
  @since Alto 0.0.1
  @author Chad Eubanks

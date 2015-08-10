@@ -78,6 +78,7 @@ Alto.DomUtil = Alto.Object.create({
      @param element
      */
     addElementToNodeBeforeNode: function (element, node, beforeNode) {
+
         if (element == "") {
             return
         }

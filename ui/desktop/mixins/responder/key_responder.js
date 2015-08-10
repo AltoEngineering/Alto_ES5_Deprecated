@@ -6,7 +6,7 @@ Alto.KeyResponderMixin = Alto.Mixin.create({
         if (!this.get('keyResponder')) {return};
 
         if (event.keyCode == 27) {
-            window[Alto.applicationName].statechart.dispatchEvent(this.keyResponder.get('cancelAction'));
+            window[Alto.applicationName].statechart.dispatchViewEvent(this.keyResponder.get('cancelAction'));
         }
 
     }

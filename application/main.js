@@ -14,7 +14,6 @@
 
 Alto.main = function() {
     var APP = window.Alto.applicationName;
-
     window[APP].applicationDidLoad();
 }
 Alto.main();

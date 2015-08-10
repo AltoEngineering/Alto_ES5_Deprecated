@@ -218,7 +218,6 @@ Alto.DatePicker = Alto.CoreView.extend({
                     that = this;
 
                 while (n < classNames.length) {
-                    debugger;
                     node.className += node.className ? ' ' + classNames[n] : classNames[n];
                     n++;
                 }

@@ -76,14 +76,16 @@ Alto.PanelPane = Alto.CoreView.extend({
         this[this.childViews[0]].node.addEventListener("click", function () {
             event.stopPropagation();
         }, false);
-        this.node.appendChild(this[this.childViews[0]].node)
+        this.node.appendChild(this[this.childViews[0]].node);
+
+        this.viewAnimateIn();
     },
 
     click: function(buttonView) {
         if (Alto.isNone(this.get('cancelAction'))) {return}
 
         var APP = Alto.applicationName
-        window[APP].statechart.dispatchEvent(this.get('cancelAction'));
+        window[APP].statechart.dispatchViewEvent(this.get('cancelAction'));
     }
 
 });
