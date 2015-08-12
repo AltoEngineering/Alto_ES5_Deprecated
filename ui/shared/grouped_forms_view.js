@@ -11,10 +11,8 @@ Alto.GroupedFormsView = Alto.CoreView.extend({
 
     title: null,
 
-    sectionTitleClassNames: ['section-title'],
-
     sectionTitle: Alto.LabelView.extend({
-        classNamesBinding: 'parentView.sectionTitleClassNames',
+        classNames: ['section-title'],
         titleBinding: 'parentView.title'
     }),
 

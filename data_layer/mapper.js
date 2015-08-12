@@ -14,7 +14,7 @@
  @author Chad Eubanks
  */
 
-Alto.Mapper = Alto.Object.create({
+Alto.Mapper = Alto.Object.create ({
 
     /**
      @method createRecordFromJson
@@ -28,10 +28,10 @@ Alto.Mapper = Alto.Object.create({
             return;
         }
 
-        for (var key in json) {
+        for(var key in json) {
             var value = json[key];
 
-            if (Object.prototype.toString.call(json) !== '[object Object]') {
+            if(Object.prototype.toString.call(json) !== '[object Object]' ) {
                 return;
             }
 
@@ -41,9 +41,7 @@ Alto.Mapper = Alto.Object.create({
 
             if (!Alto.isNone(recordInstance.get(key))) {
 
-                if (Alto.isNone(value)) {
-                    value = ''
-                }
+                if (Alto.isNone(value)) { value = '' };
 
                 if (!recordInstance.__alto_meta__.descs[key]) {
                     recordInstance.set(key, value);
@@ -55,31 +53,6 @@ Alto.Mapper = Alto.Object.create({
         }
 
         return recordInstance;
-    },
-
-    deserializeRecordToJson: function (record, stringFormat) {
-        var json = {};
-
-        if (!stringFormat) {
-            stringFormat = 'underscore'
-        }
-
-        if (!Alto.String[stringFormat]) {
-            Alto.Logger.error('unknown string format given.  Alto.String does not have a method called', stringFormat);
-            return;
-        }
-
-        if (!record instanceof Alto.Object) {
-            Alto.Logger.error('Unknown record type given.  Expecting record to be instance of Alto.Object');
-            return;
-        }
-
-        Alto.keys(record).forEach(function (recordKey) {
-            json[recordKey[stringFormat]()] = record.get(recordKey);
-        });
-
-        return JSON.stringify(json);
-
     }
 
 });
