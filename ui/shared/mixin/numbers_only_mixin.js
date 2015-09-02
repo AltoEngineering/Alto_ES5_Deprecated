@@ -15,9 +15,12 @@
  */
 
 Alto.NumbersOnlyMixin = Alto.Mixin.create({
+
     viewDidLoad: function (node) {
-        this._super(node);
+
+        Alto.Console.log('NumbersOnlyMixin.viewDidLoad');
         var that = this;
+
         node.addEventListener("keyup", function (evt) {
             that.onKeyUp(evt)
         }, false);
@@ -25,6 +28,8 @@ Alto.NumbersOnlyMixin = Alto.Mixin.create({
         node.addEventListener("keydown", function (evt) {
             that.onKeyDown(evt)
         }, false);
+
+        this._super.apply(this, arguments);
     },
 
     onKeyDown: function (evt) {

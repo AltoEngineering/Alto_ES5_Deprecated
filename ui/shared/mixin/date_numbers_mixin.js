@@ -19,8 +19,8 @@ Alto.DateNumbersMixin = Alto.Mixin.create({
     useSimpleValidation: false,
 
     viewDidLoad: function (node) {
-        this._super(node);
         var that = this;
+
         node.addEventListener("keyup", function (evt) {
             that.onKeyUp(evt)
         }, false);
@@ -28,6 +28,8 @@ Alto.DateNumbersMixin = Alto.Mixin.create({
         node.addEventListener("keydown", function (evt) {
             that.onKeyDown(evt)
         }, false);
+
+        this._super.apply(this, arguments);
     },
 
     onKeyDown: function (evt) {
