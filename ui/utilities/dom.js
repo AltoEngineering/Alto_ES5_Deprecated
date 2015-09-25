@@ -64,9 +64,6 @@ Alto.DomUtil = Alto.Object.create({
         if (node === 'body') {
             var dom = document.getElementsByTagName('body')[0];
             dom.appendChild(element);
-        } else if (node.id) {
-            var dom = document.getElementById(node);
-            dom.appendChild(element);
         } else {
             node.appendChild(element);
         }
