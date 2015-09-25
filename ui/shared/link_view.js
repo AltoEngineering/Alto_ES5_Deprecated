@@ -45,9 +45,9 @@ Alto.LinkView = Alto.CoreView.extend({
             }
 
             if (!Alto.isEmpty(this.get('href'))) {
-                node.href = this.get('href');
+                node.href = 'http://%@'.fmt(this.get('href'));
             } else if (!Alto.isEmpty(this.get('parentView.data.link'))) {
-                node.href = this.get('parentView.data.link');
+                node.href = 'http://%@'.fmt(this.get('parentView.data.link'));
             }
 
             if (this.get('openInNewWindow')) {
