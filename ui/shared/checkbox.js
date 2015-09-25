@@ -62,6 +62,8 @@ Alto.Checkbox = Alto.CoreView.extend({
      */
     isRadio: false,
 
+    value: null,
+
     /*
      Gets the template and passes html elements to viewDidLoad().
 
@@ -93,6 +95,10 @@ Alto.Checkbox = Alto.CoreView.extend({
 
         if (this.get('isRadio') && Alto.isPresent(this.get('name'))) {
             input.name = this.get('name');
+        }
+
+        if (this.get('isRadio') && Alto.isPresent(this.get('value'))) {
+            input.value = this.get('value');
         }
 
         this.addClickHandler(label);
