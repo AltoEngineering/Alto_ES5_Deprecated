@@ -125,6 +125,27 @@ Alto.Application = Alto.Object.extend({
             secure: false
         });
         cookie.write();
+    },
+
+    endSession: function () {
+        var expirationDate = new Date(),
+            cookie;
+
+        expirationDate.setDate(expirationDate.getDate() - 30000);
+
+        cookie = Alto.Cookie.create({
+            name: this.get('COOKIENAME'),
+            value: '',
+            domain: this.get('CookieDomain'),
+            path: '/',
+            expires: expirationDate,
+            secure: false
+        });
+        cookie.write();
+
+        Alto.run.next(this, function() {
+            location.reload();
+        });
     }
 
 });
