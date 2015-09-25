@@ -229,7 +229,6 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
             // do nothing
         } else if (routeObject.state) {
             window[Alto.applicationName].statechart.goToState(routeObject.state);
-            window[Alto.applicationName].statechart.set('currentSubState', '');
         }
 
         if (routeObject.substate && currentSubstate === routeObject.substate) {

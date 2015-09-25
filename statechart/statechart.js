@@ -131,6 +131,7 @@ Alto.Statechart = Alto.Object.extend({
                 Alto.Console.log(message, Alto.Console.messageColor);
             }
 
+            window[Alto.applicationName].statechart.set('currentSubState', '');
             window[APP][state.camelize()].enterState();
         }
     },
