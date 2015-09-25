@@ -115,18 +115,23 @@ Alto.Statechart = Alto.Object.extend({
         }
 
         // Handle an attempt to enter a non existent state
-        if (!window[APP][state]) {
-            var message = "Can not find state " + state + ". Check your applications router and declared states.";
+        if (!window[APP][state.classify()]) {
+            var message = "Can not find state " + state + ".";
             Alto.Console.log(message, Alto.Console.errorColor);
         } else {
-            window[APP].statechart.set("currentState", state);
+
+            if (!window[APP][state]) {
+                window[APP][state] = window[APP][state.classify()].create();
+            }
+
+            window[APP].statechart.set("currentState", state.camelize());
 
             if (window[APP].LogStateTransitions) {
                 var message = "Entering " + window[APP].statechart.get("currentState");
                 Alto.Console.log(message, Alto.Console.messageColor);
             }
 
-            window[APP][state].enterState();
+            window[APP][state.camelize()].enterState();
         }
     },
 
