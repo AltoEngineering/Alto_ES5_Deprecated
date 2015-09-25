@@ -184,6 +184,6 @@ Alto.CoreView = Alto.Object.extend({
         } else {
             this.node.style.display = 'none';
         }
-    }.observes('this.isVisible')
+    }.observes('isVisible')
 
 });
