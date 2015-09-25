@@ -44,6 +44,10 @@ Alto.Cell = Alto.CoreView.extend ({
             node.removeAttribute('style');
         }
 
+        if (!this.get('isVisible')) {
+            node.style.display = 'none';
+        }
+
         this._super(node);
     },
 
