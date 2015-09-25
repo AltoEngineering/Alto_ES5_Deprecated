@@ -58,6 +58,6 @@ Alto.LabelView = Alto.CoreView.extend({
         }
 
         this.node.textContent = this.get("title");
-    }.observes('this.title')
+    }.observes('title')
 
 })
