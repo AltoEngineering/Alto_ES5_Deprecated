@@ -75,8 +75,17 @@ Alto.Mapper = Alto.Object.create({
         }
 
         Alto.keys(record).forEach(function (recordKey) {
-            json[recordKey[stringFormat]()] = record.get(recordKey);
+            if (recordKey.contains('Binding')) {
+                json[recordKey.slice(recordKey.length-7, recordKey.length)[stringFormat]()] = record.get(recordKey);
+            } else {
+                json[recordKey[stringFormat]()] = record.get(recordKey);
+            }
         });
+
+        // hack for some odd bug
+        if (json.binding) {
+            delete json.binding;
+        }
 
         return JSON.stringify(json);
 
