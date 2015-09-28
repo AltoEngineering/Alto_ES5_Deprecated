@@ -30,6 +30,13 @@ Alto.Statechart = Alto.Object.extend({
      */
     currentSubState: "",
 
+    /**
+     Collects the history of substate changes.  Used to sequentially go back a substate.
+     Resets to [] when changing a state.
+     @property substateHistory
+     */
+    substateHistory: [],
+
     dispatchViewEvent: function (eventName) {
         var APP = Alto.applicationName,
             state = window[APP].statechart.currentState,
@@ -83,7 +90,7 @@ Alto.Statechart = Alto.Object.extend({
             window[APP][state][eventName].apply(this, args);
         } else if (window[APP][state].viewState[eventName]) {
             window[APP][state].viewState[eventName].apply(this, args);
-        }  else {
+        } else {
             Alto.Console.log(message, Alto.Console.errorColor);
         }
 
@@ -111,6 +118,7 @@ Alto.Statechart = Alto.Object.extend({
                 Alto.Console.log(message, Alto.Console.warnColor);
             }
 
+            window[APP].statechart.set('substateHistory', []);
             window[APP][window[APP].statechart.get("currentState")].exitState();
         }
 
@@ -147,18 +155,24 @@ Alto.Statechart = Alto.Object.extend({
      @param substate
      @type String
      */
-    goToSubState: function (substate) {
+    goToSubState: function (substate, ignoreHistory) {
         // check if the current state has the substate
         // enter the substate
         // set the statecharts current substate
         var APP = Alto.applicationName,
-            currentState  = window[APP].statechart.get("currentState"),
+            currentState = window[APP].statechart.get("currentState"),
             currentSubstate = window[APP].statechart.get("currentSubState");
 
-        if (Alto.isPresent(currentSubstate)) {window[APP].statechart.leaveCurrentSubState();}
+        if (Alto.isPresent(currentSubstate)) {
+
+            if (window[APP][currentSubstate].get('isHistorySubState') && !ignoreHistory) {
+                window[APP].statechart.get('substateHistory').insertAt(0, currentSubstate);
+            }
+            window[APP].statechart.leaveCurrentSubState();
+        }
 
         if (window[APP][currentState][substate]) {
-            window[APP][substate] =  window[APP][currentState][substate].create();
+            window[APP][substate] = window[APP][currentState][substate].create();
 
             window[APP].statechart.set("currentSubState", substate);
 
@@ -170,9 +184,7 @@ Alto.Statechart = Alto.Object.extend({
             window[APP][substate].enterState();
 
         } else if (window[APP][currentSubstate][substate]) {
-            window[APP][substate] =  window[APP][currentSubstate][substate].create();
-
-            window[APP].statechart.leaveCurrentSubState();
+            window[APP][substate] = window[APP][currentSubstate][substate].create();
 
             window[APP].statechart.set("currentSubState", substate);
 
@@ -198,7 +210,7 @@ Alto.Statechart = Alto.Object.extend({
      ```
      @method leaveCurrentSubState
      */
-    leaveCurrentSubState: function() {
+    leaveCurrentSubState: function () {
         var APP = Alto.applicationName,
             substate = window[APP].statechart.get("currentSubState");
 
@@ -210,6 +222,14 @@ Alto.Statechart = Alto.Object.extend({
         window[APP][substate].exitState();
 
         window[APP].statechart.set("currentSubState", null);
+    },
+
+    goToPreviousSubstate: function () {
+        var previousSubstate = Enrollee.statechart.get('substateHistory')[0];
+
+        Enrollee.statechart.get('substateHistory').removeAt(0);
+        Enrollee.statechart.goToSubState(previousSubstate, true);
     }
+
 
 });
