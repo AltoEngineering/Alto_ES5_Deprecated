@@ -36,12 +36,13 @@ Alto.SelectView = Alto.CoreView.extend({
 
         if (Alto.isEmpty(this.get('options'))) {return}
 
-        if (this.get('hint')) {
+        if (Alto.isPresent(this.get('hint')) || this.get('hint') === '' ) {
             var optionNode = document.createElement('option');
             optionNode.textContent = this.get('hint');
             optionNode.selected = true;
             optionNode.disabled = true;
             selectNode.appendChild(optionNode);
+            this.node.value = this.get('hint');
         }
 
         if (options[0] instanceof Object && !Alto.isEmpty(keyValue)) {
@@ -69,7 +70,7 @@ Alto.SelectView = Alto.CoreView.extend({
     },
 
     selectedOptionDidChange: function () {
-        if (this.node.value != this.get('selectedOption')) {
+        if (this.node.value !== this.get('selectedOption')) {
             this.node.value = this.get('selectedOption');
         }
     }.observes('this.selectedOption'),
