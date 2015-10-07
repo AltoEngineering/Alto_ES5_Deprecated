@@ -27,6 +27,7 @@ Alto.DateTextField = Alto.View.extend({
 
     monthSelectMenu: Alto.SelectView.extend({
         classNames: ['month-select-menu'],
+        hint: 'Month',
         optionsBinding: 'parentView.months',
         selectedOptionBinding: 'parentView.month'
     }),
