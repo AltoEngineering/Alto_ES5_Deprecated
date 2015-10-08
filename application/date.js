@@ -2,7 +2,7 @@ Alto.Date = Alto.Object.extend ({
 
     days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 
-    months: ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
     monthsAbbreviated: ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'],
 
@@ -47,7 +47,6 @@ Alto.Date = Alto.Object.extend ({
     },
 
     convertFormattedDateToDateObject: function(formattedDate) {
-        debugger;
         var month =  formattedDate.split('/')[0],
             date = formattedDate.split('/')[1],
             year = formattedDate.split('/')[2],
