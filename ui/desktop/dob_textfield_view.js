@@ -57,19 +57,18 @@ Alto.DateTextField = Alto.View.extend({
         if (Alto.isEmpty(this.get('isoDate'))) {return}
 
         var dateObject = Alto.Date.create({'now': new Date(Date.parse(this.get('isoDate')))}),
-            month = dateObject.month(dateObject.get('now')),
+            month = dateObject.get('now').getMonth()+1,
             date = dateObject.date(dateObject.get('now')),
             year = dateObject.year(dateObject.get('now'));
 
-        this.set('month', month);
+        this.set('month', this.get('months')[month]);
         this.set('date', date);
         this.set('year', year);
     },
 
     _dateDidChange: function () {
         var dateObject = Alto.Date.create(),
-          //  month = this.get('month')? dateObject.get('months').indexOf(this.get('month')) : dateObject.get('months').indexOf( dateObject.get('months')[0]),
-            month = dateObject.get('months').indexOf(this.get('month')),
+            month = dateObject.get('months').indexOf(this.get('month'))-1,
             year = this.get('year'),
             date = this.get('date'),
             jsDate = new Date(year, month, date);
