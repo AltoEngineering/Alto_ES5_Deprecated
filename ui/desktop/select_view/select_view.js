@@ -36,7 +36,7 @@ Alto.SelectView = Alto.CoreView.extend({
 
         if (Alto.isEmpty(this.get('options'))) {return}
 
-        if (Alto.isPresent(this.get('hint')) || this.get('hint') === '' ) {
+        if (Alto.isPresent(this.get('hint')) || Alto.isEqual(this.get('hint'), '')) {
             var optionNode = document.createElement('option');
             optionNode.textContent = this.get('hint');
             optionNode.selected = true;
