@@ -14,7 +14,7 @@
  @author Chad Eubanks
  */
 
-Alto.Mapper = Alto.Object.create({
+Alto.Mapper = Alto.Object.create ({
 
     /**
      @method createRecordFromJson
@@ -41,9 +41,7 @@ Alto.Mapper = Alto.Object.create({
 
             if (!Alto.isNone(recordInstance.get(key))) {
 
-                if (Alto.isNone(value)) {
-                    value = ''
-                }
+                if (Alto.isNone(value)) { value = '' };
 
                 if (!recordInstance.__alto_meta__.descs[key]) {
                     recordInstance.set(key, value);
@@ -57,38 +55,23 @@ Alto.Mapper = Alto.Object.create({
         return recordInstance;
     },
 
-    deserializeRecordToJson: function (record, stringFormat) {
-        var json = {};
 
-        if (!stringFormat) {
-            stringFormat = 'underscore'
-        }
+    /**
+     @method duplicateRecord
+     @param {Object} content is the information used for duplication            -- Enroller.companyController.get('content')
+     @param {String} name of the datastore used                                 -- 'companyDataStore'
+     @param {String} method in the datastore used for deserializing             -- 'deserializeCompanyRecord'
+     @param {String} name of the model to build the duplicated record           -- 'CompanyRecord'
+     @param {String} controller to set the content too                          -- 'companyController'
 
-        if (!Alto.String[stringFormat]) {
-            Alto.Logger.error('unknown string format given.  Alto.String does not have a method called', stringFormat);
-            return;
-        }
+                                                                                i.e. window[APP].controller.get('priorRecord')
+     */
+    duplicateRecord: function (content, datastore, datastoreMethod, recordInstance, controller) {
+        var APP = Alto.applicationName,
+            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content)),
+            serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
 
-        if (!record instanceof Alto.Object) {
-            Alto.Logger.error('Unknown record type given.  Expecting record to be instance of Alto.Object');
-            return;
-        }
-
-        Alto.keys(record).forEach(function (recordKey) {
-            if (recordKey.contains('Binding')) {
-                json[recordKey.slice(recordKey.length-7, recordKey.length)[stringFormat]()] = record.get(recordKey);
-            } else {
-                json[recordKey[stringFormat]()] = record.get(recordKey);
-            }
-        });
-
-        // hack for some odd bug
-        if (json.binding) {
-            delete json.binding;
-        }
-
-        return JSON.stringify(json);
-
+        window[APP][controller].set('priorRecord', serializedData);
     }
 
 });
