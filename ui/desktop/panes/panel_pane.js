@@ -73,7 +73,7 @@ Alto.PanelPane = Alto.CoreView.extend({
         var children = this.get('childViews');
 
         this.set([children[0]], this[children[0]].create({parentView: this}));
-        this[this.childViews[0]].node.addEventListener("click", function () {
+        this[this.childViews[0]].node.addEventListener("click", function (event) {
             event.stopPropagation();
         }, false);
         this.node.appendChild(this[this.childViews[0]].node);
