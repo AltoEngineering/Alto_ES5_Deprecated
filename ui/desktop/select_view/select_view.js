@@ -39,6 +39,7 @@ Alto.SelectView = Alto.CoreView.extend({
         if (this.get('hint')) {
             var optionNode = document.createElement('option');
             optionNode.textContent = this.get('hint');
+            optionNode.value = this.get('hint');
             optionNode.selected = true;
             optionNode.disabled = true;
             selectNode.appendChild(optionNode);
@@ -48,12 +49,14 @@ Alto.SelectView = Alto.CoreView.extend({
             options.forEach(function (option) {
                 var optionNode = document.createElement('option');
                 optionNode.textContent = option[keyValue];
+                optionNode.value = option[keyValue];
                 selectNode.appendChild(optionNode);
             })
         } else if (typeof options[0] === "string") {
             options.forEach(function (option) {
                 var optionNode = document.createElement('option');
                 optionNode.textContent = option;
+                optionNode.value = option;
                 selectNode.appendChild(optionNode);
             })
         }
