@@ -91,10 +91,31 @@ Alto.FileUploadView = Alto.CoreView.extend({
     action: null,
 
     /**
+     * Upon selecting a file, executes a subsequent action function.
+     @property action
+     */
+    uploadMessage: null,
+
+    /**
      * Private variable that stores all the form data.
      @property _formData
      */
     _formData: null,
+
+    /*
+     Example:
+         uploadButton: Alto.FileUploadView.extend({
+            classNames: ['upload-button'],
+            tag: 'div',
+            title: 'Upload PDF',
+            uploadMessage: 'PDF Uploaded',
+            formBinding: window[APP].controllerName.content
+            action: 'doSomething',
+            inputName: 'pdf',
+            formName: 'pdfUploadForm',
+            formEnctype: 'multipart/form-data'
+         })
+     */
 
 
     /*
@@ -158,8 +179,12 @@ Alto.FileUploadView = Alto.CoreView.extend({
             fileName = path.split('\\')[path.split('\\').length - 1],
             label = this.get('label');
 
-       //  label.innerHTML = fileName;
+        label.innerHTML = fileName;
         label.style.color = '#2f4554';
+
+        if(Alto.isPresent(this.get('uploadMessage'))) {
+            label.textContent = this.get('uploadMessage');
+        }
 
         this.set('_formData', new FormData(document.forms.namedItem(this.get('formName'))));
         var APP = Alto.applicationName
