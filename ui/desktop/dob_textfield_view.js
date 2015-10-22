@@ -27,6 +27,7 @@ Alto.DateTextField = Alto.View.extend({
 
     monthSelectMenu: Alto.SelectView.extend({
         classNames: ['month-select-menu'],
+        hint: 'Month',
         optionsBinding: 'parentView.months',
         selectedOptionBinding: 'parentView.month'
     }),
@@ -66,14 +67,56 @@ Alto.DateTextField = Alto.View.extend({
         this.set('year', year);
     },
 
+
+
+    dateDidChange: function () {
+        if(Alto.isPresent(this.get('month')) && Alto.isPresent(this.get('year'))) {
+            // given month and year, find the number of days in that month
+            var monthIndex = this.get('months').indexOf(this.get('month')),
+                startDay = (new Date (this.get('year'), monthIndex, 1)).getDate(),
+                numberOfDays = (new Date (this.get('year'), monthIndex + 1, 0)).getDate();
+        } else {
+            // default to current month's number of days
+            var startDay = (new Date ((new Date).getFullYear(), (new Date).getMonth(), 1)).getDate(),
+                numberOfDays = (new Date ((new Date).getFullYear(), (new Date).getMonth() + 1, 0)).getDate();
+        }
+
+        if(Alto.isEmpty(this.get('date')) || (this.get('date') >= startDay && this.get('date') <= numberOfDays)) {
+            this.node.children[2].classList.remove('invalid');
+        } else {
+            this.node.children[2].classList.add('invalid');
+        }
+    }.observes('month,date,year'),
+
+    yearDidChange: function () {
+        var currentYear = (new Date).getFullYear();
+
+        if(Alto.isEmpty(this.get('year')) || (this.get('year') >= 1902 && this.get('year') <= currentYear)) {
+            this.node.children[3].classList.remove('invalid');
+        } else {
+            this.node.children[3].classList.add('invalid');
+        }
+    }.observes('year'),
+
     _dateDidChange: function () {
-        var dateObject = Alto.Date.create(),
-            month = dateObject.get('months').indexOf(this.get('month'))-1,
-            year = this.get('year'),
-            date = this.get('date'),
-            jsDate = new Date(year, month, date);
+        // if date or year is invalid, add to form validation object
+        if(this.node.children[2].className.contains('invalid') || this.node.children[3].className.contains('invalid')) {
+            Alto.formValidationContainer.get('activeFormsLookup')[Alto.guidFor(this)] = this
+        } else {
+            // set new iso date
+            var dateObject = Alto.Date.create(),
+                month = dateObject.get('months').indexOf(this.get('month'))-1,
+                year = this.get('year'),
+                date = this.get('date'),
+                jsDate = new Date(year, month, date);
 
-        this.set('isoDate', jsDate.toISOString());
+            this.set('isoDate', jsDate.toISOString());
+
+            // remove node if it was previously invalid
+            if(Alto.formValidationContainer.get('activeFormsLookup')[Alto.guidFor(this)]) {
+                delete Alto.formValidationContainer.get('activeFormsLookup')[Alto.guidFor(this)]
+            }
+
+        }
     }.observes('month,date,year')
-
 });
