@@ -2,10 +2,6 @@ Alto.USAStateStringsArray = Alto.Object.extend({
 
     states: [
         {
-            "name": "",
-            "abbreviation": ""
-        },
-        {
             "name": "Alabama",
             "abbreviation": "AL"
         },
