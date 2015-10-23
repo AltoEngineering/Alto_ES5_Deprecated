@@ -42,6 +42,11 @@ Alto.Date = Alto.Object.extend ({
         return new Date (this.get('now').getFullYear(), this.get('now').getMonth() -1 );
     },
 
+    formattedDate: function(date) {
+        if (Alto.isEmpty(date)) {return}
+        return new Date (Date.parse(date)).getMonth() + 1 + '/' + new Date (Date.parse(date)).getDate() + '/' + new Date (Date.parse(date)).getFullYear()
+    },
+
     formattedDateForDay: function(day) {
         return new Date (this.get('now').getFullYear(), this.get('now').getMonth(),day);
     },
