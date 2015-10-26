@@ -58,7 +58,7 @@ Alto.DateTextField = Alto.View.extend({
         if (Alto.isEmpty(this.get('isoDate'))) {return}
 
         var dateObject = Alto.Date.create({'now': new Date(Date.parse(this.get('isoDate')))}),
-            month = dateObject.get('now').getMonth()+1,
+            month = dateObject.get('now').getMonth(),
             date = dateObject.date(dateObject.get('now')),
             year = dateObject.year(dateObject.get('now'));
 
@@ -66,8 +66,6 @@ Alto.DateTextField = Alto.View.extend({
         this.set('date', date);
         this.set('year', year);
     },
-
-
 
     dateDidChange: function () {
         if(Alto.isPresent(this.get('month')) && Alto.isPresent(this.get('year'))) {
@@ -105,7 +103,7 @@ Alto.DateTextField = Alto.View.extend({
         } else {
             // set new iso date
             var dateObject = Alto.Date.create(),
-                month = dateObject.get('months').indexOf(this.get('month'))-1,
+                month = dateObject.get('months').indexOf(this.get('month')),
                 year = this.get('year'),
                 date = this.get('date'),
                 jsDate = new Date(year, month, date);
@@ -119,4 +117,5 @@ Alto.DateTextField = Alto.View.extend({
 
         }
     }.observes('month,date,year')
+
 });
