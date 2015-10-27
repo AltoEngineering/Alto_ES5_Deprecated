@@ -74,7 +74,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
 
         saveButton.textContent = "Save";
 
-        monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
+        monthYearLabel.innerHTML = Alto.Date.create().months[(new Date ()).getMonth()] + ' ' + this.get('selectedDate').year();
 
         this.set('monthYearLabel', monthYearLabel);
 
@@ -247,7 +247,7 @@ Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
      */
     _updateMonthYearLabel: function () {
         var monthYearLabel = this.get('monthYearLabel');
-        monthYearLabel.innerHTML = this.get('selectedDate').month() + ' ' + this.get('selectedDate').year();
+        monthYearLabel.innerHTML = Alto.Date.create().months[this.get('selectedDate.now').getMonth()] + ' ' + this.get('selectedDate').year();
     },
 
     /**
