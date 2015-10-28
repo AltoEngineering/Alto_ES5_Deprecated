@@ -93,6 +93,11 @@ Alto.Checkbox = Alto.CoreView.extend({
             label.appendChild(input);
         }
 
+        if (!this.get('isEnabled')) {
+            label.classList.add('disabled');
+            input.disabled = true;
+        }
+
         if (this.get('isRadio') && Alto.isPresent(this.get('name'))) {
             input.name = this.get('name');
         }
@@ -125,9 +130,11 @@ Alto.Checkbox = Alto.CoreView.extend({
 
     _isEnableDidChange: function () {
         if (this.get('isEnabled')) {
-            this.node.removeAttribute('style');
+            this.node.classList.remove('disabled');
+            this.node.children[0].disabled = false;
         } else {
-            this.node.style.opacity = 0.5;
+            this.node.classList.add('disabled');
+            this.node.children[0].disabled = true;
         }
     }.observes('this.isEnabled'),
 
