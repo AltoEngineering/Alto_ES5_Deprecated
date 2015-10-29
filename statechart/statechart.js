@@ -52,10 +52,12 @@ Alto.Statechart = Alto.Object.extend({
 
         if (window[APP][substate] && window[APP][substate][eventName]) {
             window[APP][substate][eventName].apply(this, args);
-        } else if (window[APP][state].viewState[eventName]) {
+        } else if (window[APP][state].viewState && window[APP][state].viewState[eventName]) {
             window[APP][state].viewState[eventName].apply(this, args);
         } else {
-            Alto.Console.log(message, Alto.Console.errorColor);
+            // todo work around for enroller not using viewState pattern
+            this.dispatchEvent(eventName);
+           // Alto.Console.log(message, Alto.Console.errorColor);
         }
 
     },
