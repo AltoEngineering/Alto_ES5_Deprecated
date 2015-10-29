@@ -101,7 +101,7 @@ Alto.ImageUploadView = Alto.CoreView.extend({
             that.get('form').appendChild(img);
         }
 
-        this.get('label').remove();
+        this.get('label').parentNode.removeChild(this.get('label'));
         this.set('formData', new FormData(this.get('form')));
         reader.readAsDataURL(file);
     }

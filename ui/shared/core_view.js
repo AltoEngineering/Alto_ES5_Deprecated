@@ -124,12 +124,14 @@ Alto.CoreView = Alto.Object.extend({
             children = this.get('childViews');
 
         while (n < children.length) {
-            document.getElementById(Alto.guidFor(this[children[n]])).remove();
+            var childNode = this[children[n]].node;
+            childNode.parentNode.removeChild(childNode);
+
             n++;
         }
 
         if (n == children.length) {
-            document.getElementById(Alto.guidFor(this)).remove();
+            this.node.parentNode.removeChild(this.node);
         }
 
         this.viewDidDisappear();
