@@ -13,47 +13,54 @@
  @class Alto.AutoCompleteMixin
  @extends Alto.Mixin
  @since Alto 0.0.1
- @author Chad Eubanks & Ryan Green
+ @author Chad Eubanks & Anthony Alviz
  */
 
 
 Alto.AutoCompleteMixin = Alto.Mixin.create({
 
+    //Key used to compare.
     lookupKey: null,
 
+    //Original content when matches is empty.
     autoCompleteData: '',
 
+    //New array with matched content.
     matches: [],
+
+    //Bind to controller that is being searched in the list view. Defaults to set that controllers content.
+    listView: '',
 
     valueDidChange: function () {
         var value = this.get('value');
 
         if (value == '') {
-            return
-        }
-
-        if (value.length == 1) {
-            value = value.toUpperCase();
-        }
-
-        var substrRegex = new RegExp(value),
-            i = 0,
-            __matches = [],
-            data = this.get('autoCompleteData');
-
-        while (i < data.length) {
-            if (substrRegex.test(data[i].get(this.get('lookupKey')))) {
-                __matches.push(data[i]);
+            this.set('matches', this.get('autoCompleteData'))
+        } else {
+            if (value.length > 0) {
+                value = value.toUpperCase();
             }
-            i++
+
+            var substrRegex = new RegExp(value),
+                i = 0,
+                __matches = [],
+                data = this.get('autoCompleteData');
+
+            while (i < data.length) {
+                if (substrRegex.test(data[i].get(this.get('lookupKey')).toUpperCase())) {
+                    __matches.push(data[i]);
+                }
+                i++
+            }
+
+            this.set('matches', __matches);
         }
 
-        this.set('matches', __matches);
         this._super();
     }.observes('this.value'),
 
     matchesDidChange: function () {
-        console.log(this.get('matches'));
+        this.get('listView').set('content', this.get('matches'));
     }.observes('this.matches')
 
 });
