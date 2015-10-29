@@ -56,6 +56,10 @@ Alto.CoreView = Alto.Object.extend({
 
         var node = this.get("tag");
         node = document.createElement(node);
+
+        // let the html element know about the view //
+        node.__alto_object__ = this;
+
         this.viewDidLoad(node);
     },
 

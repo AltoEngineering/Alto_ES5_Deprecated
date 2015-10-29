@@ -5,87 +5,44 @@
 // ==========================================================================
 
 /**
- Gives logging to your console some color.
+ Panel Pane
 
  @module UI
  @class Alto.PanelPane
- @extends Alto.CoreView
+ @extends Alto.Window
  @since Alto 0.0.1
- @author Chad Eubanks
+ @internal-version 0.0.2
+ @author Chad Eubanks and Miguel Chateloin
  */
 
-Alto.PanelPane = Alto.CoreView.extend({
+Alto.PanelPane = Alto.Window.extend({
+    childViews: ['pane'],
+    isPanelPane: true,
 
-    childViews: ['contentView'],
-
-    cancelAction: null,
+    tag: 'div',
 
     contentView: null,
 
-    /*
-     Gets the template and passes html elements to viewDidLoad().
+    pane: Alto.CoreView.extend({
+        classNames: ['alto-panel-pane'],
+        childViews: ['contentView'],
 
-     We dont know anything about the html elements nor should
-     we make that assumption.
-     */
-    viewWillLoad: function () {
-        var that = this;
+        contentViewBinding: 'this.parentView.contentView',
 
-        node = document.createElement('div');
-        node.addEventListener("click", function () {
-            that.click(that)
-        }, false);
-        document.addEventListener("keyup", function () {
-            window[Alto.applicationName]._keyResponder(event)
-        }, false);
+        viewWillLoad: function () {
+            var pane = document.createElement('div');
 
-        this.viewDidLoad(node);
-    },
+            // let the html element know about the view //
+            pane.__alto_object__ = this;
 
-    /*
-     Has the html elements and passes them to viewWillAppear().
+            this.viewDidLoad(pane);
+        },
 
-     We know about the html elements and can do some setup in here.
-     Example: add disabled, hidden, etc className / adds alto object ids (maybe) / setup dynamic data and more...
-     */
-    viewDidLoad: function (node) {
-        var that = this;
-
-        if (node) {
-            node.className += "alto-view-full-screen alto-panel-pane ";
-
-            var n = 0,
-                classNames = this.get('classNames');
-            while (n < classNames.length) {
-                node.className += node.className ? ' ' + classNames[n] : classNames[n];
-                n++;
-            }
-
-            this.viewWillAppear(node);
+        click: function () {
+           debugger;
         }
-    },
 
-    /*
-     Create the views subviews
+    })
 
-     */
-    viewCreateSubViews: function () {
-        var children = this.get('childViews');
-
-        this.set([children[0]], this[children[0]].create({parentView: this}));
-        this[this.childViews[0]].node.addEventListener("click", function (event) {
-            event.stopPropagation();
-        }, false);
-        this.node.appendChild(this[this.childViews[0]].node);
-
-        this.viewAnimateIn();
-    },
-
-    click: function(buttonView) {
-        if (Alto.isNone(this.get('cancelAction'))) {return}
-
-        var APP = Alto.applicationName
-        window[APP].statechart.dispatchViewEvent(this.get('cancelAction'));
-    }
 
 });
