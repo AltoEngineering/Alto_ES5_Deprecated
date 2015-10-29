@@ -104,8 +104,16 @@ Alto.Mapper = Alto.Object.create({
      */
     duplicateRecord: function (content, datastore, datastoreMethod, recordInstance, controller) {
         var APP = Alto.applicationName,
-            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content)),
-            serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
+            deseralizedData,
+            serializedData;
+
+        if (!window[APP][datastore] && datastore instanceof Alto.Object) {
+            deseralizedData = JSON.stringify(datastore[datastoreMethod](content));
+        } else {
+            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content));
+        }
+
+        serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
 
         window[APP][controller].set('priorRecord', serializedData);
     }
