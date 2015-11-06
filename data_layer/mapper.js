@@ -110,7 +110,7 @@ Alto.Mapper = Alto.Object.create({
         if (!window[APP][datastore] && datastore instanceof Alto.Object) {
             deseralizedData = JSON.stringify(datastore[datastoreMethod](content));
         } else {
-            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content));
+            deseralizedData = JSON.stringify(window[APP][datastore].create()[datastoreMethod](content));
         }
 
         serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
