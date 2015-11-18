@@ -38,7 +38,6 @@ Alto.Cell = Alto.CoreView.extend ({
             this.set('data', recordAtIndex);
         }
 
-        debugger;
         if (this.get('isSelected') || (this.data && this.data.isSelected)) {
             node.style.backgroundColor = '#eaf4ff'
         } else {
