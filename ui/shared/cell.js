@@ -38,7 +38,8 @@ Alto.Cell = Alto.CoreView.extend ({
             this.set('data', recordAtIndex);
         }
 
-        if (this.get('isSelected') || (this.data && this.data.get('isSelected'))) {
+        debugger;
+        if (this.get('isSelected') || (this.data && this.data.isSelected)) {
             node.style.backgroundColor = '#eaf4ff'
         } else {
             node.removeAttribute('style');
@@ -52,7 +53,7 @@ Alto.Cell = Alto.CoreView.extend ({
     },
 
     isSelectedDidChange: function () {
-        if (this.get('isSelected') || (this.data && this.data.get('isSelected'))) {
+        if (this.get('isSelected') || (this.data && this.data.isSelected)) {
             this.node.style.backgroundColor = '#eaf4ff'
         } else {
             this.node.removeAttribute('style');
