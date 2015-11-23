@@ -34,28 +34,41 @@ Alto.Cell = Alto.CoreView.extend ({
      */
     viewDidLoad: function(node) {
         if (node) {
-            var recordAtIndex =  this.parentView.data[this.indexRow];
+            var recordAtIndex = this.parentView.data[this.indexRow];
             this.set('data', recordAtIndex);
         }
 
-        if(Alto.isPresent(this.get('data'))) {
+        if (Alto.isPresent(this.get('data'))) {
             if (this.get('isSelected') || (this.get('data') && this.get('data.isSelected'))) {
                 node.style.backgroundColor = '#eaf4ff'
             } else {
                 node.removeAttribute('style');
             }
-        }
 
-        if (!this.get('isVisible')) {
-            node.style.display = 'none';
-        }
+            if (this.get('isSelected') || (this.data && this.data.isSelected)) {
+                node.style.backgroundColor = '#eaf4ff'
+            } else {
+                node.removeAttribute('style');
 
-        this._super(node);
+            }
+
+            if (!this.get('isVisible')) {
+                node.style.display = 'none';
+            }
+
+            this._super(node);
+        }
     },
 
     isSelectedDidChange: function () {
         if(Alto.isPresent(this.get('data'))) {
             if (this.get('isSelected') || (this.get('data') && this.get('data.isSelected'))) {
+                this.node.style.backgroundColor = '#eaf4ff'
+            } else {
+                this.node.removeAttribute('style');
+            }
+
+            if (this.get('isSelected') || (this.data && this.data.isSelected)) {
                 this.node.style.backgroundColor = '#eaf4ff'
             } else {
                 this.node.removeAttribute('style');
