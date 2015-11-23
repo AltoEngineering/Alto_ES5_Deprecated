@@ -99,7 +99,10 @@ Alto.DateTextField = Alto.View.extend({
     _dateDidChange: function () {
         // if date or year is invalid, add to form validation object
         if(this.node.children[2].className.contains('invalid') || this.node.children[3].className.contains('invalid')) {
-            Alto.formValidationContainer.get('activeFormsLookup')[Alto.guidFor(this)] = this
+            Alto.formValidationContainer.get('activeFormsLookup')[Alto.guidFor(this)] = this;
+            this.set('isoDate', null);
+        } else if (Alto.isEmpty(this.get('month')) || Alto.isEmpty(this.get('date')) || Alto.isEmpty(this.get('year'))) {
+            this.set('isoDate', null);
         } else {
             // set new iso date
             var dateObject = Alto.Date.create(),
