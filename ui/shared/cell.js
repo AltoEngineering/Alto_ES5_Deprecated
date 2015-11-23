@@ -39,25 +39,20 @@ Alto.Cell = Alto.CoreView.extend ({
         }
 
         if (Alto.isPresent(this.get('data'))) {
+
             if (this.get('isSelected') || (this.get('data') && this.get('data.isSelected'))) {
                 node.style.backgroundColor = '#eaf4ff'
             } else {
                 node.removeAttribute('style');
             }
 
-            if (this.get('isSelected') || (this.data && this.data.isSelected)) {
-                node.style.backgroundColor = '#eaf4ff'
-            } else {
-                node.removeAttribute('style');
-
-            }
-
             if (!this.get('isVisible')) {
                 node.style.display = 'none';
             }
 
-            this._super(node);
         }
+
+        this._super(node);
     },
 
     isSelectedDidChange: function () {
