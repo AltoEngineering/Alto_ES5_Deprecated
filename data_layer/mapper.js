@@ -114,7 +114,6 @@ Alto.Mapper = Alto.Object.create({
         }
 
         serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
-
         window[APP][controller].set('priorRecord', serializedData);
     }
 
