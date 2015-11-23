@@ -37,8 +37,16 @@ Alto.Statechart = Alto.Object.extend({
      */
     substateHistory: [],
 
-    dispatchViewEvent: function (eventName) {
+    /*todo: we are finding some odd behaviour with the dispatchEvent and dispatchViewEvent methods.
+            speccifcally, the arg 'eventName'.  It appears to be empty yet the only time an exception is thrown is
+            when we interact with this api via the file upload class...
+            We may want to refactor this api once we go to LW-Web.
+     */
+
+
+    dispatchViewEvent: function () {
         var APP = Alto.applicationName,
+            eventName = Array.prototype.slice.call(arguments)[0],
             state = window[APP].statechart.currentState,
             substate = window[APP].statechart.currentSubState,
             args = Array.prototype.slice.call(arguments),
@@ -73,8 +81,9 @@ Alto.Statechart = Alto.Object.extend({
      @param function
      @type String
      */
-    dispatchEvent: function (eventName) {
+    dispatchEvent: function () {
         var APP = Alto.applicationName,
+            eventName = Array.prototype.slice.call(arguments)[0],
             state = window[APP].statechart.currentState,
             substate = window[APP].statechart.currentSubState,
             args = Array.prototype.slice.call(arguments),
@@ -90,7 +99,7 @@ Alto.Statechart = Alto.Object.extend({
             window[APP][substate][eventName].apply(this, args);
         } else if (window[APP][state][eventName]) {
             window[APP][state][eventName].apply(this, args);
-        } else if (window[APP][state].viewState[eventName]) {
+        } else if (window[APP][state].viewState && window[APP][state].viewState[eventName]) {
             window[APP][state].viewState[eventName].apply(this, args);
         } else {
             Alto.Console.log(message, Alto.Console.errorColor);
