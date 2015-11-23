@@ -95,7 +95,7 @@ Alto.Mapper = Alto.Object.create({
     /**
      @method duplicateRecord
      @param {Object} content is the information used for duplication            -- Enroller.companyController.get('content')
-     @param {String} name of the datastore used                                 -- 'companyDataStore'
+     @param {String} name of the datastore used                                 -- 'companyDataStore' | 'CompanyDataStore'
      @param {String} method in the datastore used for deserializing             -- 'deserializeCompanyRecord'
      @param {String} name of the model to build the duplicated record           -- 'CompanyRecord'
      @param {String} controller to set the content too                          -- 'companyController'
@@ -105,16 +105,37 @@ Alto.Mapper = Alto.Object.create({
     duplicateRecord: function (content, datastore, datastoreMethod, recordInstance, controller) {
         var APP = Alto.applicationName,
             deseralizedData,
-            serializedData;
+            serializedData,
+            datastoreFormatValidation;
 
-        if (!window[APP][datastore] && datastore instanceof Alto.Object) {
-            deseralizedData = JSON.stringify(datastore[datastoreMethod](content));
-        } else {
+        //todo make our usage of this api consistant... right now Enroller's datastore's are singletons.  Enrollee's are not.
+        // datastore should not be singleton
+
+        if (typeof datastore != 'string') {
+            // must pass in a string
+            Alto.Logger.error('duplicateRecord() expects the datastore argument to be a string');
+            return
+        }
+
+        datastoreFormatValidation = datastore.split('.');
+
+        if (datastoreFormatValidation.length > 1) {
+            // dont pass in a property path... must be just the class or instance name 'companyDataStore | CompanyDataStore
+            Alto.Logger.error('duplicateRecord() expects the datastore argument to be a string name and not a property path.  Example: \'companyDataStore\' ');
+            return
+        }
+
+        if (window[APP][datastore] instanceof Alto.Object) {
+            // is this an instance?
+            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content));
+        } else if (window[APP][datastore]) {
+            // does this class exist?
             deseralizedData = JSON.stringify(window[APP][datastore].create()[datastoreMethod](content));
         }
 
         serializedData = Alto.Mapper.createRecordFromJson(window[APP][recordInstance].create(), JSON.parse(deseralizedData), 'camelize');
         window[APP][controller].set('priorRecord', serializedData);
+
     }
 
 });
