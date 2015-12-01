@@ -1,3 +1,5 @@
+alto_require('frameworks/altojs/ui/shared/core_view.js');
+
 Alto.CalendarView = Alto.CoreView.extend(Alto.CalendarDelegate, {
     classNames: ['calendar-base-view'],
 

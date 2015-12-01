@@ -1,5 +1,4 @@
-
-
+alto_require('frameworks/altojs/ui/shared/core_view.js');
 
 Alto.ImageUploadView = Alto.CoreView.extend({
 

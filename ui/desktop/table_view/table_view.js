@@ -1,3 +1,5 @@
+alto_require('frameworks/altojs/ui/shared/view.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC

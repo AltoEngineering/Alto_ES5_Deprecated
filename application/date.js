@@ -1,3 +1,5 @@
+alto_require('frameworks/altojs/application/date.js');
+
 Alto.Date = Alto.Object.extend ({
 
     days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],

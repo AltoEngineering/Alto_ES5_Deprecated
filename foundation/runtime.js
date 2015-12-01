@@ -8,6 +8,8 @@
  * @version   1.9.1
  */
 
+var alto_require = alto_require || function alto_require() {};
+
 (function() {
     var enifed, requireModule, eriuqer, requirejs, Alto;
 

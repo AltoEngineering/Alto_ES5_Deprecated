@@ -1,3 +1,7 @@
+alto_require('frameworks/altojs/router/mixins/router_properties.js');
+alto_require('frameworks/altojs/router/mixins/router_datasource_inverse_mixin.js');
+alto_require('frameworks/altojs/router/mixins/router_states_inverse_mixin.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2015 The Code Boutique, LLC

@@ -1,3 +1,7 @@
+alto_require('frameworks/altojs/ui/shared/core_view.js');
+alto_require('frameworks/altojs/ui/shared/view.js');
+alto_require('frameworks/altojs/ui/shared/calendar_view_proper.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC

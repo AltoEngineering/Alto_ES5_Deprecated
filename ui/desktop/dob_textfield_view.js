@@ -1,3 +1,8 @@
+alto_require('frameworks/altojs/ui/shared/view.js');
+alto_require('frameworks/altojs/ui/shared/label_view.js');
+alto_require('frameworks/altojs/ui/desktop/select_view/select_view.js');
+alto_require('frameworks/altojs/ui/shared/textfield_view.js');
+
 Alto.DateTextField = Alto.View.extend({
     classNames: ['date-textfield'],
     childViews: ['labelView', 'monthSelectMenu', 'dayTextField', 'yearTextField'],

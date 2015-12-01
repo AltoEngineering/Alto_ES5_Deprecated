@@ -1,3 +1,5 @@
+alto_require('frameworks/altojs/ui/shared/button_view.js');
+
 Alto.DownloadFileButtonView = Alto.ButtonView.extend({
 
     downloadURL : null,
