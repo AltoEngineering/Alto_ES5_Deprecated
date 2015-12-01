@@ -1,3 +1,5 @@
+alto_require('frameworks/altojs/statechart/state.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2015 The Code Boutique, LLC
