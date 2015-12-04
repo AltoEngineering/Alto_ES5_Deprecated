@@ -133,13 +133,13 @@ Alto.Mapper = Alto.Object.create({
             // does this class exist?
             deseralizedData = JSON.stringify(window[APP][datastore].create()[datastoreMethod](content));
         }
-
+        
         if (recordInstance instanceof Alto.Object) {
             // is this an instance?
             recordInstance;
         } else if (recordInstance) {
             // does this class exist?
-            recordInstance = recordInstance.create();
+            recordInstance = window[APP][recordInstance].create();
         }
 
         serializedData = Alto.Mapper.createRecordFromJson(recordInstance, JSON.parse(deseralizedData), 'camelize');
