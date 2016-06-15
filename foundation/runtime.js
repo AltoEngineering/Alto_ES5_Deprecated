@@ -8,6 +8,8 @@
  * @version   1.9.1
  */
 
+var alto_require = alto_require || function alto_require() {};
+
 (function() {
     var enifed, requireModule, eriuqer, requirejs, Alto;
 
@@ -1510,9 +1512,9 @@
                     var fullNameType = fullName.split(':')[0];
                     if (fullNameType === type) {
                         throw new Error('Cannot inject a `' + fullName +
-                        '` on other ' + type +
-                        '(s). Register the `' + fullName +
-                        '` as a different type and perform the typeInjection.');
+                            '` on other ' + type +
+                            '(s). Register the `' + fullName +
+                            '` as a different type and perform the typeInjection.');
                     }
 
                     addTypeInjection(this.typeInjections, type, property, fullName);
@@ -1577,9 +1579,9 @@
 
                     if (this.cache[normalizedName]) {
                         throw new Error("Attempted to register an injection for a type that has already been looked up. ('" +
-                        normalizedName + "', '" +
-                        property + "', '" +
-                        injectionName + "')");
+                            normalizedName + "', '" +
+                            property + "', '" +
+                            injectionName + "')");
                     }
 
                     addInjection(initRules(this.injections, normalizedName), property, normalizedInjectionName);
@@ -1686,7 +1688,7 @@
 
                     if (this.factoryCache[normalizedName]) {
                         throw new Error('Attempted to register a factoryInjection for a type that has already ' +
-                        'been looked up. (\'' + normalizedName + '\', \'' + property + '\', \'' + injectionName + '\')');
+                            'been looked up. (\'' + normalizedName + '\', \'' + property + '\', \'' + injectionName + '\')');
                     }
 
                     addInjection(initRules(this.factoryInjections, normalizedName), property, normalizedInjectionName);
@@ -1900,7 +1902,7 @@
                 if (factory) {
                     if (typeof factory.create !== 'function') {
                         throw new Error('Failed to create an instance of \'' + fullName + '\'. ' +
-                        'Most likely an improperly defined class or an invalid module export.');
+                            'Most likely an improperly defined class or an invalid module export.');
                     }
 
 
@@ -3101,7 +3103,7 @@
                 });
 
                 warn('Watching an undefined global, Alto expects watched globals to be' +
-                ' setup by the time the run loop is flushed, check for typos', pendingQueue.length === 0);
+                    ' setup by the time the run loop is flushed, check for typos', pendingQueue.length === 0);
             }
 
             __exports__.flushPendingChains = flushPendingChains;function addChainWatcher(obj, keyName, node) {
@@ -3485,7 +3487,7 @@
              */
 
             Alto.warn("The CP_DEFAULT_CACHEABLE flag has been removed and computed properties" +
-            "are always cached by default. Use `volatile` if you don't want caching.", Alto.ENV.CP_DEFAULT_CACHEABLE !== false);
+                "are always cached by default. Use `volatile` if you don't want caching.", Alto.ENV.CP_DEFAULT_CACHEABLE !== false);
 
             var metaFor = meta;
             var a_slice = [].slice;
@@ -5908,7 +5910,7 @@
             __exports__["default"] = function expandProperties(pattern, callback) {
                 if (pattern.indexOf(' ') > -1) {
                     throw new AltoError('Brace expanded properties cannot contain spaces, ' +
-                    'e.g. `user.{firstName, lastName}` should be `user.{firstName,lastName}`');
+                        'e.g. `user.{firstName, lastName}` should be `user.{firstName,lastName}`');
                 }
 
 
@@ -6035,8 +6037,8 @@
 
                 this._super$Constructor(function(keyName) {
                     Alto.assert("Attempting to lookup an injected property on an object " +
-                    "without a container, ensure that the object was " +
-                    "instantiated via a container.", this.container);
+                        "without a container, ensure that the object was " +
+                        "instantiated via a container.", this.container);
 
                     return this.container.lookup(type + ':' + (name || keyName));
                 }, { readOnly: true });
@@ -7459,7 +7461,7 @@
                 var baseValue = values[key] || obj[key];
 
                 Alto.assert("You passed in `" + JSON.stringify(value) + "` as the value for `" + key +
-                "` but `" + key + "` cannot be an Array", !isArray(value));
+                    "` but `" + key + "` cannot be an Array", !isArray(value));
 
                 if (!baseValue) { return value; }
 
@@ -8336,11 +8338,11 @@
                 index = keySet[keyName];
                 if (index === undefined) {
                     index = observers.push({
-                        sender: sender,
-                        keyName: keyName,
-                        eventName: eventName,
-                        listeners: []
-                    }) - 1;
+                            sender: sender,
+                            keyName: keyName,
+                            eventName: eventName,
+                            listeners: []
+                        }) - 1;
                     keySet[keyName] = index;
                 }
                 return observers[index].listeners;
@@ -8528,7 +8530,6 @@
                 }
 
                 create = Object.create = function create(prototype, properties) {
-
                     var object;
                     function Type() {}  // An empty constructor.
 
@@ -10116,7 +10117,7 @@
             function checkAutoRun() {
                 if (!run.currentRunLoop) {
                     Alto.assert("You have turned on testing mode, which disabled the run-loop's autorun." +
-                    " You will need to wrap any code with asynchronous side-effects in an run", !Alto.testing);
+                        " You will need to wrap any code with asynchronous side-effects in an run", !Alto.testing);
                 }
             }
 
@@ -13644,7 +13645,7 @@
              */
             function sort(itemsKey, sortDefinition) {
                 Alto.assert('Alto.computed.sort requires two arguments: an array key to sort and ' +
-                'either a sort properties key or sort function', arguments.length === 2);
+                    'either a sort properties key or sort function', arguments.length === 2);
 
                 if (typeof sortDefinition === 'function') {
                     return customSort(itemsKey, sortDefinition);
@@ -14107,7 +14108,7 @@
 
             function controllerInjectionHelper(factory) {
                 Alto.assert("Defining an injected controller property on a " +
-                "non-controller is not allowed.", Controller.detect(factory));
+                    "non-controller is not allowed.", Controller.detect(factory));
             }
 
 
@@ -14424,7 +14425,7 @@
                     for (var i = 0, l = arguments.length; i < l; i++) {
                         var arg = arguments[i];
                         Alto.assert('Immediate observers must observe internal properties only, ' +
-                        'not properties on other objects.', arg.indexOf('.') === -1);
+                            'not properties on other objects.', arg.indexOf('.') === -1);
                     }
 
                     // observes handles property expansion
@@ -14705,7 +14706,7 @@
              */
             function inject() {
                 Alto.assert("Injected properties must be created through helpers, see `" +
-                keys(inject).join("`, `") + "`");
+                    keys(inject).join("`, `") + "`");
             }
 
             // Dictionary of injection validations by type, added to by `createInjectionHelper`
@@ -14863,7 +14864,7 @@
 
                     var content = get(this, 'content');
                     Alto.assert(fmt("Cannot delegate set('%@', %@) to the 'content' property of" +
-                    " object proxy %@: its 'content' is undefined.", [key, value, this]), content);
+                        " object proxy %@: its 'content' is undefined.", [key, value, this]), content);
                     return set(content, key, value);
                 }
 
@@ -15039,7 +15040,7 @@
                             hashName = 'actions';
                         } else if (typeOf(props.events) === 'object') {
                             Alto.deprecate('Action handlers contained in an `events` object are deprecated in favor' +
-                            ' of putting them in an `actions` object', false);
+                                ' of putting them in an `actions` object', false);
                             hashName = 'events';
                         }
 
@@ -15094,7 +15095,7 @@
 
                     if (target = get(this, 'target')) {
                         Alto.assert("The `target` for " + this + " (" + target +
-                        ") does not have a `send` method", typeof target.send === 'function');
+                            ") does not have a `send` method", typeof target.send === 'function');
                         target.send.apply(target, arguments);
                     }
                 }
@@ -19214,7 +19215,7 @@
 
                     if (content) {
                         Alto.assert(fmt('ArrayProxy expects an Array or ' +
-                            'Alto.ArrayProxy, but you passed %@', [typeof content]),
+                                'Alto.ArrayProxy, but you passed %@', [typeof content]),
                             isArray(content) || content.isDestroyed);
 
                         content.addArrayObserver(this, {
@@ -19251,7 +19252,7 @@
 
                     if (arrangedContent) {
                         Alto.assert(fmt('ArrayProxy expects an Array or ' +
-                            'Alto.ArrayProxy, but you passed %@', [typeof arrangedContent]),
+                                'Alto.ArrayProxy, but you passed %@', [typeof arrangedContent]),
                             isArray(arrangedContent) || arrangedContent.isDestroyed);
 
                         arrangedContent.addArrayObserver(this, {
@@ -19539,13 +19540,27 @@
                                     bindings[keyName] = value;
                                 }
 
+                                // todo: revisit dynamically creating an instance name inscope of the window
+                                // works with create but not createWithMixins atm
+                                /**
+                                 if (keyName === 'instanceName') {
+                                    if (value.split('.').length != 2) {
+                                        throw new AltoError('A View instance name must match the dot notation length of 2: ' +
+                                            '"' + value + '" does not meet this requirement.  Valid example: "App.instanceName" ');
+                                   } else {
+                                        window[value.split('.')[0]][value.split('.')[1]] = this;
+                                    }
+
+                                }
+                                 */
+
                                 var desc = m.descs[keyName];
 
                                 Alto.assert("Alto.Object.create no longer supports defining computed properties. Define computed properties using extend() or reopen() before calling create().", !(value instanceof ComputedProperty));
                                 Alto.assert("Alto.Object.create no longer supports defining methods that call _super.", !(typeof value === 'function' && value.toString().indexOf('._super') !== -1));
                                 Alto.assert("`actions` must be provided at extend time, not at create " +
-                                "time, when Alto.ActionHandler is used (i.e. views, " +
-                                "controllers & routes).", !((keyName === 'actions') && ActionHandler.detect(this)));
+                                    "time, when Alto.ActionHandler is used (i.e. views, " +
+                                    "controllers & routes).", !((keyName === 'actions') && ActionHandler.detect(this)));
 
                                 if (concatenatedProperties &&
                                     concatenatedProperties.length > 0 &&
@@ -20055,8 +20070,10 @@
                 destroyInstance: function(instance) {
                     var Class;
                     Class = window[instance.split('.')[0]][instance.split('.')[1]];
-                    Class.destroy();
-                    delete window[instance.split('.')[0]][instance.split('.')[1]];
+                    if (Class) {
+                        Class.destroy();
+                        delete window[instance.split('.')[0]][instance.split('.')[1]];
+                    }
                 },
 
                 /**

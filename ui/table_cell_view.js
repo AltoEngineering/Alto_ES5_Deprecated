@@ -1,4 +1,4 @@
-alto_require('frameworks/shared/altojs/statechart/state.js');
+alto_require('frameworks/shared/altojs/ui/core_view.js');
 
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
@@ -7,17 +7,17 @@ alto_require('frameworks/shared/altojs/statechart/state.js');
 // ==========================================================================
 
 /**
- A substate object is used as a communication point between all of your applications components.
+ Gives logging to your console some color.
 
- @module Statechart
- @class Alto.SubState
- @extends Alto.State
+ @module UI
+ @class Alto.Row
+ @extends Alto.Cell
  @since Alto 0.0.1
  @author Chad Eubanks
  */
 
-Alto.SubState = Alto.State.extend ({
+Alto.TableCell = Alto.CoreView.extend ({
 
-    isHistorySubState: true
+    tag: 'td'
 
-});
+})

@@ -7,14 +7,6 @@
 
 Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInverse, Alto.RouterStatesInverse, {
 
-    init: function () {
-        if (window.addEventListener) {
-            window.addEventListener("hashchange", this.hashDidChange, false);
-        } else if (window.attachEvent) {
-            window.attachEvent("hashchange", this.hashDidChange, false);
-        }
-    },
-
     routerDidBecomeActive: function () {
         this.checkForIndexRoute();
     },
@@ -33,7 +25,7 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
     },
 
     parseRouteObject: function (routeObject) {
-        routeObject.datasource ? this.set('routeHasDatasource', true) : this.set('routeHasDatasource', false);
+        routeObject.datastore ? this.set('routeHasDatastore', true) : this.set('routeHasDatastore', false);
         routeObject.isSecure ? this.set('routeIsSecure', true) : this.set('routeIsSecure', false);
         routeObject.state ? this.set('routeIsParentState', true) : this.set('routeIsParentState', false);
         routeObject.substate ? this.set('routeIsSubstate', true) : this.set('routeIsSubstate', false);
@@ -88,73 +80,109 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
             var cookieName = window[Alto.applicationName].get('COOKIENAME');
             this.verifyApplicationHasValidSession(Alto.Cookie.find(cookieName), routeObject);
         } else {
-            this.checkRouteForDataSource(routeObject);
+            this.checkRouteForDataStore(routeObject);
         }
 
     },
 
     verifyApplicationHasValidSession: function (sessionCookie, routeObject) {
         if (sessionCookie) {
-            this.checkRouteForDataSource(routeObject);
+            this.checkRouteForDataStore(routeObject);
         } else {
             this.replaceRouteWithUnauthorizedRoute();
         }
     },
 
-    checkRouteForDataSource: function (routeObject) {
-        if (routeObject.datasource) {
-            this.checkDatasourceForInverse(routeObject);
+    checkRouteForDataStore: function (routeObject) {
+        if (routeObject.datastore) {
+            this.checkDataStoreForInverse(routeObject);
+        } else if (routeObject.inverse) {
+            this.walkDataStoreInverse(routeObject, true);
         } else {
             this.checkForApplicationStatechartInstance(routeObject);
         }
     },
 
-    checkDatasourceForInverse: function (routeObject) {
-        if (routeObject.datasource.inverse) {
-            this.walkDatasourceInverse(routeObject);
+    checkDataStoreForInverse: function (routeObject) {
+        if (routeObject.inverse) {
+            this.walkDataStoreInverse(routeObject);
         } else {
-            this.fetchResourceAssocitedToRoute(routeObject);
+            this.fetchResourceAssociatedToRoute(routeObject);
         }
     },
 
-    walkDatasourceInverse: function (routeObject) {
-        var datasources = [routeObject],
-            routeObjectsForInverseRoute = [routeObject],
-            currentRouteObject = routeObject;
+    walkDataStoreInverse: function (routeObject, skipDataStore) {
+        var routeObjects = [],
+            datasources = [],
+            routeObjectsForInverseRoute = [], that = this, updatedRouteObject, routeObjectsReversed;
 
-        while (currentRouteObject.datasource.inverse) {
-            datasources.insertAt(0, Enrollee.router[routeObject.datasource.inverse]);
-            routeObjectsForInverseRoute.insertAt(0, Enrollee.router[routeObject.datasource.inverse]);
-            currentRouteObject = Enrollee.router[routeObject.datasource.inverse];
+        if (routeObject.inverse) {
+            var path = this.get('route').split('/');
+
+            path.forEach(function (route) {
+                if (Alto.isNone(updatedRouteObject)) {
+                    // this should be the role part of our routes hash
+                    updatedRouteObject = that[route];
+                } else {
+                    if (updatedRouteObject[route]) {
+                        updatedRouteObject = updatedRouteObject[route]
+                    } else if (updatedRouteObject.unique_id) {
+                        updatedRouteObject = updatedRouteObject.unique_id
+                    } else {
+                        Alto.warn('something odd was given to the route inverse');
+                    }
+                }
+
+                routeObjects.insertAt(0, updatedRouteObject);
+
+            })
+
         }
+
+        // great we collected ALL of the routes down to our last nested route but we might not need them all
+        // lets iterate through them and start with the inner most inverse and walk up to the master.
+
+        routeObjects.some(function (rt) {
+            datasources.insertAt(0, rt);
+            routeObjectsForInverseRoute.insertAt(0, rt);
+
+            if (rt.isMaster) {return true}
+        });
 
         this.set('routeObjectsForInverseRoute', routeObjectsForInverseRoute);
-        this.verifyRouteObjectsForDatasourceInverseExists(datasources);
+
+        if (skipDataStore) {
+            this.verifyRouteObjectsForStatesInverseExists(this.get('routeObjectsForInverseRoute'));
+        } else {
+            this.verifyRouteObjectsForDatastoreInverseExists(datasources);
+        }
     },
 
-    fetchResourceAssocitedToRoute: function (routeObject) {
-        var datasource,
-            that = this,
-            datasource = window[Alto.applicationName][routeObject.datasource.name.classify()].create();
-
-        // display loading pane
-        if (!window[Alto.applicationName].loadingPane) {
-            window[Alto.applicationName].loadingPane = window[Alto.applicationName].LoadingPane.create({status: routeObject.datasource.loadingMessage});
-        } else {
-            window[Alto.applicationName].loadingPane.set('status', routeObject.datasource.loadingMessage);
+    fetchResourceAssociatedToRoute: function (routeObject) {
+        var datastore = routeObject.datastore.create(),
+            that = this;
+        if (!LW.loadingPane) {
+            LW.loadingPane = LW.LoadingPane.create({
+                instanceName: 'LW.loadingPane',
+            });
         }
 
         // check for datasource name
-        if (routeObject.datasource.name) {
+        if (routeObject.method) {
 
-            if (!window[Alto.applicationName][routeObject.datasource.name.classify()]) {
-                Alto.Logger.error('DataSource', routeObject.datasource.name, 'not found.');
-                return;
+            //todo: refactor
+
+            if (Alto.isPresent(datastore.get('url'))) {
+                var url = datastore.get('url');
+            } else {
+                console.log('missing url from datastore')
             }
 
             // hit the network
-            datasource[routeObject.datasource.method]().then(function (success) {
-                window[Alto.applicationName].loadingPane.remove();
+            datastore[routeObject.method](url).then(function (success) {
+                if (LW.loadingPane) {
+                    LW.loadingPane.remove();
+                }
                 that.checkForApplicationStatechartInstance(routeObject);
             }, function (error) {
                 that.netWorkCallDidFail(error);
@@ -162,12 +190,14 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
 
         } else {
             // unknown datasource name given in routeObject
-            Alto.Logger.error('A datasource named', routeObject.datasource.name, 'not found.');
+            Alto.Logger.error('A datastore method was not provided.');
         }
     },
 
     netWorkCallDidFail: function (error) {
-        window[Alto.applicationName].loadingPane.renderError(error);
+        if(window[Alto.applicationName].loadingPane){
+            window[Alto.applicationName].loadingPane.renderError(error);
+        }
     },
 
     checkForApplicationStatechartInstance: function (routeObject) {
@@ -175,10 +205,10 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
             window[Alto.applicationName].statechart = Alto.Statechart.createWithMixins();
         }
 
-        this.checkRouteForState(routeObject);
+        this.checkRouteForStateOrSubstate(routeObject);
     },
 
-    checkRouteForState: function (routeObject) {
+    checkRouteForStateOrSubstate: function (routeObject) {
         if (Alto.isPresent(routeObject.state)) {
             this.verifyStateClassExists(routeObject);
         } else if (Alto.isPresent(routeObject.substate)) {
@@ -189,8 +219,8 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
     },
 
     verifyStateClassExists: function (routeObject) {
-        
-        if (window[Alto.applicationName][routeObject.state.classify()]) {
+
+        if (window[Alto.applicationName][Alto.String.classify(routeObject.state)]) {
             this.checkForStateInstance(routeObject);
         } else {
             this.malformedStateGiven(routeObject);
@@ -198,7 +228,7 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
     },
 
     verifySubstateClassExists: function (routeObject) {
-        if (window[Alto.applicationName][routeObject.substate.classify()]) {
+        if (window[Alto.applicationName][Alto.String.classify(routeObject.substate)]) {
             this.checkForSubstateInstance(routeObject);
         } else {
             this.malformedStateGiven(routeObject);
@@ -207,7 +237,7 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
 
     checkForStateInstance: function (routeObject) {
         if (!window[Alto.applicationName][routeObject.state]) {
-            window[Alto.applicationName][routeObject.state] = window[Alto.applicationName][routeObject.state.classify()].create();
+            window[Alto.applicationName][routeObject.state] = window[Alto.applicationName][Alto.String.classify(routeObject.state)].create();
         }
 
         this.transitionToStateOrSubstate(routeObject);
@@ -215,7 +245,7 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
 
     checkForSubstateInstance: function (routeObject) {
         if (!window[Alto.applicationName][routeObject.substate]) {
-            window[Alto.applicationName][routeObject.substate] = window[Alto.applicationName][routeObject.substate.classify()].create();
+            window[Alto.applicationName][routeObject.substate] = window[Alto.applicationName][Alto.String.classify(routeObject.substate)].create();
         }
 
         this.transitionToStateOrSubstate(routeObject);
@@ -246,7 +276,7 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
     replaceRouteWithUnauthorizedRoute: function () {
         this.replaceRoute(this.unauthorizedRoute.route);
         Alto.run.next(this, function () {
-            location.reload();
+            parent.location.reload();
         });
     },
 
@@ -259,14 +289,14 @@ Alto.Router = Alto.Object.extend(Alto.RouterProperties, Alto.RouterDatasourceInv
     },
 
     pushRoute: function (route) {
-        history.pushState('', '', route);
+        parent.history.pushState('', '', route);
     },
 
     replaceRoute: function (route) {
         if (this.get('location').split('/')[this.get('location').split('/').length - 1] === route.split('/')[route.split('/').length - 1]) {
             route = route.split('/').removeAt(route.split('/').length - 1).join('/')
         }
-        history.replaceState('', '', route);
+        parent.history.replaceState('', '', route);
         this.checkForIndexRoute();
     },
 

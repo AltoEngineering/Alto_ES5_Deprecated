@@ -12,7 +12,7 @@ Alto.RouterProperties = Alto.Mixin.create({
 
     routeObjectsForInverseRoute: null,
 
-    routeHasDatasource: false,
+    routeHasDatastore: false,
 
     routeIsSecure: false,
 
@@ -21,14 +21,14 @@ Alto.RouterProperties = Alto.Mixin.create({
     routeIsSubstate: false,
 
     // computed properties
-    location: function () {
-        var _location = location.hash;
+    location: Alto.computed(function () {
+        var _location = parent.location.hash;
 
         return _location === ('#/' || '#' || '') ? '' : _location;
-    }.property().volatile(),
+    }).volatile(),
 
     // a clean representation of the incoming route.  Removes '?', '/', and '#' from route.
-    route: function () {
+    route: Alto.computed('location', function () {
         var path = this.get('location');
 
         if (path.charAt(0) === '#') {
@@ -39,10 +39,11 @@ Alto.RouterProperties = Alto.Mixin.create({
             path = path.slice(1, path.length)
         }
 
-        if (path.contains('?')) {
+        if (path.indexOf('?') > -1) {
             path = path.substr(0, path.indexOf('?'));
         }
 
         return path;
-    }.property('location').volatile()
+    }).volatile()
+
 });

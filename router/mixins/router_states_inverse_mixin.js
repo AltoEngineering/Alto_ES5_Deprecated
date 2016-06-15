@@ -67,19 +67,19 @@ Alto.RouterStatesInverse = Alto.Mixin.create({
     },
 
     transitionToStateOrSubstateInverse: function (routeObject, routeObjects) {
-        var currentState = window[Alto.applicationName].statechart.get('currentState'),
-            currentSubstate = window[Alto.applicationName].statechart.get('currentSubState');
+        var currentState = parent.CoreApp.applicationInstance.statechart.get('currentState'),
+            currentSubstate = parent.CoreApp.applicationInstance.statechart.get('currentSubState');
 
         if (routeObject.state && currentState === routeObject.state) {
             // do nothing
         } else if (routeObject.state) {
-            window[Alto.applicationName].statechart.goToState(routeObject.state);
+            parent.CoreApp.applicationInstance.statechart.goToState(routeObject.state);
         }
 
         if (routeObject.substate && currentSubstate === routeObject.substate) {
             // do nothing
         } else if (routeObject.substate) {
-            window[Alto.applicationName].statechart.goToSubState(routeObject.substate);
+            parent.CoreApp.applicationInstance.statechart.goToSubState(routeObject.substate);
         }
 
         this.flushCurrentRouteObjectStateInverse(routeObjects);

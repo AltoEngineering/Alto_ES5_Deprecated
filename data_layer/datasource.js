@@ -1,3 +1,5 @@
+alto_require('frameworks/shared/altojs/data_layer/request.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC
@@ -15,6 +17,128 @@
  @author Chad Eubanks
  */
 
-Alto.DataSource = Alto.Object.extend ({
+Alto.DataSource = Alto.Object.extend({
+
+    fetchRecords: function (url) {
+        return new Alto.RSVP.Promise(function (succeeded, failed) {
+
+            var request = Alto.Request.create({
+                url: url,
+                httpMethod: 'GET',
+                requestHeaders: {
+                    'Content-Type': 'application/json'
+                },
+
+                success: function () {
+                    var json = JSON.parse(request.xhr.response);
+                    succeeded(json);
+                },
+
+                error: function () {
+                    failed();
+                }
+
+            })
+
+        })
+    },
+
+    fetchRecord: function (url) {
+        return new Alto.RSVP.Promise(function (succeeded, failed) {
+
+            var request = Alto.Request.create({
+                url: url,
+                httpMethod: 'GET',
+                requestHeaders: {
+                    'Content-Type': 'application/json',
+                    // 'AUTH-TOKEN': LW.networkApi.get('_sessionToken')
+                },
+
+                success: function () {
+                    var json = JSON.parse(request.xhr.response);
+                    succeeded(json);
+                },
+
+                error: function () {
+                    failed();
+                }
+
+            })
+
+        })
+    },
+
+    saveRecord: function (url, data) {
+        return new Alto.RSVP.Promise(function (succeeded, failed) {
+
+            var request = Alto.Request.create({
+                url: url,
+                httpMethod: 'POST',
+                requestHeaders: {
+                    'Content-Type': 'application/json'
+                },
+                data: data,
+
+                success: function () {
+                    var json = JSON.parse(request.xhr.response);
+                    succeeded(json);
+                },
+
+                error: function (json) {
+                    failed();
+                }
+
+            })
+
+        })
+    },
+
+    updateRecord: function (url, data) {
+        return new Alto.RSVP.Promise(function (succeeded, failed) {
+
+            var request = Alto.Request.create({
+                url: url,
+                httpMethod: 'PUT',
+                requestHeaders: {
+                    'Content-Type': 'application/json'
+                },
+                data: data,
+
+                success: function () {
+                    var json = JSON.parse(request.xhr.response);
+                    succeeded(json);
+                },
+
+                error: function () {
+                    failed();
+                }
+
+            })
+
+        })
+    },
+
+    deleteRecord: function (url, data) {
+        return new Alto.RSVP.Promise(function (succeeded, failed) {
+
+            var request = Alto.Request.create({
+                url: url,
+                httpMethod: 'DELETE',
+                requestHeaders: {
+                    'Content-Type': 'application/json'
+                },
+
+                success: function () {
+                    succeeded();
+                },
+
+                error: function () {
+                    failed();
+                }
+
+            })
+
+        })
+    }
 
 });

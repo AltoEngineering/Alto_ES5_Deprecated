@@ -38,9 +38,9 @@ Alto.Statechart = Alto.Object.extend({
     substateHistory: [],
 
     /*todo: we are finding some odd behaviour with the dispatchEvent and dispatchViewEvent methods.
-            speccifcally, the arg 'eventName'.  It appears to be empty yet the only time an exception is thrown is
-            when we interact with this api via the file upload class...
-            We may want to refactor this api once we go to LW-Web.
+     speccifcally, the arg 'eventName'.  It appears to be empty yet the only time an exception is thrown is
+     when we interact with this api via the file upload class...
+     We may want to refactor this api once we go to LW-Web.
      */
 
 
@@ -58,14 +58,20 @@ Alto.Statechart = Alto.Object.extend({
             return
         }
 
-        if (window[APP][substate] && window[APP][substate][eventName]) {
-            window[APP][substate][eventName].apply(this, args);
+        if (window[APP][substate]) {
+            if (window[APP][substate].viewState && window[APP][substate].viewState[eventName]) {
+                window[APP][substate].viewState[eventName].apply(this, args);
+            } else if (window[APP][substate][eventName]) {
+                window[APP][substate][eventName].apply(this, args);
+            } else {
+                window[APP][state].viewState[eventName].apply(this, args);
+            }
         } else if (window[APP][state].viewState && window[APP][state].viewState[eventName]) {
             window[APP][state].viewState[eventName].apply(this, args);
         } else {
             // todo work around for enroller not using viewState pattern
             this.dispatchEvent(eventName);
-           // Alto.Console.log(message, Alto.Console.errorColor);
+            // Alto.Console.log(message, Alto.Console.errorColor);
         }
 
     },
@@ -122,7 +128,7 @@ Alto.Statechart = Alto.Object.extend({
         var APP = Alto.applicationName;
 
         // If we are already in a state, call is exitState before transitioning
-        if (window[APP].statechart.get("currentState") != "") {
+        if (window[APP].statechart.get("currentState") != "" && !Alto.isEqual(window[APP].statechart.get("currentState"), state)) {
 
             if (window[APP].LogStateTransitions) {
                 var message = "Exiting " + window[APP].statechart.get("currentState");
@@ -133,17 +139,21 @@ Alto.Statechart = Alto.Object.extend({
             window[APP][window[APP].statechart.get("currentState")].exitState();
         }
 
+        if (Alto.isEqual(window[APP].statechart.get("currentState"), state)) {
+            return
+        }
+
         // Handle an attempt to enter a non existent state
-        if (!window[APP][state.classify()]) {
+        if (!window[APP][Alto.String.classify(state)]) {
             var message = "Can not find state " + state + ".";
             Alto.Console.log(message, Alto.Console.errorColor);
         } else {
 
             if (!window[APP][state]) {
-                window[APP][state] = window[APP][state.classify()].create();
+                window[APP][state] = window[APP][Alto.String.classify(state)].create();
             }
 
-            window[APP].statechart.set("currentState", state.camelize());
+            window[APP].statechart.set("currentState", Alto.String.camelize(state));
 
             if (window[APP].LogStateTransitions) {
                 var message = "Entering " + window[APP].statechart.get("currentState");
@@ -151,7 +161,7 @@ Alto.Statechart = Alto.Object.extend({
             }
 
             window[Alto.applicationName].statechart.set('currentSubState', '');
-            window[APP][state.camelize()].enterState();
+            window[APP][Alto.String.camelize(state)].enterState();
         }
     },
 
@@ -180,6 +190,11 @@ Alto.Statechart = Alto.Object.extend({
                 window[APP].statechart.get('substateHistory').insertAt(0, currentSubstate);
             }
             window[APP].statechart.leaveCurrentSubState();
+        }
+
+        if (Alto.isNone(window[APP][currentState])) {
+            Alto.Logger.error('Attempting to enter directly into a substate without being in a parent state.  Canceling substate transition.');
+            return;
         }
 
         if (window[APP][currentState][substate]) {
@@ -236,10 +251,11 @@ Alto.Statechart = Alto.Object.extend({
     },
 
     goToPreviousSubstate: function () {
-        var previousSubstate = Enrollee.statechart.get('substateHistory')[0];
+        var APP = parent.CoreApp.applicationInstance,
+            previousSubstate =  APP.statechart.get('substateHistory')[0];
 
-        Enrollee.statechart.get('substateHistory').removeAt(0);
-        Enrollee.statechart.goToSubState(previousSubstate, true);
+        APP.statechart.get('substateHistory').removeAt(0);
+        APP.statechart.goToSubState(previousSubstate, true);
     }
 
 

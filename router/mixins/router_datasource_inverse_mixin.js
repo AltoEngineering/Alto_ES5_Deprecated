@@ -7,61 +7,60 @@
 
 Alto.RouterDatasourceInverse = Alto.Mixin.create({
 
-    verifyRouteObjectsForDatasourceInverseExists: function (routeObjects) {
+    verifyRouteObjectsForDatastoreInverseExists: function (routeObjects) {
         if (Alto.isPresent(routeObjects)) {
             this.displayLoadingPaneInverse(routeObjects.objectAt(0), routeObjects);
         } else {
             // Boom! No more datasources needed for the incoming inversed route
-            window[Alto.applicationName].loadingPane.remove();
+            if(LW.loadingPane){
+                LW.loadingPane.remove();
+            }
             this.verifyRouteObjectsForStatesInverseExists(this.get('routeObjectsForInverseRoute'));
         }
     },
 
     displayLoadingPaneInverse: function (routeObject, routeObjects) {
-        if (!window[Alto.applicationName].loadingPane) {
-            window[Alto.applicationName].loadingPane = window[Alto.applicationName].LoadingPane.create({
-                status: routeObject.datasource.loadingMessage
+        if (!LW.loadingPane) {
+            LW.loadingPane = LW.LoadingPane.create({
+                instanceName: 'LW.loadingPane'
             });
-        } else {
-            window[Alto.applicationName].loadingPane.set('status', routeObject.datasource.loadingMessage);
         }
 
-        this.checkForRouteObjectMasterDatasource(routeObject, routeObjects);
+        this.checkForRouteObjectMasterDatastore(routeObject, routeObjects);
     },
 
-    checkForRouteObjectMasterDatasource: function (routeObject, routeObjects) {
-        if (routeObject.controller) {
+    checkForRouteObjectMasterDatastore: function (routeObject, routeObjects) {
+        if (routeObject.datastore) {
             this.checkControllerContentInverse(routeObject, routeObjects);
-        } else if (!routeObject.controller) {
-            // unknown datasource name given in routeObject
-            Alto.Logger.error('A controller named', routeObject.controller, 'not found.');
+        } else if (!routeObject.datastore) {
+            Alto.Logger.error('Route datastore inverse is missing a datastore.');
         } else {
-            this.checkDatasourceForNameInverse(routeObject, routeObjects);
+            this.checkDatastoreForNameInverse(routeObject, routeObjects);
         }
     },
 
     checkControllerContentInverse: function (routeObject, routeObjects) {
-        // short circuit for master datasource w/ controller content and repeat cycle
-        if (Alto.isPresent(window[Alto.applicationName][routeObject.controller].get('content'))) {
+        //todo need to check for an array or not, isPresent thinks {} is true;  Yet, [] is false;
+        if (Alto.isPresent(routeObject.controller.get('content')) && !routeObject.isLocalQuery) {
             var _routeObjects = routeObjects.removeAt(0);
-            this.verifyRouteObjectsForDatasourceInverseExists(_routeObjects);
+            this.verifyRouteObjectsForDatastoreInverseExists(_routeObjects);
         } else {
-            this.checkDatasourceForNameInverse(routeObject, routeObjects);
+            this.checkDatastoreForNameInverse(routeObject, routeObjects);
         }
     },
 
-    checkDatasourceForNameInverse: function (routeObject, routeObjects) {
-        if (routeObject.datasource.name) {
+    checkDatastoreForNameInverse: function (routeObject, routeObjects) {
+        if (routeObject.datastore) {
             this.verifyDatasourceClassExistsInverse(routeObject, routeObjects);
         } else {
             // unknown datasource name given in routeObject
-            Alto.Logger.error('A datasource named', routeObject.datasource.name, 'not found.');
+            Alto.Logger.error('A datasource named', routeObject.datastore, 'not found.');
         }
     },
 
     verifyDatasourceClassExistsInverse: function (routeObject, routeObjects) {
-        if (!window[Alto.applicationName][routeObject.datasource.name.classify()]) {
-            Alto.Logger.error('DataSource', routeObject.datasource.name, 'not found.');
+        if (!routeObject.datastore) {
+            Alto.Logger.error('DataSource on route object %@', routeObject, 'not found.');
         } else {
             this.fetchRelatedResources(routeObject, routeObjects)
         }
@@ -69,9 +68,9 @@ Alto.RouterDatasourceInverse = Alto.Mixin.create({
 
     fetchRelatedResources: function (routeObject, routeObjects) {
         var that = this,
-            datasource = window[Alto.applicationName][routeObject.datasource.name.classify()].create();
+            datasource = routeObject.datastore.createWithMixins();
 
-        datasource[routeObject.datasource.method]().then(function (success) {
+        datasource[routeObject.method]().then(function (success) {
             that.flushCurrentRouteObjectInverse(routeObjects);
         }, function (error) {
             that.netWorkCallDidFail(error);
@@ -81,7 +80,7 @@ Alto.RouterDatasourceInverse = Alto.Mixin.create({
     flushCurrentRouteObjectInverse: function (routeObjects) {
         var _routeObjects = routeObjects.removeAt(0);
 
-        this.verifyRouteObjectsForDatasourceInverseExists(_routeObjects);
+        this.verifyRouteObjectsForDatastoreInverseExists(_routeObjects);
     }
 
 });

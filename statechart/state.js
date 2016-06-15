@@ -1,3 +1,5 @@
+alto_require('frameworks/shared/altojs/statechart/statechart.js');
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
 // Copyright: @2014 The Code Boutique, LLC
@@ -17,13 +19,13 @@
 Alto.State = Alto.Object.extend ({
 
     /**
-        @method enterState
-    */
+     @method enterState
+     */
     enterState: function () {},
 
     /**
-        @method exitState
-    */
+     @method exitState
+     */
     exitState: function () {}
 
 });

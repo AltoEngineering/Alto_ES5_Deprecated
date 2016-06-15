@@ -22,7 +22,12 @@ Alto.Mapper = Alto.Object.create({
      @param {String} json The json you will map to your record
      @param {Alto.String} the type of formatting your record expects: ex (json key) foo_bar | (record key) fooBar
      */
-    createRecordFromJson: function (recordInstance, json, stringFormat) {
+    deserialize: function (recordInstance, json, stringFormat) {
+
+        if (!stringFormat) {
+            stringFormat = 'camelize';
+        }
+
         if (stringFormat && !Alto.String[stringFormat]) {
             Alto.Logger.error('unknown string format given.  Alto.String does not have a method called', stringFormat);
             return;
@@ -58,7 +63,7 @@ Alto.Mapper = Alto.Object.create({
         return recordInstance;
     },
 
-    deserializeRecordToJson: function (record, stringFormat) {
+    serialize: function (record, stringFormat) {
         var json = {};
 
         if (!stringFormat) {
@@ -83,7 +88,6 @@ Alto.Mapper = Alto.Object.create({
             }
         });
 
-        // hack for some odd bug
         if (json.binding) {
             delete json.binding;
         }
@@ -91,60 +95,31 @@ Alto.Mapper = Alto.Object.create({
         return JSON.stringify(json);
     },
 
+    duplicateContent: function(content, datastore){
+        var deseralizedData, serializedData;
 
-    /**
-     @method duplicateRecord
-     @param {Object} content is the information used for duplication            -- Enroller.companyController.get('content')
-     @param {String} name of the datastore used                                 -- 'companyDataStore' | 'CompanyDataStore'
-     @param {String} method in the datastore used for deserializing             -- 'deserializeCompanyRecord'
-     @param {String} name of the model to build the duplicated record           -- 'CompanyRecord'
-     @param {String} controller to set the content too                          -- 'companyController'
-
-     i.e. window[APP].controller.get('priorRecord')
-     */
-    duplicateRecord: function (content, datastore, datastoreMethod, recordInstance, controller) {
-        var APP = Alto.applicationName,
-            deseralizedData,
-            serializedData,
-            datastoreFormatValidation;
-
-        //todo make our usage of this api consistant... right now Enroller's datastore's are singletons.  Enrollee's are not.
-        // datastore should not be singleton
-
-        if (typeof datastore != 'string') {
-            // must pass in a string
-            Alto.Logger.error('duplicateRecord() expects the datastore argument to be a string');
-            return
+        if (Alto.isEmpty(datastore.get('model'))) {
+            Alto.Logger.error('Datastore missing a model');
         }
 
-        datastoreFormatValidation = datastore.split('.');
-
-        if (datastoreFormatValidation.length > 1) {
-            // dont pass in a property path... must be just the class or instance name 'companyDataStore | CompanyDataStore
-            Alto.Logger.error('duplicateRecord() expects the datastore argument to be a string name and not a property path.  Example: \'companyDataStore\' ');
-            return
+        if (Alto.isEmpty(datastore.get('objectController'))) {
+            Alto.Logger.error('Datastore missing an object controller');
         }
 
+        //serialize to JSON
+        serializedData = datastore.serialize(content);
 
-        if (window[APP][datastore] instanceof Alto.Object) {
-            // is this an instance?
-            deseralizedData = JSON.stringify(window[APP][datastore][datastoreMethod](content));
-        } else if (window[APP][datastore]) {
-            // does this class exist?
-            deseralizedData = JSON.stringify(window[APP][datastore].create()[datastoreMethod](content));
-        }
-        
-        if (recordInstance instanceof Alto.Object) {
-            // is this an instance?
-            recordInstance;
-        } else if (recordInstance) {
-            // does this class exist?
-            recordInstance = window[APP][recordInstance].create();
-        }
+        //deserialize and set to new record
+        deseralizedData = datastore.deserialize(datastore.get('model').create(), JSON.parse(serializedData));
 
-        serializedData = Alto.Mapper.createRecordFromJson(recordInstance, JSON.parse(deseralizedData), 'camelize');
-        window[APP][controller].set('priorRecord', serializedData);
+        return deseralizedData;
+    },
 
+    createEditContent: function (content, datastore) {
+        var deseralizedData = this.duplicateContent(content, datastore);
+
+        //set the controller listed in the datastore
+        datastore.set('objectController.editContent', deseralizedData);
     }
 
 });

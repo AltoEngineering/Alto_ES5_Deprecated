@@ -61,9 +61,9 @@ Alto.Application = Alto.Object.extend({
      </code>
      </pre>
      */
-    COOKIENAME: function () {
+    COOKIENAME: Alto.computed('NAMESPACE', function () {
         return '%@%@'.fmt(this.get('NAMESPACE').toLowerCase(), 'auth');
-    }.property('NAMESPACE'),
+    }),
 
     /**
      @property VERSION
@@ -106,6 +106,8 @@ Alto.Application = Alto.Object.extend({
      @method applicationDidLoad
      */
     applicationDidLoad: function () {
+
+        this.set('window', Alto.Window.createWithMixins());
         window[Alto.applicationName].router = window[Alto.applicationName].Router.createWithMixins();
         window[Alto.applicationName].router.routerDidBecomeActive();
     },
