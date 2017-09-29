@@ -6,6 +6,7 @@ import ButtonView from './application/views/button_view.js';
 import Console from './application/foundation/console.js';
 import CoreObject from './application/foundation/core_object.js';
 import Datastore from './application/data/datastore.js';
+import DomUtil from './application/views/utils/dom_util.js';
 import ImageView from './application/views/image_view.js';
 import ListView from './application/views/list_view.js';
 import ObjectController from './application/data/controllers/object_controller.js';
@@ -41,6 +42,7 @@ class Alto {
         this.Console = Console;
         this.CoreObject = CoreObject;
         this.Datastore = Datastore;
+        this.DomUtil = DomUtil;
         this.ImageView = ImageView;
         this.ListView = ListView;
         this.ObjectController = ObjectController;

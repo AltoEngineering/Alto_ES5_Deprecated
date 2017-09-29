@@ -38,6 +38,14 @@ let ListView = CoreView.extend({
         });
 
         this.viewAnimateIn();
+    },
+
+    dataDidChange: function () {
+        if (!this.node) {return};
+
+        Alto.DomUtil.removeAllChildren(this.node);
+
+        this.viewCreateSubViews();
     }
 
 });
