@@ -62,7 +62,6 @@ let ButtonView = CoreView.extend({
     },
 
     titleDidChange: function () {
-        debugger;
         if (this.node) {
             this.node.innerText = this.get('title');
         }
