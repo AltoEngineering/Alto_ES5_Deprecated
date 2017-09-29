@@ -1,151 +1,94 @@
+import CoreObject from '../application/foundation/core_object.js';
+import Statechart from '../application/statechart/statechart.js';
+import Window from '../application/views/window.js';
+
 // ==========================================================================
 // Project: Alto - JavaScript Application Framework
-// Copyright: @2014 The Code Boutique, LLC
-// License:   Intellectual property of The Code Boutique. LLC
+// Copyright: @2017 The Code Boutique, LLC
+// License:   MIT License (see license for details)
+// Author: Chad Eubanks
 // ==========================================================================
 
-/**
- When an application starts.  It calls the **applicationWillLoad()** method.  At this time the applications name has yet to
- be created and the applications name is not in scope of the window object.
+let Application = class Application extends CoreObject{
 
- Once an application has loaded, meaning when all framework files related to Alto and an Alto application have been loaded
- into the browsers javascript, the applications name has been instantiated, and the applications name is in scope of
- the window object.  Then the **applicationDidLoad()** method is called.  At this time you may start to use your applications
- namespace.
+    static toString() {
+        return 'Alto.Application'
+    }
 
- The main purpose of these application life cycle hooks is simply to provide an opportunity to setup global properties/objects
- both outside of your applications namespace: applicationWillLoad() and within scope of your applications namespace:
- applicationDidLoad().
+    static create(...args) {
+        const application = Object.assign(new Application(), this, ...args);
+        delete application.create;
+        window.Alto.applicationInstance = application;
+        application.init();
+        return application;
+    }
 
- @module Application
- @class Alto.Application
- @extends Alto.Object
- @since Alto 0.0.1
- @author Chad Eubanks
- */
+    static extend(...args) {
+        const instance = new Application();
+        instance.create = this.create;
+        return Object.assign(instance, ...args);
+    }
 
-Alto.Application = Alto.Object.extend({
+};
 
-    isApplication: true,
+Application = Application.extend({
 
-    CookieDomain: null,
+    version: null,
 
-    /**
-     @property NAMESPACE
-     @type String
-     @description The value for namespace needs to match the name assigned to the instance of Alto.Application.
-     Internally, Alto uses the value for namespace to setup your application during initialization and during event
-     handling.
+    milestone: null,
 
-     **Example:**
-     <pre class="code prettyprint prettyprinted">
-     <code>App = Alto.Application.create ({
-                NAMESPACE: 'App'
-            });
-     </code>
-     </pre>
-     */
-    NAMESPACE: '',
+    router: null,
 
-    /**
-     @property COOKIENAME
-     @type String
-     @description The value for cookiename is used internally as the lookup name of your applications session cookie.
-     @default this.get('NAMESPACE')
+    statechart: Statechart,
 
-     **Example:**
-     <pre class="code prettyprint prettyprinted">
-     <code>App = Alto.Application.create ({
-                COOKIENAME: 'AuthCookie'
-            });
-     </code>
-     </pre>
-     */
-    COOKIENAME: function () {
-        return '%@%@'.fmt(this.get('NAMESPACE').toLowerCase(), 'auth');
-    }.property('NAMESPACE'),
+    logStateTransitions: true,
 
-    /**
-     @property VERSION
-     @type String
-     @description Keeps track of your application version.
-     */
-    VERSION: '',
-
-    /**
-     @property LogStateTransitions
-     @type Bool
-     @description When set to true, as an Alto application enters and exists a state. A message will print to your
-     web console.
-     @default true
-     */
-    LogStateTransitions: true,
-
-    /**
-     @property LogMessages
-     @type Bool
-     @description When set to true and when using {{#crossLink "Alto.Console/log:method"}}Alto.Console.log{{/crossLink}}, console logs will print to your web console.
-     @default true
-     */
-    LogMessages: true,
+    window: Window,
 
     init: function () {
-
-        Alto.applicationName = this.NAMESPACE;
         this.applicationWillLoad();
     },
 
-    /**
-     @method applicationWillLoad
-     */
     applicationWillLoad: function () {
-
+        console.log('applicationWillLoad');
+        this.verifyRouterIsPresent();
     },
 
-    /**
-     @method applicationDidLoad
-     */
+    verifyRouterIsPresent: function () {
+        const router = this.get('router');
+
+        if (router) {
+            this.wakeRouter(router);
+        } else {
+            this.malformedRouterProvided();
+        }
+    },
+
+    malformedRouterProvided: function () {
+        throw new Error('Malformed router provided.')
+    },
+
+    wakeRouter: function (router) {
+        this.fetchLocStrings();
+        router.routerDidBecomeActive();
+    },
+
+    fetchLocStrings: function () {
+        this.fetchLocStringsSuccess()
+    },
+
     applicationDidLoad: function () {
-        window[Alto.applicationName].router = window[Alto.applicationName].Router.createWithMixins();
-        window[Alto.applicationName].router.routerDidBecomeActive();
+        console.log('applicationDidLoad');
     },
 
-    createSession: function (token, daysValid) {
-        var expirationDate = new Date(),
-            cookie;
-
-        expirationDate.setDate(expirationDate.getDate() + daysValid);
-
-        cookie = Alto.Cookie.create({
-            name: this.get('COOKIENAME'),
-            value: token,
-            domain: this.get('CookieDomain'),
-            path: '/',
-            expires: expirationDate,
-            secure: false
-        });
-        cookie.write();
+    fetchLocStringsSuccess: function () {
+        this.applicationDidLoad();
     },
 
-    endSession: function () {
-        var expirationDate = new Date(),
-            cookie;
+    fetchLocStringsFail: function () {
 
-        expirationDate.setDate(expirationDate.getDate() - 30000);
-
-        cookie = Alto.Cookie.create({
-            name: this.get('COOKIENAME'),
-            value: '',
-            domain: this.get('CookieDomain'),
-            path: '/',
-            expires: expirationDate,
-            secure: false
-        });
-        cookie.write();
-
-        Alto.run.next(this, function() {
-            location.reload();
-        });
     }
 
 });
+
+export default Application;
