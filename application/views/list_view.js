@@ -28,7 +28,7 @@ let ListView = CoreView.extend({
         let dataCollection = this.get('data'), that = this;
 
         dataCollection.forEach(function (data, idx) {
-            var cell = that.get('cell').create(Alto.BindingProtocol, {parentView: that, data: data, indexRow: idx});
+            var cell = that.get('cell').create({parentView: that, data: data, indexRow: idx});
 
             if (data.get ? data.get('isSelected') : data.isSelected) {
                 that.set('selectedCell', cell);

@@ -29,16 +29,6 @@ Binding = Binding.create({
     bindingTree: {},
 
     createTwoWayBinding: function (from, property, connection) {
-        if (Alto.isEqual(typeof connection.to, "string")) {
-            let to = from;
-
-            connection.to.split('.').forEach(function (toPath) {
-                to = to[toPath] ? to[toPath] : to[`${toPath}Binding`];
-            });
-
-            connection.to = to;
-        }
-
         let bindingTree = this.bindingTree,
             {guid} = connection.to;
 
@@ -82,6 +72,17 @@ Binding = Binding.create({
     connect: function (to, property, isOneWay = false) {
         return {to, property, isOneWay};
     },
+
+    replaceStringPathWithObject: function (instance, connection, key) {
+        let to = instance;
+
+        connection.to.split('.').forEach(function (key) {
+            to = to[key];
+        });
+
+        instance[`${key}Binding`] = null;
+        instance[`${key}Binding`] = this.connect(to, connection.property, connection.isOneWay);
+    }
 
 });
 

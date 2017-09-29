@@ -68,24 +68,6 @@ CoreView = CoreView.extend({
         return this[key];
     },
 
-    initWithBindings: function (instance) {
-        let keys = Object.keys(instance), self = this;
-
-        keys.forEach(function (key) {
-            let connection = self[`${key}Binding`];
-
-            if (connection) {
-                let {isOneWay} = connection;
-
-                if (!isOneWay) {
-                    Alto.Binding.createTwoWayBinding(self, key, connection);
-                }
-            }
-        });
-
-        instance.init(instance);
-    },
-
     init: function (html) {
         this.viewWillLoad(html);
     },

@@ -26,6 +26,27 @@ BindingProtocol = BindingProtocol.create({
 
     hasBindings: true,
 
+    initWithBindings: function (instance) {
+        let keys = Object.keys(instance), self = this;
+
+        keys.forEach(function (key) {
+            let connection = self[`${key}Binding`];
+
+            if (connection) {
+                if (Alto.isEqual(typeof connection.to, "string")) {
+                    Alto.Binding.replaceStringPathWithObject(self, connection,  key);
+                }
+                let {isOneWay} = connection;
+
+                if (!isOneWay) {
+                    Alto.Binding.createTwoWayBinding(self, key, connection);
+                }
+            }
+        });
+
+        instance.init(instance);
+    },
+
     set(key, value) {
         if (Alto.isEqual(this.get(key), value)) {
             return this
