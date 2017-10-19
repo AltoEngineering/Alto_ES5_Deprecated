@@ -44,12 +44,13 @@ Binding = Binding.create({
             }
         }
 
-        if (Alto.isNone(bindingTree[guid][connection.property].connectionsLookup[connection.to.guid])) {
+        if (Alto.isNone(bindingTree[guid][connection.property].connectionsLookup[from.guid])) {
             bindingTree[guid][connection.property].connectionsLookup[from.guid] = true;
             bindingTree[guid][connection.property].connections.push(this.connect(from, property));
         }
 
         if (Alto.isPresent(from[`${property}Binding`].property)) {
+
             let defaultValue = from[`${property}Binding`].to.get(from[`${property}Binding`].property);
 
             if (Alto.isEqual(from.value, defaultValue)) {

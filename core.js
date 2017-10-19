@@ -14,6 +14,7 @@ import ModalPane from './application/views/panes/modal_pane.js';
 import ObjectController from './application/data/controllers/object_controller.js';
 import Record from './application/data/records/record.js';
 import Router from './application/routing/router.js';
+import SelectMenuView from './application/views/select_menu.js';
 import State from './application/statechart/state.js';
 import Statechart from './application/statechart/statechart.js';
 import Substate from './application/statechart/substate.js';
@@ -53,6 +54,7 @@ class Alto {
         this.ObjectController = ObjectController;
         this.Record = Record;
         this.Router = Router;
+        this.SelectMenuView = SelectMenuView;
         this.State = State;
         this.Statechart = Statechart;
         this.Substate = Substate;

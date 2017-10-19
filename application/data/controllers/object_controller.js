@@ -31,11 +31,25 @@ let ObjectController = class ObjectController extends CoreObject {
     }
 
     set(key, value) {
+        let self = this;
+
         if (Alto.isEqual(this.get(key), value)) {
             return this
         }
 
         this[key] = value;
+
+        if (Alto.isEqual(key, 'record')) {
+
+           Object.keys(value).forEach(function (key) {
+               if (Alto.isEqual(key, 'guid')) {return}
+               self.set(key, value[key]);
+           })
+        }
+
+        if (this.record && this.record.hasOwnProperty(key)) {
+           this.record.set(key, value);
+        }
 
         let {bindingTree} = Bindings;
 
@@ -63,7 +77,7 @@ let ObjectController = class ObjectController extends CoreObject {
 
 ObjectController = ObjectController.extend({
 
-    record: null,
+    record: CoreObject.create(),
 
     nestedRecord: null,
 

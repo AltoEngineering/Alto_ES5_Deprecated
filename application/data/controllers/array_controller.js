@@ -59,6 +59,14 @@ let ArrayController = class ArrayController extends CoreObject {
         return this;
     }
 
+    addObject (obj) {
+        let array = [];
+        let records = this.get('records');
+
+        array.push(obj);
+        this.set('records', records.concat(array));
+    }
+
 };
 
 ArrayController = ArrayController.extend({
