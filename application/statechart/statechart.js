@@ -42,9 +42,9 @@ Statechart = Statechart.create({
             currenSubState = window.Alto.applicationInstance.statechart.get("currenSubState");
 
         if (currenSubState && currenSubState[event]) {
-            currenSubState[event](args);
+            currenSubState[event](...args);
         } else if (currenState && currenState[event]) {
-            currenState[event](args);
+            currenState[event](...args);
         } else {
             Console.log(`Malformed event given. ${event} can not be found on the current substate or state.`, Console.errorColor);
         }
@@ -54,6 +54,8 @@ Statechart = Statechart.create({
         let currenState = window.Alto.applicationInstance.statechart.get("currentState"),
             currenSubState = window.Alto.applicationInstance.statechart.get("currenSubState");
 
+        if (window.Alto.isEqual(state, currenState)) {return}
+
         if (currenState && currenSubState) {
             if (window.Alto.applicationInstance.logStateTransitions) {
                 Console.log(`   Exiting ${currenSubState.toString()}`, Console.warnColor);
@@ -62,12 +64,15 @@ Statechart = Statechart.create({
 
             window.Alto.applicationInstance.statechart.set('currenSubState', null);
             currenSubState.exitState();
+
+            window.Alto.applicationInstance.statechart.set('currenState', null);
             currenState.exitState();
         } else if (currenState) {
             if (window.Alto.applicationInstance.logStateTransitions) {
                 Console.log(`Exiting ${currenState.toString()}`, Console.warnColor);
             }
 
+            window.Alto.applicationInstance.statechart.set('currenSubState', null);
             currenState.exitState();
         }
 
@@ -80,8 +85,24 @@ Statechart = Statechart.create({
 
     },
 
-    goToSubState: () => {
+    goToSubState: (substate) => {
+        let currenSubState = window.Alto.applicationInstance.statechart.get("currenSubState");
 
+        if (currenSubState) {
+            if (window.Alto.applicationInstance.logStateTransitions) {
+                Console.log(`   Exiting ${currenSubState.toString()}`, Console.warnColor);
+            }
+
+            window.Alto.applicationInstance.statechart.set('currenSubState', null);
+            currenSubState.exitState();
+        }
+
+        if (window.Alto.applicationInstance.logStateTransitions) {
+            Console.log(`   Entering ${substate.toString()}`, Console.messageColor);
+        }
+
+        window.Alto.applicationInstance.statechart.set('currenSubState', substate);
+        substate.enterState();
     }
 
 });

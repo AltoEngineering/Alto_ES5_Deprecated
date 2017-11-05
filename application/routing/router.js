@@ -255,6 +255,7 @@ Router = Router.extend({
     },
 
     goToRoute: function(route) {
+        if (Alto.isEqual(`/${route}`, window.location.pathname)) {return}
         window.history.pushState(null, route, route);
         this.routerDidBecomeActive();
     }
